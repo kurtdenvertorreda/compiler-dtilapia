@@ -1,0 +1,62 @@
+body {
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 90px;
+    background: #DFF0F0;
+    padding: 0 20px;
+  }
+  
+  .logo {
+    max-width: 170px;
+    max-height: 88px;
+    width: auto;
+    height: auto;
+    margin-left: 20px;
+  }
+  
+  .button-container {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .run-code-btn {
+    width: 130px;
+    height: 38px;
+    border-radius: 42px;
+    margin-right: 10px;
+    border: 1px solid #000;
+    background: #04ACAC;
+    box-shadow: 4px 4px 4px 0px #1A4243;
+    color: #FFF;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .upload-code-btn {
+    width: 160px;
+    height: 38px;
+    border-radius: 42px;
+    margin-right: 140px;
+    border: 1px solid #000;
+    background: #1A4243;
+    box-shadow: 4px 4px 4px 0px #3A9A9D;
+    color: #FFF;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
