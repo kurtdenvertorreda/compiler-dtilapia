@@ -91,6 +91,7 @@ body {
     font-size: 14px;
     overflow: auto;
     max-height: 72vh;
+    max-width: 183vh;
     min-height: 200px;
     min-width: 250px;
     /* resize: none; */
