@@ -5,7 +5,13 @@ body {
     display: flex;
     flex-direction: column;
 }
+
+
 .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -61,19 +67,36 @@ body {
     align-items: center;
   }
 
+  .main {
+    background-color: #DFF0F0;
+  }
+
   .container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
   }
-  
-  .code-box {
-    width: 1235px;
-    height: 558px;
-    flex-shrink: 0;
+
+  .code-editor {
+    width: 1050px;
+    height: 450px;
+    margin-top: 50px;
     border-radius: 50px;
     border: 1px solid #1A4243;
     background: #FFF;
     box-shadow: 10px 10px 4px 0px #3A9A9D;
+    padding: 30px;
+    font-family: monospace;
+    font-size: 14px;
+    overflow: auto;
+    max-height: 72vh;
+    min-height: 200px;
+    min-width: 250px;
+    /* resize: none; */
+  }
+
+  ::-webkit-scrollbar {
+    height: 1000px; /* Set the height of the scroll bar */
+    -webkit-appearance: none;
   }
