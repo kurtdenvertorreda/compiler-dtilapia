@@ -21,7 +21,7 @@ codeEditor.addEventListener("input", function() {
 function handleTabIndentation() {
   const editor = document.getElementById("code-editor");
   const cursorPosition = editor.selectionStart;
-  const indentation = "    "; // Replace with your desired indentation (e.g., "\t" for a tab)
+  const indentation = "    "; // 4 spaces
 
   // Insert the indentation at the current cursor position
   editor.setRangeText(indentation, cursorPosition, cursorPosition, "end");
@@ -66,3 +66,11 @@ function redo() {
     codeEditor.value = codeHistory[historyIndex];
   }
 }
+
+
+// const lineNumbers = document.querySelector(".line-numbers");
+// console.log(lineNumbers);
+// codeEditor.addEventListener("input", () => {
+//   let lines = codeEditor.value.split("\n");
+//   lineNumbers.textContent = lines.map((line, i) => (i + 1)).join("\n");  
+// });

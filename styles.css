@@ -17,6 +17,7 @@ body {
     height: 90px;
     background: #DFF0F0;
     padding: 0 20px;
+    z-index: 999;
   }
   
   .logo {
@@ -28,7 +29,7 @@ body {
   }
 
   .logo:hover {
-    cursor: pointer; /* Change cursor to a pointer when hovering over the logo */
+    cursor: pointer; 
   }
   
   .button-container {
@@ -99,8 +100,19 @@ body {
     height: 100vh;
   }
 
+  /* .line-numbers {
+    position: absolute;
+    top: 195px;
+    left: 0;
+    height: 100%;  */
+    /* position within .container */
+    /* height: 100%;
+    width: 15px; 
+  } */
+
   .code-editor {
-    width: 1050px;
+    position: relative;
+    width: 1000px;
     height: 450px;
     margin-top: 50px;
     border-radius: 50px;
@@ -119,13 +131,6 @@ body {
     min-width: 250px;
      
     /* resize: none; */
-  }
-
-  .output-container {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    margin-top: 20px;
   }
   
   .lexical-analyzer,
