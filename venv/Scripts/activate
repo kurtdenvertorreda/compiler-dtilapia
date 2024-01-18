@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\ADMIN\Desktop\try compiler\venv"
+VIRTUAL_ENV="C:\Users\katod\OneDrive - Itech\NEW Backup\Kurt Files\Kurt Files All\Github\compiler-dtilapia\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
