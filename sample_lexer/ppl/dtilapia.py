@@ -62,10 +62,47 @@ TT_COMPL    = 'Complex'
 TT_BOOL     = 'Boolean'
 TT_SET      = 'Set'
 TT_ARR      = 'Array'
+
 TT_PLUS     = 'Addition Operator'
 TT_MINUS    = 'Subtraction Operator'
 TT_MUL      = 'Multiplication Operator'
 TT_DIV      = 'Division Operator'
+
+# Arithmetic Operators
+TT_MODULO = 'Modulo Operator'
+TT_EXPONENT = 'Exponent Operator'
+
+# Comparison Operators
+TT_GREATER_THAN = 'Greater Than Operator'
+TT_LESS_THAN = 'Less Than Operator'
+TT_GREATER_THAN_EQUAL = 'Greater Than or Equal To Operator'
+TT_LESS_THAN_EQUAL = 'Less Than or Equal To Operator'
+TT_EQUAL_TO = 'Equal To Operator'
+TT_NOT_EQUAL_TO = 'Not Equal To Operator'
+
+# Logical Operators
+TT_NEGATION = 'Negation Operator'
+TT_DISJUNCTION = 'Disjunction Operator'  # For \/ or ||
+TT_CONJUNCTION = 'Conjunction Operator'  # For /\ or &&
+TT_CONDITIONAL = 'Conditional Operator'  # For ->
+TT_IMPLICATION = 'Implication Operator'  # For ==>
+TT_BICONDITIONAL = 'Bi-conditional Operator'  # For <->
+
+# Assignment Operators
+TT_ASSIGNMENT = 'Assignment Operator'  # For =
+TT_ADDITION_ASSIGNMENT = 'Addition Assignment Operator'  # For +=
+TT_SUBTRACTION_ASSIGNMENT = 'Subtraction Assignment Operator'  # For -=
+TT_MULTIPLICATION_ASSIGNMENT = 'Multiplication Assignment Operator'  # For *=
+TT_DIVISION_ASSIGNMENT = 'Division Assignment Operator'  # For /=
+TT_MODULUS_ASSIGNMENT = 'Modulus Assignment Operator'  # For %=
+
+# Unary Operators
+TT_UNARY_PLUS = 'Unary Plus Operator'  # For +
+TT_UNARY_MINUS = 'Unary Minus Operator'  # For -
+TT_INCREMENT = 'Increment Operator'  # For ++
+TT_DECREMENT = 'Decrement Operator'  # For --
+TT_FACTORIAL = 'Factorial Operator'  # For !
+
 TT_LPAREN   = 'Left Parenthesis'
 TT_RPAREN   = 'Right Parenthesis'
 TT_IDENTIFIER = 'Identifier'
@@ -116,18 +153,167 @@ class Lexer:
                 self.advance()
             elif self.current_char in DIGITS:
                 tokens.append(self.make_number())
-            elif self.current_char == '+':
-                tokens.append(Token(TT_PLUS))
+
+            # Exponent Operator
+            elif self.current_char == '^':
+                tokens.append(Token(TT_EXPONENT))
                 self.advance()
-            elif self.current_char == '-':
-                tokens.append(Token(TT_MINUS))
+
+            # Greater Than or Equal To Operator
+            elif self.current_char == '>':
                 self.advance()
-            elif self.current_char == '*':
-                tokens.append(Token(TT_MUL))
+                if self.current_char == '=':
+                    tokens.append(Token(TT_GREATER_THAN_EQUAL))
+                    self.advance()
+                else:
+                    # Greater Than Operator
+                    tokens.append(Token(TT_GREATER_THAN))
+
+            # Less Than or Equal To Operator or Biconditional Operator
+            elif self.current_char == '<':
                 self.advance()
+                if self.current_char == '=':
+                    tokens.append(Token(TT_LESS_THAN_EQUAL))
+                    self.advance()
+                elif self.current_char == '-':
+                    self.advance()
+                    if self.current_char == '>':
+                        # Bi-conditional Operator
+                        tokens.append(Token(TT_BICONDITIONAL))
+                        self.advance()
+                else:
+                    # Less Than Operator
+                    tokens.append(Token(TT_LESS_THAN))
+
+            # Conditional Operator
+            elif self.current_char == '=':
+                self.advance()
+                if self.current_char == '=':
+                    self.advance()
+                    if self.current_char == '>':
+                        tokens.append(Token(TT_CONDITIONAL))
+                        self.advance()
+                    else:
+                        # Equal To Operator
+                        tokens.append(Token(TT_EQUAL_TO))
+                else:
+                    # Assignment Operator
+                    tokens.append(Token(TT_ASSIGNMENT))
+
+
+            # Not Equal To Operator or Negation Operator or Factorial Operator
+            elif self.current_char == '!':
+                self.advance()
+                if self.current_char == '=':
+                    tokens.append(Token(TT_NOT_EQUAL_TO))
+                    self.advance()
+                elif self.current_char:
+                    # Negation Operator
+                    tokens.append(Token(TT_NEGATION))
+                else:
+                    # Factorial Operator
+                    tokens.append(Token(TT_FACTORIAL))
+                    self.advance()
+
+            # Disjunction Operator
+            elif self.current_char == '\\':
+                self.advance()
+                if self.current_char == '/':
+                    tokens.append(Token(TT_DISJUNCTION))
+                    self.advance()
+
+            # Alternative Disjunction Operator
+            elif self.current_char == '|':
+                self.advance()
+                if self.current_char == '|':
+                    tokens.append(Token(TT_DISJUNCTION))
+                    self.advance()
+
+            # Conjunction Operator
             elif self.current_char == '/':
-                tokens.append(Token(TT_DIV))
                 self.advance()
+                if self.current_char == '\\':
+                    tokens.append(Token(TT_CONJUNCTION))
+                    self.advance()
+                elif self.current_char == '=':
+                     tokens.append(Token(TT_DIVISION_ASSIGNMENT))
+                     self.advance()
+                else:
+                    # Division Operator
+                    tokens.append(Token(TT_DIV))
+
+            # Alternative Conjunction Operator
+            elif self.current_char == '&':
+                self.advance()
+                if self.current_char == '&':
+                    tokens.append(Token(TT_CONJUNCTION))
+                    self.advance()
+
+            # Alternate Conditional Operator
+            elif self.current_char == '-':
+                if self.pos.idx > 0 and self.text[self.pos.idx - 1].isalnum() or self.text[self.pos.idx - 1].isspace():
+                    self.advance()
+                    if self.current_char == '>':
+                        tokens.append(Token(TT_CONDITIONAL))
+                        self.advance()
+                    elif self.current_char == '=':
+                        # Subtraction Assignment Operator
+                        tokens.append(Token(TT_SUBTRACTION_ASSIGNMENT))
+                        self.advance()
+                    elif self.current_char == '-':
+                        # Decrement Operator
+                        tokens.append(Token(TT_DECREMENT))
+                        self.advance()
+                    else:
+                        # Subtraction Operator
+                        tokens.append(Token(TT_MINUS))
+                else:
+                    tokens.append(Token(TT_UNARY_MINUS))
+                    self.advance()
+
+            # Addition Assignment Operator
+            elif self.current_char == '+':
+                if self.pos.idx > 0 and (self.text[self.pos.idx - 1].isalnum() or self.text[self.pos.idx - 1].isspace()):
+                    self.advance()
+                    if self.current_char == '=':
+                        tokens.append(Token(TT_ADDITION_ASSIGNMENT))
+                        self.advance()
+                    elif self.current_char == '+':
+                        # Increment Operator
+                        tokens.append(Token(TT_INCREMENT))
+                        self.advance()
+                    else:
+                        # Addition Operator
+                        tokens.append(Token(TT_PLUS))
+                else:
+                    # Unary Plus Operator
+                    tokens.append(Token(TT_UNARY_PLUS))
+                    self.advance()
+
+
+            # Multiplication Assignment Operator
+            elif self.current_char == '*':
+                self.advance()
+                if self.current_char == '=':
+                    tokens.append(Token(TT_MULTIPLICATION_ASSIGNMENT))
+                    self.advance()
+                else:
+                    # Multiplication Operator
+                    tokens.append(Token(TT_MUL))
+                    self.advance()
+
+            # Modulus Assignment Operator
+            elif self.current_char == '%':
+                self.advance()
+                if self.current_char == '=':
+                    tokens.append(Token(TT_MODULUS_ASSIGNMENT))
+                    self.advance()
+                else:
+                    # Modulus Operator
+                    tokens.append(Token(TT_MODULO))
+                    self.advance()
+
+                
             elif self.current_char == '(':
                 tokens.append(Token(TT_LPAREN))
                 self.advance()
