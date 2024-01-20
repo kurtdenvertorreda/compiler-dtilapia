@@ -1,13 +1,4 @@
-#######################################
-# CONSTANTS
-#######################################
-
-DIGITS = '0123456789'
-ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-
-#######################################
-# ERRORS
-#######################################
+from constants import *
 
 class Error:
     def __init__(self, pos_start, pos_end, error_name, details):
@@ -50,39 +41,6 @@ class Position:
     def copy(self):
         return Position(self.idx, self.ln, self.col, self.fn, self.ftxt)
 
-#######################################
-# TOKENS
-#######################################
-
-TT_INT		= 'Integer'
-TT_FLOAT    = 'Float'
-TT_STRING   = 'String'
-TT_CHAR     = 'Character'
-TT_COMPL    = 'Complex'
-TT_BOOL     = 'Boolean'
-TT_SET      = 'Set'
-TT_ARR      = 'Array'
-TT_PLUS     = 'Addition Operator'
-TT_MINUS    = 'Subtraction Operator'
-TT_MUL      = 'Multiplication Operator'
-TT_DIV      = 'Division Operator'
-TT_LPAREN   = 'Left Parenthesis'
-TT_RPAREN   = 'Right Parenthesis'
-TT_IDENTIFIER = 'Identifier'
-TT_KEYWORD = 'Keyword'
-TT_RESERVE = 'Reserved Words'
-
-KEYWORDS = {'int', 'float', 'String', 'char', 'bool', 'set', 'array', 'complex', 'let', 'be',
-            'for', 'from', 'to', 'in', 'by', 'do', 'when', 'otherwise', 'funct', 'while', 'given',
-            'output', 'print', 'show', 'input', 'find', 'hence'}
-
-RESERVED_WORDS = {'true', 'false', 'permutation', 'combination', 'btree', 'preorder', 'inorder', 'postorder',
-                 'null', 'search', 'add', 'remove', 'ugraph', 'dgraph', 'nodeAdd', 'removeEdge', 'UedgeAdd', 'DedgeAdd',
-                 'bfs', 'dfs', 'dijkstra', 'kruskal', 'inverse', 'converse', 'contrapos', 'probability', 'cProbability',
-                 'isPrime', 'isOdd', 'isEven', 'gcd', 'lcm', 'lcd', 'isDivisible', 'isPrimeF', 'ariseq', 'geomseq', 'fiboseq',
-                 'series', 'union', 'intersection', 'difference', 'countSet', 'isSubset', 'isEqual', 'isSuperset', 'isDisjoint',
-                 'isEmpty', 'R_notation', 'S_notation'}
-
 class Token:
     def __init__(self, type_, value=None):
         self.type = type_
@@ -114,6 +72,10 @@ class Lexer:
         while self.current_char != None:
             if self.current_char in ' \t':
                 self.advance()
+            elif self.current_char == '"':
+                tokens.append(self.make_string())
+            elif self.current_char == '\'':
+                tokens.append(self.make_character())
             elif self.current_char in DIGITS:
                 tokens.append(self.make_number())
             elif self.current_char == '+':
@@ -128,22 +90,26 @@ class Lexer:
             elif self.current_char == '/':
                 tokens.append(Token(TT_DIV))
                 self.advance()
+            elif self.current_char in ALPHABET:
+                tokens.append(self.make_identifier_or_keyword())
             elif self.current_char == '(':
                 tokens.append(Token(TT_LPAREN))
                 self.advance()
             elif self.current_char == ')':
                 tokens.append(Token(TT_RPAREN))
                 self.advance()
-            elif self.current_char == '"':
-                tokens.append(self.make_string())
-            elif self.current_char == '\'':
-                tokens.append(self.make_character())
             elif self.current_char == '{':
-                tokens.append(self.make_set())
+                tokens.append(Token(TT_LCBRAC))
+                self.advance()
+            elif self.current_char == '}':
+                tokens.append(Token(TT_RCBRAC))
+                self.advance()
             elif self.current_char == '[':
-                tokens.append(self.make_array())
-            elif self.current_char in ALPHABET:
-                tokens.append(self.make_identifier_or_keyword())
+                tokens.append(Token(TT_LSQBRAC))
+                self.advance()
+            elif self.current_char == ']':
+                tokens.append(Token(TT_RSQBRAC))
+                self.advance()
             elif self.current_char == 'i' or self.current_char == 'j':
                 tokens.append(self.make_complex())
             elif self.current_char == 'T' or self.current_char == 'F':
@@ -173,7 +139,7 @@ class Lexer:
             return Token(TT_INT, int(num_str))
         else:
             return Token(TT_FLOAT, float(num_str))
-    
+        
     def make_string(self):
         string = ''
         self.advance() 
@@ -182,41 +148,28 @@ class Lexer:
             self.advance()
         self.advance() 
         return Token(TT_STRING, string)
-    
-    def make_character(self):
-        char = self.current_char
-        self.advance() 
-        if self.current_char == '\'':
-            self.advance() 
-            return Token(TT_CHAR, char)
-        else:
-            raise Exception("Invalid character format")
-
-    def make_set(self):
-        set_contents = ''
-        self.advance() 
-        while self.current_char is not None and self.current_char != '}':
-            set_contents += self.current_char
-            self.advance()
-        self.advance()  
-        return Token(TT_SET, set_contents)
-
-    def make_array(self):
-        array_contents = ''
-        self.advance() 
-        while self.current_char is not None and self.current_char != ']':
-            array_contents += self.current_char
-            self.advance()
-        self.advance()  
-        return Token(TT_ARR, array_contents)
    
+    def make_character(self):
+        if self.current_char == '\'':
+            self.advance()  # Skip the opening single quote
+            char = self.current_char
+
+            if char.isalnum():  # Check if the character is alphanumeric
+                self.advance()  # Move to the next character
+
+                if self.current_char == '\'':
+                    self.advance()  # Skip the closing single quote
+                    return Token(TT_CHAR, char)
+                else:
+                    raise Exception("Invalid character format: Missing closing single quote")
+    
     def make_complex(self):
         complex_str = ''
-        while self.current_char is not None and (self.current_char.isdigit() or self.current_char == '.'):
+        while self.current_char is not None and (self.current_char.isdigit() or self.current_char == '.' or self.current_char == 'j'):
             complex_str += self.current_char
             self.advance()
 
-        return Token(TT_COMPL, complex_str + 'j')
+        return Token(TT_COMPL, complex_str)
 
     def make_boolean(self):
         bool_str = ''
@@ -232,7 +185,7 @@ class Lexer:
         while self.current_char is not None and (self.current_char in ALPHABET or self.current_char in DIGITS):
             identifier += self.current_char
             self.advance()
-
+        
         token_type = TT_KEYWORD if identifier in KEYWORDS else TT_RESERVE if identifier in RESERVED_WORDS else TT_IDENTIFIER
         return self.handle_identifier_type(token_type, identifier)
     
@@ -240,12 +193,34 @@ class Lexer:
         if token_type == TT_IDENTIFIER:
             return self.handle_variable(identifier)
         elif token_type == TT_KEYWORD:
-            return Token(token_type, identifier)
+            keyword = identifier
+            noise_word = None
+            if self.current_char is not None:
+                if self.current_char in ALPHABET:
+                    noise_word = self.make_noise_word()
+                    return Token(TT_KEYWORD, keyword), noise_word
+                    
+            return Token(TT_KEYWORD, keyword)
         elif token_type == TT_RESERVE:
             return self.handle_reserved(identifier)
+        elif token_type == TT_LCBRAC:
+            return Token(token_type, identifier)
+        elif token_type == TT_RCBRAC:
+            return Token(token_type, identifier)
+        elif token_type == TT_LSQBRAC:
+            return Token(token_type, identifier)
+        elif token_type == TT_RSQBRAC:
+            return Token(token_type, identifier)
         else:
             return Token(token_type, identifier)
     
+    def make_noise_word(self):
+        noise_word = ''
+        while self.current_char is not None and (self.current_char in ALPHABET or self.current_char in DIGITS):
+            noise_word += self.current_char
+            self.advance()
+        return Token(TT_NOISE, noise_word) if noise_word in NOISE_WORDS else None
+
     def handle_variable(self, identifier):
         if identifier[0].islower():
             return Token(TT_IDENTIFIER, identifier)
@@ -253,7 +228,7 @@ class Lexer:
             raise Exception(f"Invalid variable name: {identifier}")
 
     def handle_reserved(self, identifier):
-        if identifier.startswith(TT_RESERVE):
+        if identifier in RESERVED_WORDS:
             return Token(TT_RESERVE, identifier)
         else:
             raise Exception(f"Invalid usage of reserved keyword: {identifier}")
