@@ -1,9 +1,4 @@
-#######################################
-# CONSTANTS
-#######################################
-
-DIGITS = '0123456789'
-ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+from constants import *
 
 #######################################
 # ERRORS
@@ -50,75 +45,6 @@ class Position:
     def copy(self):
         return Position(self.idx, self.ln, self.col, self.fn, self.ftxt)
 
-#######################################
-# TOKENS
-#######################################
-
-TT_INT		= 'Integer'
-TT_FLOAT    = 'Float'
-TT_STRING   = 'String'
-TT_CHAR     = 'Character'
-TT_COMPL    = 'Complex'
-TT_BOOL     = 'Boolean'
-TT_SET      = 'Set'
-TT_ARR      = 'Array'
-
-TT_PLUS     = 'Addition Operator'
-TT_MINUS    = 'Subtraction Operator'
-TT_MUL      = 'Multiplication Operator'
-TT_DIV      = 'Division Operator'
-
-# Arithmetic Operators
-TT_MODULO = 'Modulo Operator'
-TT_EXPONENT = 'Exponent Operator'
-
-# Comparison Operators
-TT_GREATER_THAN = 'Greater Than Operator'
-TT_LESS_THAN = 'Less Than Operator'
-TT_GREATER_THAN_EQUAL = 'Greater Than or Equal To Operator'
-TT_LESS_THAN_EQUAL = 'Less Than or Equal To Operator'
-TT_EQUAL_TO = 'Equal To Operator'
-TT_NOT_EQUAL_TO = 'Not Equal To Operator'
-
-# Logical Operators
-TT_NEGATION = 'Negation Operator'
-TT_DISJUNCTION = 'Disjunction Operator'  # For \/ or ||
-TT_CONJUNCTION = 'Conjunction Operator'  # For /\ or &&
-TT_CONDITIONAL = 'Conditional Operator'  # For ->
-TT_IMPLICATION = 'Implication Operator'  # For ==>
-TT_BICONDITIONAL = 'Bi-conditional Operator'  # For <->
-
-# Assignment Operators
-TT_ASSIGNMENT = 'Assignment Operator'  # For =
-TT_ADDITION_ASSIGNMENT = 'Addition Assignment Operator'  # For +=
-TT_SUBTRACTION_ASSIGNMENT = 'Subtraction Assignment Operator'  # For -=
-TT_MULTIPLICATION_ASSIGNMENT = 'Multiplication Assignment Operator'  # For *=
-TT_DIVISION_ASSIGNMENT = 'Division Assignment Operator'  # For /=
-TT_MODULUS_ASSIGNMENT = 'Modulus Assignment Operator'  # For %=
-
-# Unary Operators
-TT_UNARY_PLUS = 'Unary Plus Operator'  # For +
-TT_UNARY_MINUS = 'Unary Minus Operator'  # For -
-TT_INCREMENT = 'Increment Operator'  # For ++
-TT_DECREMENT = 'Decrement Operator'  # For --
-TT_FACTORIAL = 'Factorial Operator'  # For !
-
-TT_LPAREN   = 'Left Parenthesis'
-TT_RPAREN   = 'Right Parenthesis'
-TT_IDENTIFIER = 'Identifier'
-TT_KEYWORD = 'Keyword'
-TT_RESERVE = 'Reserved Words'
-
-KEYWORDS = {'int', 'float', 'String', 'char', 'bool', 'set', 'array', 'complex', 'let', 'be',
-            'for', 'from', 'to', 'in', 'by', 'do', 'when', 'otherwise', 'funct', 'while', 'given',
-            'output', 'print', 'show', 'input', 'find', 'hence'}
-
-RESERVED_WORDS = {'true', 'false', 'permutation', 'combination', 'btree', 'preorder', 'inorder', 'postorder',
-                 'null', 'search', 'add', 'remove', 'ugraph', 'dgraph', 'nodeAdd', 'removeEdge', 'UedgeAdd', 'DedgeAdd',
-                 'bfs', 'dfs', 'dijkstra', 'kruskal', 'inverse', 'converse', 'contrapos', 'probability', 'cProbability',
-                 'isPrime', 'isOdd', 'isEven', 'gcd', 'lcm', 'lcd', 'isDivisible', 'isPrimeF', 'ariseq', 'geomseq', 'fiboseq',
-                 'series', 'union', 'intersection', 'difference', 'countSet', 'isSubset', 'isEqual', 'isSuperset', 'isDisjoint',
-                 'isEmpty', 'R_notation', 'S_notation'}
 
 class Token:
     def __init__(self, type_, value=None):
@@ -282,6 +208,8 @@ class Lexer:
                         # Increment Operator
                         tokens.append(Token(TT_INCREMENT))
                         self.advance()
+                        if self.current_char == '+':
+                            print("Invalid")
                     else:
                         # Addition Operator
                         tokens.append(Token(TT_PLUS))
@@ -297,10 +225,12 @@ class Lexer:
                 if self.current_char == '=':
                     tokens.append(Token(TT_MULTIPLICATION_ASSIGNMENT))
                     self.advance()
+                elif self.current_char == '*' or '':
+                    print("invalid")
+                    self.advance()
                 else:
                     # Multiplication Operator
                     tokens.append(Token(TT_MUL))
-                    self.advance()
 
             # Modulus Assignment Operator
             elif self.current_char == '%':
@@ -312,7 +242,6 @@ class Lexer:
                     # Modulus Operator
                     tokens.append(Token(TT_MODULO))
                     self.advance()
-
                 
             elif self.current_char == '(':
                 tokens.append(Token(TT_LPAREN))
@@ -370,13 +299,19 @@ class Lexer:
         return Token(TT_STRING, string)
     
     def make_character(self):
-        char = self.current_char
-        self.advance() 
         if self.current_char == '\'':
-            self.advance() 
-            return Token(TT_CHAR, char)
-        else:
-            raise Exception("Invalid character format")
+            self.advance()  # Skip the opening single quote
+            char = self.current_char
+
+            if char.isalnum():  # Check if the character is alphanumeric
+                self.advance()  # Move to the next character
+
+                if self.current_char == '\'':
+                    self.advance()  # Skip the closing single quote
+                    return Token(TT_CHAR, char)
+                else:
+                    raise Exception("Invalid character format: Missing closing single quote")
+
 
     def make_set(self):
         set_contents = ''
