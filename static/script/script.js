@@ -1,87 +1,80 @@
-// Get the code editor element from the DOM
-const codeEditor = document.getElementById("code-editor");
-// Flag to track if the last input was a tab indentation
-let isTabIndented = false;
-// Array to store the history of code for undo/redo functionality
-let codeHistory = [codeEditor.value];
-// Index to keep track of the current state in the history array
-let historyIndex = 0;
+// Setup code editor variables
+const codeEditor = document.getElementById("code-editor"); // Access the textarea element
+let isTabIndented = false; // Flag to detect if the last action was a tab indentation
+let codeHistory = [codeEditor.value]; // Initialize history with the current value of the editor
+let historyIndex = 0; // Index to track the current position in history
 
-// Event listener for keydown events in the code editor
+// Event listener for handling tab keydown events in the code editor
 codeEditor.addEventListener("keydown", function (event) {
-  // If the Tab key is pressed
-  if (event.key === "Tab") {
-    event.preventDefault(); // Prevent the default tab action
-    handleTabIndentation(); // Call the function to handle tab indentation
+  if (event.key === "Tab") { // Check if the Tab key was pressed
+    event.preventDefault(); // Prevent the default tab key behavior
+    handleTabIndentation(); // Add tab indentation at the cursor's position
   }
 });
 
-// Event listener for input events in the code editor
+// Event listener for input changes in the code editor
 codeEditor.addEventListener("input", function () {
-  // If the last input was a tab indentation, reset the flag
-  if (isTabIndented) {
-    isTabIndented = false;
-  } else {
-    // If not, save the current state of the code editor for undo/redo
-    saveCodeState();
+  if (isTabIndented) { // If the last action was a tab indent
+    isTabIndented = false; // Reset the flag as the input change was due to tab indent
+  } else { // If the last action was not a tab indent
+    saveCodeState(); // Save the new state to history for undo/redo functionality
   }
 });
 
-// Function to handle tab indentation
+// Handles tab indentation
 function handleTabIndentation() {
-  // Define the indentation as four spaces
-  const indentation = "    ";
-  const cursorPosition = codeEditor.selectionStart; // Get the current cursor position
+  const indentation = "    "; // Define four spaces as a tab
+  const cursorPosition = codeEditor.selectionStart; // Get current cursor position
 
-  // Insert the indentation text at the current cursor position
+  // Insert the tab space at the current cursor position
   codeEditor.setRangeText(indentation, cursorPosition, cursorPosition, "end");
 
-  // Update the cursor position after the indentation
+  // Move cursor position after the inserted tab space
   codeEditor.selectionStart = codeEditor.selectionEnd = cursorPosition + indentation.length;
 
-  // Set the flag indicating that a tab was inserted
+  // Set the flag to true as tab was just inserted
   isTabIndented = true;
 }
 
-// Function to save the current state of the code editor into history
+// Saves the current state of the code editor into the history array
 function saveCodeState() {
-  const currentCode = codeEditor.value; // Get the current code from the editor
+  const currentCode = codeEditor.value; // Get current content of the code editor
 
-  // If the current code is different from the last state, save it
+  // If the current code is different from the latest saved state
   if (currentCode !== codeHistory[historyIndex]) {
-    // Cut off the history if we're in the middle of the history stack and start a new branch
+    // Remove future states if any exist
     codeHistory = codeHistory.slice(0, historyIndex + 1);
-    // Add the current code to the history and increment the history index
+    // Add the new state to history and increment the index to point to it
     codeHistory.push(currentCode);
     historyIndex++;
   }
 }
 
-// Global event listener for keydown events to handle undo and redo
+// Global event listener for undo (Ctrl+Z) and redo (Ctrl+Y) keydown events
 document.addEventListener("keydown", function (event) {
   if (event.ctrlKey && event.key === "z") { // If Ctrl+Z is pressed
-    event.preventDefault(); // Prevent the default action
-    undo(); // Call the undo function
+    event.preventDefault(); // Prevent default browser undo action
+    undo(); // Trigger undo action
   } else if (event.ctrlKey && event.key === "y") { // If Ctrl+Y is pressed
-    event.preventDefault(); // Prevent the default action
-    redo(); // Call the redo function
+    event.preventDefault(); // Prevent default browser redo action
+    redo(); // Trigger redo action
   }
 });
 
-// Function to undo the last action in the code editor
+// Undo the last action by reverting to the previous state in the history array
 function undo() {
-  if (historyIndex > 0) { // If there is a previous state in the history
-    historyIndex--; // Decrement the history index
-    // Update the code editor with the previous state
+  if (historyIndex > 0) { // Ensure there is a previous state to revert to
+    historyIndex--; // Move back one position in the history array
+    // Set the code editor's value to the previous state
     codeEditor.value = codeHistory[historyIndex];
   }
 }
 
-// Function to redo an action in the code editor
+// Redo an action by applying the next state in the history array
 function redo() {
-  if (historyIndex < codeHistory.length - 1) { // If there is a next state in the history
-    historyIndex++; // Increment the history index
-    // Update the code editor with the next state
+  if (historyIndex < codeHistory.length - 1) { // Ensure there is a next state to apply
+    historyIndex++; // Move forward one position in the history array
+    // Set the code editor's value to the next state
     codeEditor.value = codeHistory[historyIndex];
   }
 }
