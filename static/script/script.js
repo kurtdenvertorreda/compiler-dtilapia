@@ -111,8 +111,6 @@ function executeCode() {
     const codeEditor = document.getElementById('code-editor');
     const code = codeEditor.value;
 
-    console.log(code)
-    
     fetch('/execute', {
         method: 'POST',
         headers: {
@@ -122,12 +120,39 @@ function executeCode() {
     })
     .then(response => response.json())
     .then(data => {
+        console.log(data);  // Log the received data
+
         const outputContainer = document.getElementById('output');
+        const tableBody = document.querySelector('.styled-table tbody');
+
         if (data.error) {
             outputContainer.textContent = `Error: ${data.error}`;
         } else {
             // Assuming you have a 'tokens' property in the response
-            outputContainer.textContent = data.tokens.join('\n');
+            //outputContainer.textContent = data.tokens.join('\n');
+
+            // Clear existing rows in the table
+            tableBody.innerHTML = '';
+
+            // Log the tokens for debugging
+            //console.log(data.tokens);
+
+            // Populate the table with token information
+            data.tokens.forEach(token => {
+                const row = document.createElement('tr');
+                const typeCell = document.createElement('td');
+                const valueCell = document.createElement('td');
+
+                // Split the token to extract type and value
+                const [tokenType, tokenValue] = token.split(':').map(part => part.trim());
+
+                typeCell.textContent = `${tokenType}`;
+                valueCell.textContent = `${tokenValue}`;
+
+                row.appendChild(typeCell);
+                row.appendChild(valueCell);
+                tableBody.appendChild(row);
+            });
         }
     })
     .catch(error => {

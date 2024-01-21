@@ -29,6 +29,8 @@ def execute_code():
         lexer = dtilapia.Lexer(file_path, file_content)
         tokens, error = lexer.make_tokens()
 
+        #test checkpoint
+        #print(file_content)
         #if error:
         #    print(error.as_string())
         #    return jsonify({'error': error.as_string()})
