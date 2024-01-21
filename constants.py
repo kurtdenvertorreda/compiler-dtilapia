@@ -29,10 +29,13 @@ TT_RSQBRAC  = 'Right Curly Bracket'
 TT_COLON    = 'Colon'
 TT_COMMA    = 'Comma'
 TT_PERIOD   = 'Period'
+<<<<<<< HEAD:constants.py
 TT_SEMICOL  = 'Semi Colon'
 TT_UNSCO    = 'Underscore'
 TT_SNGQ     = 'Single Quotation Mark'
 TT_DBLQ     = 'Double Quotation Mark'
+=======
+>>>>>>> e6a134f (fix reserved words):sample_lexer/ppl/constants.py
 
 # Arithmetic Operators
 TT_MODULO = 'Modulo Operator'
