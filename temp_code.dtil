@@ -1,5 +1,3 @@
-// this is a single line comment
-/* tendae tendae
-  real 
-  omayghad 
-  is this surreal? */
+let _a be String
+a = "Hello World"
+print: a // print the value stored in a

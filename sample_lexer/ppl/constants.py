@@ -15,8 +15,6 @@ TT_STRING   = 'String'
 TT_CHAR     = 'Character'
 TT_COMPL    = 'Complex'
 TT_BOOL     = 'Boolean'
-TT_SET      = 'Set'
-TT_ARR      = 'Array'
 
 # Delimiters and Brackets
 TT_LPAREN   = 'Left Parenthesis'
@@ -29,6 +27,7 @@ TT_COLON    = 'Colon'
 TT_COMMA    = 'Comma'
 TT_PERIOD   = 'Period'
 TT_SEMICOL  = 'Semi Colon'
+TT_UNSCO    = 'Under Score'
 
 # Arithmetic Operators
 TT_MODULO = 'Modulo Operator'

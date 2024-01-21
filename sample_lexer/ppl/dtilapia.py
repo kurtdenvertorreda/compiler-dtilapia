@@ -34,7 +34,7 @@ class Position:
         self.fn = fn
         self.ftxt = ftxt
 
-    def advance(self, current_char = None):
+    def advance(self, current_char):
         self.idx += 1
         self.col += 1
 
@@ -294,6 +294,9 @@ class Lexer:
             elif self.current_char == ';':
                 tokens.append(Token(TT_SEMICOL, value=';'))
                 self.advance()
+            elif self.current_char == '_':
+                tokens.append(Token(TT_UNSCO, value='_'))
+                self.advance()
             else:
                 pos_start = self.pos.copy()
                 char = self.current_char
@@ -396,6 +399,8 @@ class Lexer:
         elif token_type == TT_COMMA:
             return Token(token_type, identifier)
         elif token_type == TT_SEMICOL:
+            return Token(token_type, identifier)
+        elif token_type == TT_UNSCO:
             return Token(token_type, identifier)
         else:
             return Token(token_type, identifier)
