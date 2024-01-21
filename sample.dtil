@@ -1,8 +1,2 @@
-integer
-geomsequence
-fibosequence
-arisequence
-boolean
-isPrimeFactorization
-contrapositive
-function
+let a be String
+a = "Hello World"

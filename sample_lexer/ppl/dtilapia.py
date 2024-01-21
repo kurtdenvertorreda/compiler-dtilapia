@@ -103,8 +103,15 @@ class Lexer:
             elif self.current_char == '<':
                 self.advance()
                 if self.current_char == '=':
-                    tokens.append(Token(TT_LESS_THAN_EQUAL, value='<='))
                     self.advance()
+                    if self.current_char == '=':
+                        self.advance()
+                        if self.current_char == '>':
+                            # Bi-conditional Operator
+                            tokens.append(Token(TT_BICONDITIONAL, value='<==>'))
+                            self.advance()
+                    else:
+                        tokens.append(Token(TT_LESS_THAN_EQUAL, value='<='))
                 elif self.current_char == '-':
                     self.advance()
                     if self.current_char == '>':
@@ -114,7 +121,6 @@ class Lexer:
                 else:
                     # Less Than Operator
                     tokens.append(Token(TT_LESS_THAN, value='<'))
-
             # Conditional Operator
             elif self.current_char == '=':
                 self.advance()
@@ -131,13 +137,13 @@ class Lexer:
                     tokens.append(Token(TT_ASSIGNMENT, value='='))
 
 
-            # Not Equal To Operator or Negation Operator or Factorial Operator
+                       # Not Equal To Operator or Negation Operator or Factorial Operator
             elif self.current_char == '!':
                 self.advance()
                 if self.current_char == '=':
                     tokens.append(Token(TT_NOT_EQUAL_TO, value='!='))
                     self.advance()
-                elif self.current_char:
+                elif self.current_char.isalnum():
                     # Negation Operator
                     tokens.append(Token(TT_NEGATION, value='!'))
                 else:
@@ -189,49 +195,44 @@ class Lexer:
                 if self.current_char == '&':
                     tokens.append(Token(TT_CONJUNCTION, value='&&'))
                     self.advance()
-
+            
             # Alternate Conditional Operator
             elif self.current_char == '-':
-                if self.pos.idx > 0 and self.text[self.pos.idx - 1].isalnum() or self.text[self.pos.idx - 1].isspace():
+                self.advance()
+                if self.current_char == '>':
+                    tokens.append(Token(TT_CONDITIONAL, value='->'))
                     self.advance()
-                    if self.current_char == '>':
-                        tokens.append(Token(TT_CONDITIONAL, value='->'))
-                        self.advance()
-                    elif self.current_char == '=':
-                        # Subtraction Assignment Operator
-                        tokens.append(Token(TT_SUBTRACTION_ASSIGNMENT, value='-='))
-                        self.advance()
-                    elif self.current_char == '-':
-                        # Decrement Operator
-                        tokens.append(Token(TT_DECREMENT, value='--'))
-                        self.advance()
-                    else:
-                        # Subtraction Operator
-                        tokens.append(Token(TT_MINUS, value='-'))
-                else:
+                elif self.current_char == '=':
+                    # Subtraction Assignment Operator
+                    tokens.append(Token(TT_SUBTRACTION_ASSIGNMENT, value='-='))
+                    self.advance()
+                elif self.current_char == '-':
+                    # Decrement Operator
+                    tokens.append(Token(TT_DECREMENT, value='--'))
+                    self.advance()
+                elif self.current_char:
+                    # Unary Minus
                     tokens.append(Token(TT_UNARY_MINUS, value='-'))
-                    self.advance()
+                else:
+                    # Subtraction Operator
+                    tokens.append(Token(TT_MINUS, value='-'))
 
             # Addition Assignment Operator
             elif self.current_char == '+':
-                if self.pos.idx > 0 and (self.text[self.pos.idx - 1].isalnum() or self.text[self.pos.idx - 1].isspace()):
+                self.advance()
+                if self.current_char == '=':
+                    tokens.append(Token(TT_ADDITION_ASSIGNMENT, value='+='))
                     self.advance()
-                    if self.current_char == '=':
-                        tokens.append(Token(TT_ADDITION_ASSIGNMENT, value='+='))
-                        self.advance()
-                    elif self.current_char == '+':
-                        if self.pos.idx > 0 and (self.text[self.pos.idx - 1].isalnum() or self.text[self.pos.idx - 1].isspace() == '('):
-                        # Increment Operator
-                            tokens.append(Token(TT_INCREMENT, value='++'))
-                            self.advance()
-                        if self.current_char == '+':
-                            print("Invalid")
-                    else:
-                        # Addition Operator
-                        tokens.append(Token(TT_PLUS, value='+'))
-                else:
-                    # Unary Plus Operator
+                elif self.current_char == '+':
+                    # Increment Operator
+                    tokens.append(Token(TT_INCREMENT, value='++'))
+                    self.advance()
+                elif self.current_char.isalnum():
+                    # Unary Plus
                     tokens.append(Token(TT_UNARY_PLUS, value='+'))
+                else:
+                    # Addition Operator
+                    tokens.append(Token(TT_PLUS, value='+'))
                     self.advance()
 
 
@@ -259,10 +260,14 @@ class Lexer:
                     tokens.append(Token(TT_MODULO, value='%'))
                     self.advance()
             elif self.current_char == '"':
+                tokens.append(Token(TT_DBLQ, value='"'))
                 tokens.append(self.make_string())
+                tokens.append(Token(TT_DBLQ, value='"'))
             elif self.current_char == '\'':
+                tokens.append(Token(TT_SNGQ, value='\''))
                 tokens.append(self.make_character())
-            elif self.current_char in ALPHABET:
+                tokens.append(Token(TT_SNGQ, value='\''))
+            elif self.current_char in (ALPHABET + '_') and not self.current_char.isdigit():
                 tokens.append(self.make_identifier_or_keyword())
             elif self.current_char == '(':
                 tokens.append(Token(TT_LPAREN, value='('))
@@ -293,9 +298,6 @@ class Lexer:
                 self.advance()
             elif self.current_char == ';':
                 tokens.append(Token(TT_SEMICOL, value=';'))
-                self.advance()
-            elif self.current_char == '_':
-                tokens.append(Token(TT_UNSCO, value='_'))
                 self.advance()
             else:
                 pos_start = self.pos.copy()
@@ -363,7 +365,7 @@ class Lexer:
     
     def make_identifier_or_keyword(self):
         identifier = ''
-        while self.current_char is not None and (self.current_char in ALPHANUMERIC + '_'):
+        while self.current_char is not None and(self.current_char in ALPHANUMERIC + '_' or self.current_char == '_'):
             identifier += self.current_char
             self.advance()
 
@@ -404,7 +406,9 @@ class Lexer:
             return Token(token_type, identifier)
         elif token_type == TT_SEMICOL:
             return Token(token_type, identifier)
-        elif token_type == TT_UNSCO:
+        elif token_type == TT_SNGQ:
+            return Token(token_type, identifier)
+        elif token_type == TT_DBLQ:
             return Token(token_type, identifier)
         else:
             return Token(token_type, identifier)
@@ -417,7 +421,7 @@ class Lexer:
         return Token(TT_NOISE, noise_word) if noise_word in NOISE_WORDS else None
 
     def handle_variable(self, identifier):
-        if identifier[0].isalpha():
+        if identifier[0].isalpha() or identifier[0] == '_' and not identifier[0].isnumeric():
             return Token(TT_IDENTIFIER, identifier)
         else:
             raise Exception(f"Invalid variable name: {identifier}")

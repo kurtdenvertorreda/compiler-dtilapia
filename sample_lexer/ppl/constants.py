@@ -28,6 +28,8 @@ TT_COMMA    = 'Comma'
 TT_PERIOD   = 'Period'
 TT_SEMICOL  = 'Semi Colon'
 TT_UNSCO    = 'Under Score'
+TT_SNGQ     = 'Single Quotation Mark'
+TT_DBLQ     = 'Double Quotation Mark'
 
 # Arithmetic Operators
 TT_MODULO = 'Modulo Operator'
