@@ -34,7 +34,7 @@ class Position:
         self.fn = fn
         self.ftxt = ftxt
 
-    def advance(self, current_char):
+    def advance(self, current_char = None):
         self.idx += 1
         self.col += 1
 
@@ -162,7 +162,18 @@ class Lexer:
             # Conjunction Operator
             elif self.current_char == '/':
                 self.advance()
-                if self.current_char == '\\':
+                if self.current_char == '/':
+                    # Single-line comment, create a comment token
+                    self.advance()
+                    comment_text = self.advance_until('\n')
+                    tokens.append(Token(TT_SCOM, value=f'//{comment_text}'))
+                elif self.current_char == '*':
+                    # Multi-line comment, create a comment token
+                    #self.advance()
+                    comment_text = self.advance_until('*/')
+                    self.advance()  # Skip '*/'
+                    tokens.append(Token(TT_MCOM, value=f'/*{comment_text}*/'))
+                elif self.current_char == '\\':
                     tokens.append(Token(TT_CONJUNCTION, value='/\\'))
                     self.advance()
                 elif self.current_char == '=':
@@ -287,10 +298,17 @@ class Lexer:
                 pos_start = self.pos.copy()
                 char = self.current_char
                 self.advance()
-                return [], IllegalCharError(pos_start, self.pos, "'" + char + "'")
+                continue
+                #return [], IllegalCharError(pos_start, self.pos, "'" + char + "'")
 
         return tokens, None
 
+    def advance_until(self, target):
+        result = ''
+        while self.current_char is not None and self.current_char != target:
+            result += self.current_char
+            self.advance()
+        return result
     def make_number(self):
         num_str = ''
         dot_count = 0

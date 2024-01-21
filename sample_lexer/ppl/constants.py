@@ -74,6 +74,8 @@ TT_IDENTIFIER = 'Identifier'
 TT_KEYWORD = 'Keyword'
 TT_RESERVE = 'Reserved Word'
 TT_NOISE   = 'Noise Word'
+TT_SCOM    = 'Single Line Comment'
+TT_MCOM    = 'Multiple Line Comment'
 
 KEYWORDS = {'int', 'float', 'String', 'char', 'bool', 'set', 'array', 'complex', 'let', 'be',
             'for', 'from', 'to', 'in', 'by', 'do', 'when', 'otherwise', 'funct', 'while', 'given',
