@@ -1,17 +1,12 @@
 let a, b, c be int
 let sum be int
-
 print: "Enter an integer: "
 input: a
-
 print: "Enter a second integer: "
 input: b
-
 print: "Enter a third integer: "
 input: c
-
 sum = a + b + c
-
 funct user_funct(a, b, c)
     when a > b:
         print: a + b

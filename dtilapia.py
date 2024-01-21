@@ -174,12 +174,12 @@ class Lexer:
                     self.advance()
                     comment_text = self.advance_until('\n')
                     tokens.append(Token(TT_SCOM, value=f'//{comment_text}'))
-                elif self.current_char == '*':
+                elif self.current_char == '~':
                     # Multi-line comment, create a comment token
                     #self.advance()
-                    comment_text = self.advance_until('*/')
+                    comment_text = self.advance_until('~/')
                     self.advance()  # Skip '*/'
-                    tokens.append(Token(TT_MCOM, value=f'/*{comment_text}*/'))
+                    tokens.append(Token(TT_MCOM, value=f'/{comment_text}'))
                 elif self.current_char == '\\':
                     tokens.append(Token(TT_CONJUNCTION, value='/\\'))
                     self.advance()

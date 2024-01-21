@@ -1,2 +1,29 @@
-let a be String
-a = "Hello World"
+let a, b, c be int
+let sum be int
+
+print: "Enter an integer: "
+input: a
+
+print: "Enter a second integer: "
+input: b
+
+print: "Enter a third integer: "
+input: c
+
+sum = a + b + c
+
+funct user_funct(a, b, c)
+    when a > b:
+        print: a + b
+    otherwise when a == b:
+        print: "It has the same value."
+    otherwise when b > c do:
+        print: b * c
+    otherwise when b == c do:
+        print: "It has the same value."
+    otherwise when a > c do:
+        print: a - c
+    otherwise when a == c do:
+        print: "It has the same value."
+    otherwise do:
+        print: sum 
