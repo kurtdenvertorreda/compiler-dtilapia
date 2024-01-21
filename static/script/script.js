@@ -79,30 +79,83 @@ function redo() {
   }
 }
 
-// Add code execution functionality
-const runCodeBtn = document.querySelector('.run-code-btn');
+function handleFile() {
+  const fileInput = document.getElementById('inputfile');
+  const codeEditor = document.getElementById('code-editor');
 
-runCodeBtn.addEventListener('click', function () {
-  const code = codeEditor.value;
+  const file = fileInput.files[0];
 
-  fetch('/runcode', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ code: code }),
-  })
+  if (file) {
+    const fileName = file.name;
+    const fileExtension = fileName.slice(((fileName.lastIndexOf(".") - 1 >>> 0) + 2));
+
+    if (fileExtension.toLowerCase() === 'dtil') {
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const content = e.target.result;
+        codeEditor.value = content;
+      };
+
+      reader.readAsText(file, 'UTF-8');
+    } else {
+      codeEditor.value = "Error: Please select a valid .dtil file.";
+      fileInput.value = ""; // Clear the file input
+    }
+  } else {
+    codeEditor.value = "No file selected.";
+  }
+}
+
+function executeCode() {
+    const codeEditor = document.getElementById('code-editor');
+    const code = codeEditor.value;
+
+    fetch('/execute', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code: code }),
+    })
     .then(response => response.json())
     .then(data => {
-      if (data.error) {
-        console.error(data.error);
-      } else {
-        console.log(data.result);
+        console.log(data);  // Log the received data
 
-        // Update the output areas (replace with your own logic)
-        lexicalAnalyzer.textContent = data.result.lexical;
-        syntaxAnalyzer.textContent = data.result.syntax;
-      }
+        const outputContainer = document.getElementById('output');
+        const tableBody = document.querySelector('.styled-table tbody');
+
+        if (data.error) {
+            outputContainer.textContent = `Error: ${data.error}`;
+        } else {
+            // Assuming you have a 'tokens' property in the response
+            //outputContainer.textContent = data.tokens.join('\n');
+
+            // Clear existing rows in the table
+            tableBody.innerHTML = '';
+
+            // Log the tokens for debugging
+            //console.log(data.tokens);
+
+            // Populate the table with token information
+            data.tokens.forEach(token => {
+                const row = document.createElement('tr');
+                const typeCell = document.createElement('td');
+                const valueCell = document.createElement('td');
+
+                // Split the token to extract type and value
+                const [tokenType, tokenValue] = token.split(':').map(part => part.trim());
+
+                typeCell.textContent = `${tokenType}`;
+                valueCell.textContent = `${tokenValue}`;
+
+                row.appendChild(typeCell);
+                row.appendChild(valueCell);
+                tableBody.appendChild(row);
+            });
+        }
     })
-    .catch(error => console.error('Error:', error));
-});
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}

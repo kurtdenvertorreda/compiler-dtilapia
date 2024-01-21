@@ -36,13 +36,15 @@ body {
   .button-container {
     display: flex;
     gap: 10px;
+    margin-right: 10%;
+    font-family: serif;
   }
   
-  .run-code-btn {
+  .run-code-btn, label {
     width: 130px;
     height: 38px;
     border-radius: 42px;
-    margin-right: 10px;
+    margin-right: 20px;
     /* border: 1px solid #000; */
     background: #04ACAC;
     box-shadow: 4px 4px 4px 0px #1A4243;
@@ -55,14 +57,14 @@ body {
     align-items: center;
   }
   
-  .upload-code-btn {
+  #inputfile {
     width: 160px;
     height: 38px;
     border-radius: 42px;
     margin-right: 140px;
     border: 2px solid #000;
-    background: #1A4243;
-    box-shadow: 4px 4px 4px 0px #3A9A9D;
+    background: #04ACAC;
+    box-shadow: 4px 4px 4px 0px #1A4243;
     color: #FFF;
     text-align: center;
     font-size: 18px;
@@ -72,13 +74,48 @@ body {
     align-items: center;
   }
 
-  button {
+  .styled-table {
+    border-collapse: collapse;
+    margin: 10px auto;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .styled-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+  }
+
+  .styled-table th,
+  .styled-table td {
+      padding: 12px 15px;
+  }
+
+  .styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+  }
+
+  .styled-table tbody tr:nth-of-type(even) {
+      background-color: #f3f3f3;
+  }
+
+  .styled-table tbody tr:last-of-type {
+      border-bottom: 2px solid #009879;
+  }
+
+  button, label{
     cursor: pointer;
     transition: 0.15s;
     border: none;
   }
   
-  button:hover {
+  button:hover, label {
     opacity: 0.85;
   }
   
@@ -137,11 +174,10 @@ body {
     /* resize: none; */
   }
   
-  .lexical-analyzer,
-  .syntax-analyzer  {
+  .lexical-analyzer {
     width: 455px; 
     /* width: 33vw; */
-    height: 400px;
+    height: auto;
     margin: 10px;
     margin-top: -20px;
     margin-bottom: 100px;
@@ -152,6 +188,12 @@ body {
     padding: 20px;
     font-family: monospace;
     font-size: 14px;
+  }
+
+  input {
+    opacity: 0;
+    z-index: -1;
+    position: absolute;
   }
   
  
