@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <img src="{{ url_for('static', filename='css/logo.png') }}" alt="Logo" class="logo">
+      <div class="button-container">
+        <button class="run-code-btn" onclick=executeCode()>Run Code</button>
+        <input class="inputfile" name="file" type="file" id="inputfile" accept=".dtil" onchange="handleFile()">
+        <label for="inputfile">Upload File</label>
+      </div>
+    </nav>
+  </header>
+  <main class="main">
+    <div class="container">
+      <!-- <span class="line-numbers"></span> -->
+      <textarea id="code-editor" class="code-editor" placeholder="Enter your code"></textarea>
+    </div>
+    <div class="output-container">
+      <div class="flex-box1">
+        <div class="text">Lexemes</div>
+        <div class="lexical-analyzer">
+            <pre id="output"> </pre>
+            <table class="styled-table"> 
+                <thead> 
+                    <th>Tokens</th>
+                    <th>Lexemes</th>
+                </thead>
+                <tbody> 
+                </tbody>
+            </table>
+
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="{{ url_for('static', filename='script/script.js') }}"></script>
+</body>
+</html>
