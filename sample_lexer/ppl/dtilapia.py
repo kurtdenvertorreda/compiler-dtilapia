@@ -1,5 +1,8 @@
 from constants import *
 
+#######################################
+# ERROR
+#######################################
 class Error:
     def __init__(self, pos_start, pos_end, error_name, details):
         self.pos_start = pos_start
@@ -12,6 +15,9 @@ class Error:
         result += f'File {self.pos_start.fn}, line {self.pos_start.ln + 1}'
         return result
 
+#######################################
+# ILLEGAL CHARACTER ERROR
+#######################################
 class IllegalCharError(Error):
     def __init__(self, pos_start, pos_end, details):
         super().__init__(pos_start, pos_end, 'Illegal Character', details)
@@ -41,13 +47,16 @@ class Position:
     def copy(self):
         return Position(self.idx, self.ln, self.col, self.fn, self.ftxt)
 
+#######################################
+# TOKENIZATION
+#######################################
 class Token:
     def __init__(self, type_, value=None):
         self.type = type_
         self.value = value
     
     def __repr__(self):
-        if self.value: return f'{self.type}:{self.value}'
+        if self.value: return f'{self.type}: {self.value}'
         return f'{self.type}'
 
 #######################################
@@ -77,34 +86,34 @@ class Lexer:
 
             # Exponent Operator
             elif self.current_char == '^':
-                tokens.append(Token(TT_EXPONENT))
+                tokens.append(Token(TT_EXPONENT, value='^'))
                 self.advance()
 
             # Greater Than or Equal To Operator
             elif self.current_char == '>':
                 self.advance()
                 if self.current_char == '=':
-                    tokens.append(Token(TT_GREATER_THAN_EQUAL))
+                    tokens.append(Token(TT_GREATER_THAN_EQUAL, value='>='))
                     self.advance()
                 else:
                     # Greater Than Operator
-                    tokens.append(Token(TT_GREATER_THAN))
+                    tokens.append(Token(TT_GREATER_THAN, value='>'))
 
             # Less Than or Equal To Operator or Biconditional Operator
             elif self.current_char == '<':
                 self.advance()
                 if self.current_char == '=':
-                    tokens.append(Token(TT_LESS_THAN_EQUAL))
+                    tokens.append(Token(TT_LESS_THAN_EQUAL, value='<='))
                     self.advance()
                 elif self.current_char == '-':
                     self.advance()
                     if self.current_char == '>':
                         # Bi-conditional Operator
-                        tokens.append(Token(TT_BICONDITIONAL))
+                        tokens.append(Token(TT_BICONDITIONAL, value='<->'))
                         self.advance()
                 else:
                     # Less Than Operator
-                    tokens.append(Token(TT_LESS_THAN))
+                    tokens.append(Token(TT_LESS_THAN, value='<'))
 
             # Conditional Operator
             elif self.current_char == '=':
@@ -112,62 +121,62 @@ class Lexer:
                 if self.current_char == '=':
                     self.advance()
                     if self.current_char == '>':
-                        tokens.append(Token(TT_CONDITIONAL))
+                        tokens.append(Token(TT_CONDITIONAL, value='==>'))
                         self.advance()
                     else:
                         # Equal To Operator
-                        tokens.append(Token(TT_EQUAL_TO))
+                        tokens.append(Token(TT_EQUAL_TO, value='=='))
                 else:
                     # Assignment Operator
-                    tokens.append(Token(TT_ASSIGNMENT))
+                    tokens.append(Token(TT_ASSIGNMENT, value='='))
 
 
             # Not Equal To Operator or Negation Operator or Factorial Operator
             elif self.current_char == '!':
                 self.advance()
                 if self.current_char == '=':
-                    tokens.append(Token(TT_NOT_EQUAL_TO))
+                    tokens.append(Token(TT_NOT_EQUAL_TO, value='!='))
                     self.advance()
                 elif self.current_char:
                     # Negation Operator
-                    tokens.append(Token(TT_NEGATION))
+                    tokens.append(Token(TT_NEGATION, value='!'))
                 else:
                     # Factorial Operator
-                    tokens.append(Token(TT_FACTORIAL))
+                    tokens.append(Token(TT_FACTORIAL, value='!'))
                     self.advance()
 
             # Disjunction Operator
             elif self.current_char == '\\':
                 self.advance()
                 if self.current_char == '/':
-                    tokens.append(Token(TT_DISJUNCTION))
+                    tokens.append(Token(TT_DISJUNCTION, value='\\/'))
                     self.advance()
 
             # Alternative Disjunction Operator
             elif self.current_char == '|':
                 self.advance()
                 if self.current_char == '|':
-                    tokens.append(Token(TT_DISJUNCTION))
+                    tokens.append(Token(TT_DISJUNCTION, value='||'))
                     self.advance()
 
             # Conjunction Operator
             elif self.current_char == '/':
                 self.advance()
                 if self.current_char == '\\':
-                    tokens.append(Token(TT_CONJUNCTION))
+                    tokens.append(Token(TT_CONJUNCTION, value='/\\'))
                     self.advance()
                 elif self.current_char == '=':
-                     tokens.append(Token(TT_DIVISION_ASSIGNMENT))
+                     tokens.append(Token(TT_DIVISION_ASSIGNMENT, value='/='))
                      self.advance()
                 else:
                     # Division Operator
-                    tokens.append(Token(TT_DIV))
+                    tokens.append(Token(TT_DIV, value='/'))
 
             # Alternative Conjunction Operator
             elif self.current_char == '&':
                 self.advance()
                 if self.current_char == '&':
-                    tokens.append(Token(TT_CONJUNCTION))
+                    tokens.append(Token(TT_CONJUNCTION, value='&&'))
                     self.advance()
 
             # Alternate Conditional Operator
@@ -175,21 +184,21 @@ class Lexer:
                 if self.pos.idx > 0 and self.text[self.pos.idx - 1].isalnum() or self.text[self.pos.idx - 1].isspace():
                     self.advance()
                     if self.current_char == '>':
-                        tokens.append(Token(TT_CONDITIONAL))
+                        tokens.append(Token(TT_CONDITIONAL, value='->'))
                         self.advance()
                     elif self.current_char == '=':
                         # Subtraction Assignment Operator
-                        tokens.append(Token(TT_SUBTRACTION_ASSIGNMENT))
+                        tokens.append(Token(TT_SUBTRACTION_ASSIGNMENT, value='-='))
                         self.advance()
                     elif self.current_char == '-':
                         # Decrement Operator
-                        tokens.append(Token(TT_DECREMENT))
+                        tokens.append(Token(TT_DECREMENT, value='--'))
                         self.advance()
                     else:
                         # Subtraction Operator
-                        tokens.append(Token(TT_MINUS))
+                        tokens.append(Token(TT_MINUS, value='-'))
                 else:
-                    tokens.append(Token(TT_UNARY_MINUS))
+                    tokens.append(Token(TT_UNARY_MINUS, value='-'))
                     self.advance()
 
             # Addition Assignment Operator
@@ -197,21 +206,21 @@ class Lexer:
                 if self.pos.idx > 0 and (self.text[self.pos.idx - 1].isalnum() or self.text[self.pos.idx - 1].isspace()):
                     self.advance()
                     if self.current_char == '=':
-                        tokens.append(Token(TT_ADDITION_ASSIGNMENT))
+                        tokens.append(Token(TT_ADDITION_ASSIGNMENT, value='+='))
                         self.advance()
                     elif self.current_char == '+':
                         if self.pos.idx > 0 and (self.text[self.pos.idx - 1].isalnum() or self.text[self.pos.idx - 1].isspace() == '('):
                         # Increment Operator
-                            tokens.append(Token(TT_INCREMENT))
+                            tokens.append(Token(TT_INCREMENT, value='++'))
                             self.advance()
                         if self.current_char == '+':
                             print("Invalid")
                     else:
                         # Addition Operator
-                        tokens.append(Token(TT_PLUS))
+                        tokens.append(Token(TT_PLUS, value='+'))
                 else:
                     # Unary Plus Operator
-                    tokens.append(Token(TT_UNARY_PLUS))
+                    tokens.append(Token(TT_UNARY_PLUS, value='+'))
                     self.advance()
 
 
@@ -219,24 +228,24 @@ class Lexer:
             elif self.current_char == '*':
                 self.advance()
                 if self.current_char == '=':
-                    tokens.append(Token(TT_MULTIPLICATION_ASSIGNMENT))
+                    tokens.append(Token(TT_MULTIPLICATION_ASSIGNMENT, value='*='))
                     self.advance()
                 elif self.current_char == '*' or '':
                     print("invalid")
                     self.advance()
                 else:
                     # Multiplication Operator
-                    tokens.append(Token(TT_MUL))
+                    tokens.append(Token(TT_MUL, value='*'))
 
             # Modulus Assignment Operator
             elif self.current_char == '%':
                 self.advance()
                 if self.current_char == '=':
-                    tokens.append(Token(TT_MODULUS_ASSIGNMENT))
+                    tokens.append(Token(TT_MODULUS_ASSIGNMENT, value='%='))
                     self.advance()
                 else:
                     # Modulus Operator
-                    tokens.append(Token(TT_MODULO))
+                    tokens.append(Token(TT_MODULO, value='%'))
                     self.advance()
             elif self.current_char == '"':
                 tokens.append(self.make_string())
@@ -245,33 +254,35 @@ class Lexer:
             elif self.current_char in ALPHABET:
                 tokens.append(self.make_identifier_or_keyword())
             elif self.current_char == '(':
-                tokens.append(Token(TT_LPAREN))
+                tokens.append(Token(TT_LPAREN, value='('))
                 self.advance()
             elif self.current_char == ')':
-                tokens.append(Token(TT_RPAREN))
+                tokens.append(Token(TT_RPAREN, value=')'))
                 self.advance()
             elif self.current_char == '{':
-                tokens.append(Token(TT_LCBRAC))
+                tokens.append(Token(TT_LCBRAC, value='{'))
                 self.advance()
             elif self.current_char == '}':
-                tokens.append(Token(TT_RCBRAC))
+                tokens.append(Token(TT_RCBRAC, value='}'))
                 self.advance()
             elif self.current_char == '[':
-                tokens.append(Token(TT_LSQBRAC))
+                tokens.append(Token(TT_LSQBRAC, value='['))
                 self.advance()
             elif self.current_char == ']':
-                tokens.append(Token(TT_RSQBRAC))
+                tokens.append(Token(TT_RSQBRAC, value=']'))
                 self.advance()
             elif self.current_char == ':':
                 tokens.append(Token(TT_COLON))
                 self.advance()
             elif self.current_char == '.':
-                tokens.append(Token(TT_PERIOD))
+                tokens.append(Token(TT_PERIOD, value='.'))
                 self.advance()
-            elif self.current_char == 'i' or self.current_char == 'j':
-                tokens.append(self.make_complex())
-            elif self.current_char == 't' or self.current_char == 'f':
-                tokens.append(self.make_boolean())
+            elif self.current_char == ',':
+                tokens.append(Token(TT_COMMA, value=','))
+                self.advance()
+            elif self.current_char == ';':
+                tokens.append(Token(TT_SEMICOL, value=';'))
+                self.advance()
             else:
                 pos_start = self.pos.copy()
                 char = self.current_char
@@ -283,17 +294,25 @@ class Lexer:
     def make_number(self):
         num_str = ''
         dot_count = 0
+        has_complex = False
 
-        while self.current_char != None and self.current_char in DIGITS + '.':
+        while self.current_char is not None and (self.current_char.isdigit() or self.current_char == '.' or self.current_char.lower() in {'i', 'j'}):
             if self.current_char == '.':
                 if dot_count == 1: break
                 dot_count += 1
                 num_str += '.'
+            elif self.current_char.lower() in {'i', 'j'}:
+                has_complex = True
+                num_str += self.current_char
+                self.advance()
+                break  # Complex number detected, exit loop
             else:
                 num_str += self.current_char
             self.advance()
 
-        if dot_count == 0:
+        if has_complex:
+            return Token(TT_COMPL, num_str)
+        elif dot_count == 0:
             return Token(TT_INT, int(num_str))
         else:
             return Token(TT_FLOAT, float(num_str))
@@ -320,23 +339,6 @@ class Lexer:
                     return Token(TT_CHAR, char)
                 else:
                     raise Exception("Invalid character format: Missing closing single quote")
-    
-    def make_complex(self):
-        complex_str = ''
-        while self.current_char is not None and (self.current_char.isdigit() or self.current_char == '.' or self.current_char == 'j'):
-            complex_str += self.current_char
-            self.advance()
-
-        return Token(TT_COMPL, complex_str)
-
-    def make_boolean(self):
-        bool_str = ''
-        while self.current_char is not None and (self.current_char.isalpha()):
-            bool_str += self.current_char
-            self.advance()
-
-        bool_value = bool_str.lower() == 'true'
-        return Token(TT_BOOL, bool_value)
     
     def make_identifier_or_keyword(self):
         identifier = ''
@@ -373,6 +375,10 @@ class Lexer:
             return Token(token_type, identifier)
         elif token_type == TT_PERIOD:
             return Token(token_type, identifier)
+        elif token_type == TT_COMMA:
+            return Token(token_type, identifier)
+        elif token_type == TT_SEMICOL:
+            return Token(token_type, identifier)
         else:
             return Token(token_type, identifier)
     
@@ -390,7 +396,12 @@ class Lexer:
             raise Exception(f"Invalid variable name: {identifier}")
 
     def handle_reserved(self, identifier):
-        if identifier in RESERVED_WORDS:
+        bool_str = identifier.lower()
+        if bool_str == 'true':
+            return Token(TT_BOOL, value='True')
+        elif bool_str == 'false':
+            return Token(TT_BOOL, value='False')
+        elif identifier in RESERVED_WORDS:
             return Token(TT_RESERVE, identifier)
         else:
             raise Exception(f"Invalid usage of reserved keyword: {identifier}")

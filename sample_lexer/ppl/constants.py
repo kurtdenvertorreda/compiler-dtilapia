@@ -28,6 +28,7 @@ TT_RSQBRAC  = 'Right Curly Bracket'
 TT_COLON    = 'Colon'
 TT_COMMA    = 'Comma'
 TT_PERIOD   = 'Period'
+TT_SEMICOL  = 'Semi Colon'
 
 # Arithmetic Operators
 TT_MODULO = 'Modulo Operator'
