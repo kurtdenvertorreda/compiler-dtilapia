@@ -283,7 +283,7 @@ class Lexer:
                 tokens.append(Token(TT_RSQBRAC, value=']'))
                 self.advance()
             elif self.current_char == ':':
-                tokens.append(Token(TT_COLON))
+                tokens.append(Token(TT_COLON, value=':'))
                 self.advance()
             elif self.current_char == '.':
                 tokens.append(Token(TT_PERIOD, value='.'))
@@ -366,7 +366,11 @@ class Lexer:
         while self.current_char is not None and (self.current_char in ALPHANUMERIC + '_'):
             identifier += self.current_char
             self.advance()
-        
+
+        if identifier in KEYWORD_NOISE_WORDS:
+            keyword, noise = KEYWORD_NOISE_WORDS[identifier]
+            return Token(TT_KEYWORD, keyword), Token(TT_NOISE, noise)
+
         token_type = TT_KEYWORD if identifier in KEYWORDS else TT_RESERVE if identifier in RESERVED_WORDS else TT_IDENTIFIER
         return self.handle_identifier_type(token_type, identifier)
     

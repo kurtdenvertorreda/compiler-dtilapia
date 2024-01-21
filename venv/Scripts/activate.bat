@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\katod\OneDrive - Itech\NEW Backup\Kurt Files\Kurt Files All\Github\compiler-dtilapia\venv
+set VIRTUAL_ENV=C:\Users\Grimes\OneDrive\Desktop\programs\3rd year programs\compiler-dtilapia\venv
 
 if not defined PROMPT set PROMPT=$P$G
 

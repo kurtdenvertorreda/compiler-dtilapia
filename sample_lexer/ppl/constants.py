@@ -88,3 +88,15 @@ RESERVED_WORDS = {'True', 'False', 'permutation', 'combination', 'btree', 'preor
                  'isEmpty', 'R_notation', 'S_notation'}
 
 NOISE_WORDS = {'eger', 'ing', 'acter', 'ion', 'ean', 'itive', 'actorization', 'uence'}
+
+KEYWORD_NOISE_WORDS = {
+    'integer': ('int', 'eger'),
+    'character': ('char', 'acter'),
+    'function': ('funct', 'ion'),
+    'boolean': ('bool', 'ean'),
+    'contrapositive': ('contrapos', 'itive'),
+    'isPrimeFactorization': ('isPrimeF', 'actorization'),
+    'arisequence': ('ariseq', 'uence'),
+    'geomsequence': ('geomseq', 'uence'),
+    'fibosequence': ('fiboseq', 'uence')
+}

@@ -5,7 +5,7 @@ def read_file(file_path):
         return file.read()
 
 # Specify the path to your file
-file_path = 'temp_code.dtil'
+file_path = 'sample.dtil'
 file_content = read_file(file_path)
 
 lexer = dtilapia.Lexer(file_path, file_content)

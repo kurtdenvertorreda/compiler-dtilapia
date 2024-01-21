@@ -1,3 +1,0 @@
-let _a be String
-a = "Hello World"
-print: a // print the value stored in a
