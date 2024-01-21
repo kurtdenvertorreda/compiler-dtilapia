@@ -139,19 +139,48 @@ function executeCode() {
 
             // Populate the table with token information
             data.tokens.forEach(token => {
-                const row = document.createElement('tr');
-                const typeCell = document.createElement('td');
-                const valueCell = document.createElement('td');
+                if(token.startsWith('(') && token.endsWith(')')){
+                    const row = document.createElement('tr');
+                    const typeCell = document.createElement('td');
+                    const valueCell = document.createElement('td');
+                    const noise_row = document.createElement('tr');
+                    const noise_typeCell = document.createElement('td');
+                    const noise_valueCell = document.createElement('td');
 
-                // Split the token to extract type and value
-                const [tokenType, tokenValue] = token.split(':').map(part => part.trim());
+                    const [key, noise] = token.split(',').map(part => part.trim());
+                    var [tokenType, tokenValue] = key.split(':').map(part => part.trim());
+                    var [noise_tokenType, noise_tokenValue] = noise.split(':').map(part => part.trim());
+                    tokenType = tokenType.replace('(',"");
+                    noise_tokenValue = noise_tokenValue.slice(0, -1);
 
-                typeCell.textContent = `${tokenType}`;
-                valueCell.textContent = `${tokenValue}`;
+                    typeCell.textContent = `${tokenType}`;
+                    valueCell.textContent = `${tokenValue}`;
+                    noise_typeCell.textContent = `${noise_tokenType}`;
+                    noise_valueCell.textContent = `${noise_tokenValue}`;
 
-                row.appendChild(typeCell);
-                row.appendChild(valueCell);
-                tableBody.appendChild(row);
+                    row.appendChild(typeCell);
+                    row.appendChild(valueCell);
+                    tableBody.appendChild(row);
+
+                    noise_row.appendChild(noise_typeCell);
+                    noise_row.appendChild(noise_valueCell);
+                    tableBody.appendChild(noise_row);
+
+                }else{
+                    const row = document.createElement('tr');
+                    const typeCell = document.createElement('td');
+                    const valueCell = document.createElement('td');
+
+                    // Split the token to extract type and value
+                    const [tokenType, tokenValue] = token.split(':').map(part => part.trim());
+
+                    typeCell.textContent = `${tokenType}`;
+                    valueCell.textContent = `${tokenValue}`;
+
+                    row.appendChild(typeCell);
+                    row.appendChild(valueCell);
+                    tableBody.appendChild(row);
+                }
             });
         }
     })
