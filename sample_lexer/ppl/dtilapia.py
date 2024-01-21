@@ -287,7 +287,8 @@ class Lexer:
                 pos_start = self.pos.copy()
                 char = self.current_char
                 self.advance()
-                return [], IllegalCharError(pos_start, self.pos, "'" + char + "'")
+                continue;
+                #return [], IllegalCharError(pos_start, self.pos, "'" + char + "'")
 
         return tokens, None
 

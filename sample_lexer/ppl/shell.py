@@ -1,17 +1,18 @@
 import dtilapia
 
-while True:
-    code = ""
-    text = input('DTilapia > ')
-    if not text:
-            break
+def read_file(file_path):
+    with open(file_path, 'r') as file:
+        return file.read()
 
-        # Concatenate the input line to the existing code
-    code += text + '\n'
+# Specify the path to your file
+file_path = 'temp_code.dtil'
+file_content = read_file(file_path)
 
-    if not code.strip():
-          break
-    
-    result, error = dtilapia.run('<stdin>', text)
-    if error: print(error.as_string())
-    else: print(result)
+lexer = dtilapia.Lexer(file_path, file_content)
+tokens, error = lexer.make_tokens()
+
+if error:
+    print(error.as_string())
+else:
+    for token in tokens:
+        print(token)
