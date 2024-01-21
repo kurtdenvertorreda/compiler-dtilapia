@@ -2,11 +2,13 @@ DIGITS = '0123456789'
 UPPER_CASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 LOWER_CASE = 'abcdefghijklmnopqrstuvwxyz'
 ALPHABET = UPPER_CASE + LOWER_CASE
+ALPHANUMERIC = ALPHABET + DIGITS
 
 #######################################
 # TOKENS
 #######################################
 
+# Data Types
 TT_INT		= 'Integer'
 TT_FLOAT    = 'Float'
 TT_STRING   = 'String'
@@ -16,19 +18,24 @@ TT_BOOL     = 'Boolean'
 TT_SET      = 'Set'
 TT_ARR      = 'Array'
 
-TT_PLUS     = 'Addition Operator'
-TT_MINUS    = 'Subtraction Operator'
-TT_MUL      = 'Multiplication Operator'
-TT_DIV      = 'Division Operator'
-
+# Delimiters and Brackets
+TT_LPAREN   = 'Left Parenthesis'
+TT_RPAREN   = 'Right Parenthesis'
 TT_LCBRAC   = 'Left Curly Bracket'
 TT_RCBRAC   = 'Right Curly Bracket'
 TT_LSQBRAC  = 'Left Square Bracket'
 TT_RSQBRAC  = 'Right Curly Bracket'
+TT_COLON    = 'Colon'
+TT_COMMA    = 'Comma'
+TT_PERIOD   = 'Period'
 
 # Arithmetic Operators
 TT_MODULO = 'Modulo Operator'
 TT_EXPONENT = 'Exponent Operator'
+TT_PLUS     = 'Addition Operator'
+TT_MINUS    = 'Subtraction Operator'
+TT_MUL      = 'Multiplication Operator'
+TT_DIV      = 'Division Operator'
 
 # Comparison Operators
 TT_GREATER_THAN = 'Greater Than Operator'
@@ -61,8 +68,7 @@ TT_INCREMENT = 'Increment Operator'  # For ++
 TT_DECREMENT = 'Decrement Operator'  # For --
 TT_FACTORIAL = 'Factorial Operator'  # For !
 
-TT_LPAREN   = 'Left Parenthesis'
-TT_RPAREN   = 'Right Parenthesis'
+# Others <3
 TT_IDENTIFIER = 'Identifier'
 TT_KEYWORD = 'Keyword'
 TT_RESERVE = 'Reserved Word'
@@ -72,7 +78,7 @@ KEYWORDS = {'int', 'float', 'String', 'char', 'bool', 'set', 'array', 'complex',
             'for', 'from', 'to', 'in', 'by', 'do', 'when', 'otherwise', 'funct', 'while', 'given',
             'output', 'print', 'show', 'input', 'find', 'hence'}
 
-RESERVED_WORDS = {'true', 'false', 'permutation', 'combination', 'btree', 'preorder', 'inorder', 'postorder',
+RESERVED_WORDS = {'True', 'False', 'permutation', 'combination', 'btree', 'preorder', 'inorder', 'postorder',
                  'null', 'search', 'add', 'remove', 'ugraph', 'dgraph', 'nodeAdd', 'removeEdge', 'UedgeAdd', 'DedgeAdd',
                  'bfs', 'dfs', 'dijkstra', 'kruskal', 'inverse', 'converse', 'contrapos', 'probability', 'cProbability',
                  'isPrime', 'isOdd', 'isEven', 'gcd', 'lcm', 'lcd', 'isDivisible', 'isPrimeF', 'ariseq', 'geomseq', 'fiboseq',
