@@ -91,13 +91,24 @@ class Lexer:
 
             # Greater Than or Equal To Operator
             elif self.current_char == '>':
+                token_value = '>'
                 self.advance()
                 if self.current_char == '=':
-                    tokens.append(Token(TT_GREATER_THAN_EQUAL, value='>='))
+                    token_value += '='
                     self.advance()
+                
+                if self.current_char is not None and not self.current_char.isspace():
+                    if self.current_char.isalnum() or self.current_char in {'(', ')', ';', ','}:  # Add other valid characters if needed
+                        # The character is valid for starting a new token, so we tokenize the operator
+                        tokens.append(Token(TT_GREATER_THAN_EQUAL if token_value == '>=' else TT_GREATER_THAN, value=token_value))
+                    else:
+                        token_value = token_value + self.current_char
+                        # The character is not valid for starting a new token, raise an error
+                        tokens.append(Token(TT_INVALID, value = token_value))
+                        self.advance()
                 else:
-                    # Greater Than Operator
-                    tokens.append(Token(TT_GREATER_THAN, value='>'))
+                    # The '>' operator is followed by a space or the end of input, so tokenize it
+                    tokens.append(Token(TT_GREATER_THAN_EQUAL if token_value == '>=' else TT_GREATER_THAN, value=token_value))
 
             # Less Than or Equal To Operator or Biconditional Operator
             elif self.current_char == '<':
@@ -448,8 +459,8 @@ class Lexer:
         return Token(TT_NOISE, noise_word) if noise_word in NOISE_WORDS else None
 
     def handle_variable(self, identifier):
-        if identifier and not identifier[0].isnumeric() and (identifier[0].isalpha() or identifier[0] == '_'):
-            return Token(TT_IDENTIFIER, identifier)
+        if identifier[0].isalpha() or identifier[0] == '_':
+                return Token(TT_IDENTIFIER, identifier)
         else:
             raise Exception(f"Invalid variable name: {identifier}")
 
