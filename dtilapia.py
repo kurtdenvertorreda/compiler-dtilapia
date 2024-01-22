@@ -287,7 +287,7 @@ class Lexer:
                 tokens.append(Token(TT_SNGQ, value='\''))
                 tokens.append(self.make_character())
                 tokens.append(Token(TT_SNGQ, value='\''))
-            elif self.current_char in ALPHABET:
+            elif self.current_char in ALPHABET or self.current_char == '_':
                 tokens.append(self.make_identifier_or_keyword())
             elif self.current_char == '(':
                 tokens.append(Token(TT_LPAREN, value='('))
@@ -388,7 +388,10 @@ class Lexer:
         while self.current_char is not None and (self.current_char in ALPHANUMERIC + '_'):
             identifier += self.current_char
             self.advance()
-
+        
+        if identifier and identifier[0].isdigit():
+            raise Exception(f"Lexer Error: Identifier cannot start with a digit: '{identifier}'")
+        
         if identifier in KEYWORD_NOISE_WORDS:
             keyword, noise = KEYWORD_NOISE_WORDS[identifier]
             return Token(TT_KEYWORD, keyword), Token(TT_NOISE, noise)
@@ -437,7 +440,7 @@ class Lexer:
         return Token(TT_NOISE, noise_word) if noise_word in NOISE_WORDS else None
 
     def handle_variable(self, identifier):
-        if identifier[0].isalpha():
+        if identifier and not identifier[0].isnumeric() and (identifier[0].isalpha() or identifier[0] == '_'):
             return Token(TT_IDENTIFIER, identifier)
         else:
             raise Exception(f"Invalid variable name: {identifier}")
