@@ -239,7 +239,7 @@ class Lexer:
                             comment_text += self.advance_until('~')
                             self.advance()
                     self.advance()
-                if self.current_char is None or self.current_char.isspace() or self.current_char.isdigit() or self.current_char.isalpha() or self.current_char in {'(', ')'}:
+                elif self.current_char is None or self.current_char.isspace() or self.current_char.isdigit() or self.current_char.isalpha() or self.current_char in {'(', ')'}:
                     # If it's a valid character, tokenize accordingly
                     if token_value == '/\\':
                         tokens.append(Token(TT_CONJUNCTION, value=token_value))
