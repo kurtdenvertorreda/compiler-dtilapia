@@ -11,6 +11,7 @@
       <img src="{{ url_for('static', filename='css/logo.png') }}" alt="Logo" class="logo">
       <div class="button-container">
         <button class="run-code-btn" onclick=executeCode()>Run Code</button>
+        <button class="generate_text_file run-code-btn" onclick=generateFile()>Create File</button>
         <input class="inputfile" name="file" type="file" id="inputfile" accept=".dtil" onchange="handleFile()">
         <label for="inputfile">Upload File</label>
       </div>

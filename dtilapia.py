@@ -345,7 +345,7 @@ class Lexer:
                     tokens.append(Token(TT_INVALID, value= token_value + invalid_chars))
                     self.advance()
 
-            # Multiplication Assignment Operator
+             # Multiplication Assignment Operator
             elif self.current_char == '*':
                 token_value = '*'
                 self.advance()
@@ -356,12 +356,20 @@ class Lexer:
                 else:
                     # Check for invalid characters after '*'
                     if self.current_char is not None and not self.current_char.isspace():
-                        if self.current_char.isalnum() or self.current_char in {'(', ')', ';', ','}:  # Add other valid characters if needed
+                        if self.current_char.isalnum() or self.current_char in {'(', ')'}:  # Add other valid characters if needed
                             # The character is valid for starting a new token, so we tokenize the operator
                             tokens.append(Token(TT_MUL, value='*'))
+                            self.advance()
                         else:
-                            # The character is not valid for starting a new token, raise an error
-                            raise Exception(f"Lexer Error: Unexpected character '{self.current_char}' after '{token_value}'")
+                            # Accumulate invalid characters until a space is encountered
+                            invalid_chars = ''
+                            while self.current_char is not None and not self.current_char.isspace():
+                                invalid_chars = invalid_chars + self.current_char
+                                self.advance()
+
+                            # Tokenize the accumulated invalid characters
+                            tokens.append(Token(TT_INVALID, value= token_value + invalid_chars))
+                            self.advance()
                     else:
                         # The '*' operator is followed by a space or the end of input, so tokenize it
                         tokens.append(Token(TT_MUL, value='*'))

@@ -8,13 +8,13 @@ ALPHANUMERIC = ALPHABET + DIGITS
 # TOKENS
 #######################################
 
-# Data Types
-TT_INT		= 'DT_Integer'
-TT_FLOAT    = 'DT_Float'
-TT_STRING   = 'DT_String'
-TT_CHAR     = 'DT_Character'
-TT_COMPL    = 'DT_Complex'
-TT_BOOL     = 'DT_Boolean'
+# LITERALS
+TT_INT		= 'Integer'
+TT_FLOAT    = 'Float'
+TT_STRING   = 'String'
+TT_CHAR     = 'Character'
+TT_COMPL    = 'Complex'
+TT_BOOL     = 'Boolean'
 
 # Delimiters and Brackets
 TT_LPAREN   = 'DELIBRA_Left_Parenthesis'

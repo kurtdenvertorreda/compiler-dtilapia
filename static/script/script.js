@@ -190,3 +190,37 @@ function executeCode() {
         console.error('Error:', error);
     });
 }
+
+function generateFile() {
+  const codeEditor = document.getElementById('code-editor');
+  const codeContent = codeEditor.value;
+
+  if (codeContent.trim() !== '') {
+      // Prompt the user for a file name
+      const fileName = window.prompt('Enter file name (without extension):');
+      
+      if (fileName !== null) { // Check if the user provided a file name
+          // Add the ".dtil" extension to the provided file name
+          const fullFileName = fileName.trim() === '' ? 'generated_file.dtil' : `${fileName}.dtil`;
+
+          // Create a Blob containing the code content
+          const blob = new Blob([codeContent], { type: 'text/plain' });
+
+          // Create a download link with the specified file name
+          const link = document.createElement('a');
+          link.href = window.URL.createObjectURL(blob);
+          link.download = fullFileName;
+
+          // Append the link to the body
+          document.body.appendChild(link);
+
+          // Programmatically trigger the click event
+          link.click();
+
+          // Remove the link from the body
+          document.body.removeChild(link);
+      }
+  } else {
+      alert('Error: Cannot generate an empty file.');
+  }
+}
