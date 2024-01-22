@@ -17,6 +17,7 @@ TT_COMPL    = 'Complex'
 TT_BOOL     = 'Boolean'
 TT_SET      = 'Set'
 TT_ARR      = 'Array'
+NUM_DT      = {TT_INT, TT_COMPL, TT_BOOL, TT_FLOAT}
 
 # Delimiters and Brackets
 TT_LPAREN   = 'Left Parenthesis'
@@ -30,6 +31,8 @@ TT_COMMA    = 'Comma'
 TT_PERIOD   = 'Period'
 TT_SEMICOL  = 'Semi Colon'
 TT_UNSCO    = 'Underscore'
+TT_SNGQ     = 'Single Quotation Mark'
+TT_DBLQ     = 'Double Quotation Mark'
 
 # Arithmetic Operators
 TT_MODULO = 'Modulo Operator'

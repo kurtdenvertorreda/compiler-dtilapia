@@ -103,8 +103,15 @@ class Lexer:
             elif self.current_char == '<':
                 self.advance()
                 if self.current_char == '=':
-                    tokens.append(Token(TT_LESS_THAN_EQUAL, value='<='))
                     self.advance()
+                    if self.current_char == '=':
+                        self.advance()
+                        if self.current_char == '>':
+                            # Bi-conditional Operator
+                            tokens.append(Token(TT_BICONDITIONAL, value='<==>'))
+                            self.advance()
+                    else:
+                        tokens.append(Token(TT_LESS_THAN_EQUAL, value='<='))
                 elif self.current_char == '-':
                     self.advance()
                     if self.current_char == '>':
@@ -168,11 +175,19 @@ class Lexer:
                     comment_text = self.advance_until('\n')
                     tokens.append(Token(TT_SCOM, value=f'//{comment_text}'))
                 elif self.current_char == '~':
-                    # Multi-line comment, create a comment token
-                    #self.advance()
-                    comment_text = self.advance_until('~/ \n')
-                    self.advance()  # Skip '*/'
-                    tokens.append(Token(TT_MCOM, value=f'/~{comment_text}~/'))
+                    self.advance()
+                    comment_text = self.advance_until('~')
+                    self.advance()  # Skip the '~'
+                    x = False
+                    while x == False:
+                        if self.current_char == '/':
+                            tokens.append(Token(TT_MCOM, value=f'/~{comment_text}~/'))
+                            x = True
+                        else:
+                            comment_text += self.advance_until('~')
+                            self.advance()
+                    self.advance()
+                        
                 elif self.current_char == '\\':
                     tokens.append(Token(TT_CONJUNCTION, value='/\\'))
                     self.advance()
@@ -192,61 +207,75 @@ class Lexer:
 
             # Alternate Conditional Operator
             elif self.current_char == '-':
-                if self.pos.idx > 0 and self.text[self.pos.idx - 1].isalnum() or self.text[self.pos.idx - 1].isspace():
+                self.advance()
+                if self.current_char == '>':
+                    tokens.append(Token(TT_CONDITIONAL, value='->'))
                     self.advance()
-                    if self.current_char == '>':
-                        tokens.append(Token(TT_CONDITIONAL, value='->'))
-                        self.advance()
-                    elif self.current_char == '=':
-                        # Subtraction Assignment Operator
-                        tokens.append(Token(TT_SUBTRACTION_ASSIGNMENT, value='-='))
-                        self.advance()
-                    elif self.current_char == '-':
-                        # Decrement Operator
-                        tokens.append(Token(TT_DECREMENT, value='--'))
-                        self.advance()
-                    else:
-                        # Subtraction Operator
-                        tokens.append(Token(TT_MINUS, value='-'))
-                else:
+                elif self.current_char == '=':
+                    # Subtraction Assignment Operator
+                    tokens.append(Token(TT_SUBTRACTION_ASSIGNMENT, value='-='))
+                    self.advance()
+                elif self.current_char == '-':
+                    # Decrement Operator
+                    tokens.append(Token(TT_DECREMENT, value='--'))
+                    self.advance()
+                elif self.current_char:
+                    # Unary Minus
                     tokens.append(Token(TT_UNARY_MINUS, value='-'))
-                    self.advance()
+                else:
+                    # Subtraction Operator
+                    tokens.append(Token(TT_MINUS, value='-'))
 
             # Addition Assignment Operator
             elif self.current_char == '+':
-                if self.pos.idx > 0 and (self.text[self.pos.idx - 1].isalnum() or self.text[self.pos.idx - 1].isspace()):
+                self.advance()
+                if self.current_char == '=':
+                    tokens.append(Token(TT_ADDITION_ASSIGNMENT, value='+='))
                     self.advance()
-                    if self.current_char == '=':
-                        tokens.append(Token(TT_ADDITION_ASSIGNMENT, value='+='))
-                        self.advance()
-                    elif self.current_char == '+':
-                        if self.pos.idx > 0 and (self.text[self.pos.idx - 1].isalnum() or self.text[self.pos.idx - 1].isspace() == '('):
-                        # Increment Operator
-                            tokens.append(Token(TT_INCREMENT, value='++'))
-                            self.advance()
-                        if self.current_char == '+':
-                            print("Invalid")
-                    else:
-                        # Addition Operator
-                        tokens.append(Token(TT_PLUS, value='+'))
-                else:
-                    # Unary Plus Operator
+                elif self.current_char == '+':
+                    # Increment Operator
+                    tokens.append(Token(TT_INCREMENT, value='++'))
+                    self.advance()
+                elif self.current_char.isalnum():
+                    # Unary Plus
                     tokens.append(Token(TT_UNARY_PLUS, value='+'))
+                else:
+                    # Addition Operator
+                    tokens.append(Token(TT_PLUS, value='+'))
                     self.advance()
-
 
             # Multiplication Assignment Operator
             elif self.current_char == '*':
+                token_value = '*'
                 self.advance()
                 if self.current_char == '=':
+                    token_value += '='
                     tokens.append(Token(TT_MULTIPLICATION_ASSIGNMENT, value='*='))
                     self.advance()
-                elif self.current_char == '*' or '':
-                    print("invalid")
-                    self.advance()
                 else:
+                    # Check for invalid characters after '*'
+                    if self.current_char is not None and not self.current_char.isspace():
+                        if self.current_char.isalnum() or self.current_char in {'(', ')', ';', ','}:  # Add other valid characters if needed
+                            # The character is valid for starting a new token, so we tokenize the operator
+                            tokens.append(Token(TT_MUL, value='*'))
+                        else:
+                            # The character is not valid for starting a new token, raise an error
+                            raise Exception(f"Lexer Error: Unexpected character '{self.current_char}' after '{token_value}'")
+                    else:
+                        # The '*' operator is followed by a space or the end of input, so tokenize it
+                        tokens.append(Token(TT_MUL, value='*'))
+            # Multiplication Assignment Operator
+            #elif self.current_char == '*':
+               # self.advance()
+                #if self.current_char == '=':
+                  #  tokens.append(Token(TT_MULTIPLICATION_ASSIGNMENT, value='*='))
+               #     self.advance()
+             #   elif self.current_char == '*' or '':
+                #    print("invalid")
+               #     self.advance()
+               # else:
                     # Multiplication Operator
-                    tokens.append(Token(TT_MUL, value='*'))
+              #      tokens.append(Token(TT_MUL, value='*'))
 
             # Modulus Assignment Operator
             elif self.current_char == '%':
@@ -259,9 +288,13 @@ class Lexer:
                     tokens.append(Token(TT_MODULO, value='%'))
                     self.advance()
             elif self.current_char == '"':
+                tokens.append(Token(TT_DBLQ, value='"'))
                 tokens.append(self.make_string())
+                tokens.append(Token(TT_DBLQ, value='"'))
             elif self.current_char == '\'':
+                tokens.append(Token(TT_SNGQ, value='\''))
                 tokens.append(self.make_character())
+                tokens.append(Token(TT_SNGQ, value='\''))
             elif self.current_char in ALPHABET:
                 tokens.append(self.make_identifier_or_keyword())
             elif self.current_char == '(':
