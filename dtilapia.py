@@ -89,26 +89,40 @@ class Lexer:
                 tokens.append(Token(TT_EXPONENT, value='^'))
                 self.advance()
 
+            elif self.current_char == '>':
+                            token_value = '>'
+                            self.advance()
+                            if self.current_char == '=':
+                                token_value += '='
+                                self.advance()
+                            
+                            if self.current_char is not None and not self.current_char.isspace():
+                                if self.current_char.isalnum() or self.current_char in {'(', ')'}:  # Add other valid characters if needed
+                                    # The character is valid for starting a new token, so we tokenize the operator
+                                    tokens.append(Token(TT_GREATER_THAN_EQUAL if token_value == '>=' else TT_GREATER_THAN, value=token_value))
+                                else:
+                                    # Accumulate invalid characters until a space is encountered
+                                    invalid_chars = ''
+                                    while self.current_char is not None and not self.current_char.isspace():
+                                        invalid_chars = invalid_chars + self.current_char
+                                        self.advance()
+
+                                    # Tokenize the accumulated invalid characters
+                                    tokens.append(Token(TT_INVALID, value= token_value + invalid_chars))
+                                    self.advance()
+                            else:
+                                # The '>' operator is followed by a space or the end of input, so tokenize it
+                                tokens.append(Token(TT_GREATER_THAN_EQUAL if token_value == '>=' else TT_GREATER_THAN, value=token_value))
+
             # Greater Than or Equal To Operator
             elif self.current_char == '>':
-                token_value = '>'
                 self.advance()
                 if self.current_char == '=':
-                    token_value += '='
+                    tokens.append(Token(TT_GREATER_THAN_EQUAL, value='>='))
                     self.advance()
-                
-                if self.current_char is not None and not self.current_char.isspace():
-                    if self.current_char.isalnum() or self.current_char in {'(', ')', ';', ','}:  # Add other valid characters if needed
-                        # The character is valid for starting a new token, so we tokenize the operator
-                        tokens.append(Token(TT_GREATER_THAN_EQUAL if token_value == '>=' else TT_GREATER_THAN, value=token_value))
-                    else:
-                        token_value = token_value + self.current_char
-                        # The character is not valid for starting a new token, raise an error
-                        tokens.append(Token(TT_INVALID, value = token_value))
-                        self.advance()
                 else:
-                    # The '>' operator is followed by a space or the end of input, so tokenize it
-                    tokens.append(Token(TT_GREATER_THAN_EQUAL if token_value == '>=' else TT_GREATER_THAN, value=token_value))
+                    # Greater Than Operator
+                    tokens.append(Token(TT_GREATER_THAN, value='>'))
 
             # Less Than or Equal To Operator or Biconditional Operator
             elif self.current_char == '<':
@@ -133,20 +147,38 @@ class Lexer:
                     # Less Than Operator
                     tokens.append(Token(TT_LESS_THAN, value='<'))
 
-            # Conditional Operator
+           # Conditional Operator
             elif self.current_char == '=':
-                self.advance()
-                if self.current_char == '=':
-                    self.advance()
-                    if self.current_char == '>':
-                        tokens.append(Token(TT_CONDITIONAL, value='==>'))
-                        self.advance()
-                    else:
-                        # Equal To Operator
-                        tokens.append(Token(TT_EQUAL_TO, value='=='))
-                else:
-                    # Assignment Operator
-                    tokens.append(Token(TT_ASSIGNMENT, value='='))
+                            token_value = '='
+                            self.advance()
+                            if self.current_char == '=':
+                                token_value += '='
+                                self.advance()
+                                if self.current_char == '>':
+                                    token_value += '>'
+                                    self.advance()
+                            elif self.current_char == '=':
+                                token_value += '='
+                                self.advance()
+                            if self.current_char is None or self.current_char.isspace() or self.current_char.isdigit() or self.current_char.isalpha() or self.current_char in {'(', ')'}:
+                                # If it's a valid character, tokenize accordingly
+                                if token_value == '==':
+                                    tokens.append(Token(TT_EQUAL_TO, value=token_value))
+                                elif token_value == '==>':
+                                    tokens.append(Token(TT_CONDITIONAL, value=token_value))
+                                else:
+                                    # If token_value is just '+', it's a plus token
+                                    tokens.append(Token(TT_ASSIGNMENT, value=token_value))
+                            else:
+                                # If the next character is not valid, raise an error and exit
+                                invalid_chars = ''
+                                while self.current_char is not None and not self.current_char.isspace():
+                                    invalid_chars = invalid_chars + self.current_char
+                                    self.advance()
+
+                                # Tokenize the accumulated invalid characters
+                                tokens.append(Token(TT_INVALID, value= token_value + invalid_chars))
+                                self.advance()
 
 
             # Not Equal To Operator or Negation Operator or Factorial Operator
@@ -218,41 +250,76 @@ class Lexer:
 
             # Alternate Conditional Operator
             elif self.current_char == '-':
-                self.advance()
-                if self.current_char == '>':
-                    tokens.append(Token(TT_CONDITIONAL, value='->'))
-                    self.advance()
-                elif self.current_char == '=':
-                    # Subtraction Assignment Operator
-                    tokens.append(Token(TT_SUBTRACTION_ASSIGNMENT, value='-='))
-                    self.advance()
-                elif self.current_char == '-':
-                    # Decrement Operator
-                    tokens.append(Token(TT_DECREMENT, value='--'))
-                    self.advance()
-                elif self.current_char:
-                    # Unary Minus
-                    tokens.append(Token(TT_UNARY_MINUS, value='-'))
-                else:
-                    # Subtraction Operator
-                    tokens.append(Token(TT_MINUS, value='-'))
+                            token_value = '-'
+                            self.advance()  # Move past the first '+'
+
+                            if self.current_char == '=':
+                                # If the next character is '=', it's an addition assignment
+                                token_value += '='
+                                self.advance()  # Move past '='
+                            elif self.current_char == '-':
+                                # If the next character is another '+', it's an increment
+                                token_value += '-'
+                                self.advance()  # Move past the second '+'
+                            elif self.current_char == '>':
+                                # If the next character is another '+', it's an increment
+                                token_value += '>'
+                                self.advance()  # Move past the second '+'
+
+                            if self.current_char is None or self.current_char.isspace() or self.current_char.isdigit() or self.current_char.isalpha() or self.current_char in {'(', ')'}:
+                                # If it's a valid character, tokenize accordingly
+                                if token_value == '--':
+                                    tokens.append(Token(TT_DECREMENT, value=token_value))
+                                elif token_value == '-=':
+                                    tokens.append(Token(TT_SUBTRACTION_ASSIGNMENT, value=token_value))
+                                elif token_value == '->':
+                                    tokens.append(Token(TT_CONDITIONAL, value=token_value))
+                                else:
+                                    # If token_value is just '+', it's a plus token
+                                    tokens.append(Token(TT_MINUS, value=token_value))
+                            else:
+                                # If the next character is not valid, raise an error and exit
+                                invalid_chars = ''
+                                while self.current_char is not None and not self.current_char.isspace():
+                                    invalid_chars = invalid_chars + self.current_char
+                                    self.advance()
+
+                                # Tokenize the accumulated invalid characters
+                                tokens.append(Token(TT_INVALID, value= token_value + invalid_chars))
+                                self.advance()
 
             # Addition Assignment Operator
             elif self.current_char == '+':
-                self.advance()
+                token_value = '+'
+                self.advance()  # Move past the first '+'
+
                 if self.current_char == '=':
-                    tokens.append(Token(TT_ADDITION_ASSIGNMENT, value='+='))
-                    self.advance()
+                    # If the next character is '=', it's an addition assignment
+                    token_value += '='
+                    self.advance()  # Move past '='
                 elif self.current_char == '+':
-                    # Increment Operator
-                    tokens.append(Token(TT_INCREMENT, value='++'))
-                    self.advance()
-                elif self.current_char.isalnum():
-                    # Unary Plus
-                    tokens.append(Token(TT_UNARY_PLUS, value='+'))
+                    # If the next character is another '+', it's an increment
+                    token_value += '+'
+                    self.advance()  # Move past the second '+'
+
+                if self.current_char is None or self.current_char.isspace() or self.current_char.isdigit() or self.current_char.isalpha() or self.current_char in {'(', ')'}:
+                    # If it's a valid character, tokenize accordingly
+                    if token_value == '++':
+                        tokens.append(Token(TT_INCREMENT, value=token_value))
+                    elif token_value == '+=':
+                        tokens.append(Token(TT_ADDITION_ASSIGNMENT, value=token_value))
+                    else:
+                        # If token_value is just '+', it's a plus token
+                        tokens.append(Token(TT_PLUS, value=token_value))
                 else:
-                    # Addition Operator
-                    tokens.append(Token(TT_PLUS, value='+'))
+                    # If the next character is not valid, raise an error and exit
+                    invalid_chars = ''
+                    while self.current_char is not None and not self.current_char.isspace():
+                        invalid_chars = invalid_chars + self.current_char
+                        self.advance()
+
+                    # Tokenize the accumulated invalid characters
+                    tokens.append(Token(TT_INVALID, value= token_value + invalid_chars))
                     self.advance()
 
             # Multiplication Assignment Operator
@@ -306,7 +373,7 @@ class Lexer:
                 tokens.append(Token(TT_SNGQ, value='\''))
                 tokens.append(self.make_character())
                 tokens.append(Token(TT_SNGQ, value='\''))
-            elif self.current_char in ALPHABET or self.current_char == '_':
+            elif self.current_char in ALPHABET:
                 tokens.append(self.make_identifier_or_keyword())
             elif self.current_char == '(':
                 tokens.append(Token(TT_LPAREN, value='('))
@@ -356,25 +423,35 @@ class Lexer:
     def make_number(self):
         num_str = ''
         dot_count = 0
-        has_complex = False
 
-        while self.current_char is not None and (self.current_char.isdigit() or self.current_char == '.' or self.current_char.lower() in {'i', 'j'}):
+        while self.current_char is not None and (self.current_char.isdigit() or self.current_char == '.' or self.current_char.lower() in {'i', 'j'} or self.current_char.isalpha()):
             if self.current_char == '.':
                 if dot_count == 1: break
                 dot_count += 1
                 num_str += '.'
-            elif self.current_char.lower() in {'i', 'j'}:
-                has_complex = True
-                num_str += self.current_char
-                self.advance()
-                break  # Complex number detected, exit loop
+            elif self.current_char.isalpha():
+                if self.current_char.lower() in {'i', 'j'}:
+                    num_str = num_str + self.current_char
+                    self.advance()
+                    if self.current_char:
+                        invalid_chars = ''
+                        while self.current_char is not None and not self.current_char.isspace():
+                            invalid_chars = invalid_chars + self.current_char
+                            self.advance()
+                        return Token(TT_INVALID, value = num_str + invalid_chars)
+                    else:
+                        return Token(TT_COMPL, num_str)
+                else:
+                    invalid_chars = ''
+                    while self.current_char is not None and not self.current_char.isspace():
+                        invalid_chars = invalid_chars + self.current_char
+                        self.advance()
+                    return Token(TT_INVALID, value= num_str + invalid_chars)
             else:
                 num_str += self.current_char
             self.advance()
 
-        if has_complex:
-            return Token(TT_COMPL, num_str)
-        elif dot_count == 0:
+        if dot_count == 0:
             return Token(TT_INT, int(num_str))
         else:
             return Token(TT_FLOAT, float(num_str))
@@ -407,10 +484,7 @@ class Lexer:
         while self.current_char is not None and (self.current_char in ALPHANUMERIC + '_'):
             identifier += self.current_char
             self.advance()
-        
-        if identifier and identifier[0].isdigit():
-            raise Exception(f"Lexer Error: Identifier cannot start with a digit: '{identifier}'")
-        
+
         if identifier in KEYWORD_NOISE_WORDS:
             keyword, noise = KEYWORD_NOISE_WORDS[identifier]
             return Token(TT_KEYWORD, keyword), Token(TT_NOISE, noise)
@@ -459,8 +533,8 @@ class Lexer:
         return Token(TT_NOISE, noise_word) if noise_word in NOISE_WORDS else None
 
     def handle_variable(self, identifier):
-        if identifier[0].isalpha() or identifier[0] == '_':
-                return Token(TT_IDENTIFIER, identifier)
+        if identifier[0].isalpha():
+            return Token(TT_IDENTIFIER, identifier)
         else:
             raise Exception(f"Invalid variable name: {identifier}")
 
