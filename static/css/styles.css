@@ -40,6 +40,10 @@ body {
     font-family: serif;
   }
   
+  #inputfile,label{
+    font-family: serif;
+  }
+
   .run-code-btn, label {
     width: 130px;
     height: 38px;
