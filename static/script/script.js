@@ -148,8 +148,8 @@ function executeCode() {
                     const noise_valueCell = document.createElement('td');
 
                     const [key, noise] = token.split(',').map(part => part.trim());
-                    var [tokenType, tokenValue] = key.split(':').map(part => part.trim());
-                    var [noise_tokenType, noise_tokenValue] = noise.split(':').map(part => part.trim());
+                    var [tokenType, tokenValue] = key.split(': ').map(part => part.trim());
+                    var [noise_tokenType, noise_tokenValue] = noise.split(': ').map(part => part.trim());
                     tokenType = tokenType.replace('(',"");
                     noise_tokenValue = noise_tokenValue.slice(0, -1);
 
@@ -172,7 +172,7 @@ function executeCode() {
                     const valueCell = document.createElement('td');
 
                     // Split the token to extract type and value
-                    const [tokenType, tokenValue] = token.split(':').map(part => part.trim());
+                    const [tokenType, tokenValue] = token.split(': ').map(part => part.trim());
 
                     typeCell.textContent = `${tokenType}`;
                     valueCell.textContent = `${tokenValue}`;
