@@ -82,6 +82,7 @@ function redo() {
 function handleFile() {
   const fileInput = document.getElementById('inputfile');
   const codeEditor = document.getElementById('code-editor');
+  const tableBody = document.querySelector('.styled-table tbody');
 
   const file = fileInput.files[0];
 
@@ -100,6 +101,7 @@ function handleFile() {
       reader.readAsText(file, 'UTF-8');
     } else {
       codeEditor.value = "Error: Please select a valid .dtil file.";
+      tableBody.innerHTML = '';
       fileInput.value = ""; // Clear the file input
     }
   } else {
