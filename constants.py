@@ -49,6 +49,7 @@ TT_GREATER_THAN_EQUAL = 'Greater Than or Equal To Operator'
 TT_LESS_THAN_EQUAL = 'Less Than or Equal To Operator'
 TT_EQUAL_TO = 'Equal To Operator'
 TT_NOT_EQUAL_TO = 'Not Equal To Operator'
+TT_INVALID ='Invalid Token'
 
 # Logical Operators
 TT_NEGATION = 'Negation Operator'
