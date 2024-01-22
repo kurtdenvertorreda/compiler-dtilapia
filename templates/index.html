@@ -16,27 +16,25 @@
       </div>
     </nav>
   </header>
-  <main class="main">
+  <div class="main">
     <div class="container">
       <!-- <span class="line-numbers"></span> -->
       <textarea id="code-editor" class="code-editor" placeholder="Enter your code"></textarea>
     </div>
     <div class="output-container">
-      <div class="flex-box1">
-        <div class="text">Lexemes</div>
-        <div class="lexical-analyzer">
-            <table class="styled-table"> 
-                <thead> 
-                    <th>Tokens</th>
-                    <th>Lexemes</th>
-                </thead>
-                <tbody> 
-                </tbody>
-            </table>
-        </div>
+      <div class="text">Lexemes</div>
+      <div class="lexical-analyzer">
+          <table class="styled-table"> 
+              <thead> 
+                  <th>Tokens</th>
+                  <th>Lexemes</th>
+              </thead>
+              <tbody> 
+              </tbody>
+          </table>
       </div>
     </div>
-  </main>
+  </div>
   <script src="{{ url_for('static', filename='script/script.js') }}"></script>
 </body>
 </html>
