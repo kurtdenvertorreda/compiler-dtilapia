@@ -46,15 +46,13 @@ body {
   font-family: serif;
 }
 
-#inputfile,label{
-  font-family: serif;
-}
-
-.run-code-btn, label {
-  width: 130px;
+.run-code-btn {
+  width: 150px;
   height: 38px;
   border-radius: 42px;
+  align-self: center;
   margin-right: 20px;
+  border: 2px solid #04ACAC;
   /* border: 1px solid #000; */
   background: #04ACAC;
   box-shadow: 4px 4px 4px 0px #1A4243;
@@ -62,21 +60,24 @@ body {
   text-align: center;
   font-size: 18px;
   font-weight: 500;
+  font-family: sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-#inputfile {
-  width: 160px;
+#inputfile, label {
+  width: 150px;
   height: 38px;
   border-radius: 42px;
-  margin-right: 140px;
+  align-self: center;
+  margin-right: 20px;
   border: 2px solid #000;
-  background: #04ACAC;
-  box-shadow: 4px 4px 4px 0px #1A4243;
+  background: #1A4243;
+  box-shadow: 4px 4px 4px 0px #3A9A9D;
   color: #FFF;
   text-align: center;
+  font-family: sans-serif;
   font-size: 18px;
   font-weight: 500;
   display: flex;
