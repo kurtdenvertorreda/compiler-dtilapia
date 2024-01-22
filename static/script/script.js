@@ -126,7 +126,7 @@ function executeCode() {
         const tableBody = document.querySelector('.styled-table tbody');
 
         if (data.error) {
-            outputContainer.textContent = `Error: ${data.error}`;
+            outputContainer.textContent = `Error`;
         } else {
             // Assuming you have a 'tokens' property in the response
             //outputContainer.textContent = data.tokens.join('\n');
@@ -172,7 +172,7 @@ function executeCode() {
                     const valueCell = document.createElement('td');
 
                     // Split the token to extract type and value
-                    const [tokenType, tokenValue] = token.split(':').map(part => part.trim());
+                    const [tokenType, tokenValue] = token.split(': ').map(part => part.trim());
 
                     typeCell.textContent = `${tokenType}`;
                     valueCell.textContent = `${tokenValue}`;
