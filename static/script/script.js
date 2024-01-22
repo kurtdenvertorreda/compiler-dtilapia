@@ -126,7 +126,7 @@ function executeCode() {
         const tableBody = document.querySelector('.styled-table tbody');
 
         if (data.error) {
-            outputContainer.textContent = `Error`;
+            outputContainer.textContent = `Error: ${data.error}`;
         } else {
             // Assuming you have a 'tokens' property in the response
             //outputContainer.textContent = data.tokens.join('\n');

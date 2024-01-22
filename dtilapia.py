@@ -175,11 +175,19 @@ class Lexer:
                     comment_text = self.advance_until('\n')
                     tokens.append(Token(TT_SCOM, value=f'//{comment_text}'))
                 elif self.current_char == '~':
-                    # Multi-line comment, create a comment token
-                    #self.advance()
-                    comment_text = self.advance_until('~/ \n')
-                    self.advance()  # Skip '*/'
-                    tokens.append(Token(TT_MCOM, value=f'/~{comment_text}~/'))
+                    self.advance()
+                    comment_text = self.advance_until('~')
+                    self.advance()  # Skip the '~'
+                    x = False
+                    while x == False:
+                        if self.current_char == '/':
+                            tokens.append(Token(TT_MCOM, value=f'/~{comment_text}~/'))
+                            x = True
+                        else:
+                            comment_text += self.advance_until('~')
+                            self.advance()
+                    self.advance()
+                        
                 elif self.current_char == '\\':
                     tokens.append(Token(TT_CONJUNCTION, value='/\\'))
                     self.advance()
@@ -262,12 +270,12 @@ class Lexer:
                 #if self.current_char == '=':
                   #  tokens.append(Token(TT_MULTIPLICATION_ASSIGNMENT, value='*='))
                #     self.advance()
-           #     elif self.current_char == '*' or '':
-             #       print("invalid")
-             #       self.advance()
-             #   else:
-             #       # Multiplication Operator
-             #       tokens.append(Token(TT_MUL, value='*'))
+             #   elif self.current_char == '*' or '':
+                #    print("invalid")
+               #     self.advance()
+               # else:
+                    # Multiplication Operator
+              #      tokens.append(Token(TT_MUL, value='*'))
 
             # Modulus Assignment Operator
             elif self.current_char == '%':
