@@ -209,14 +209,23 @@ class Lexer:
                     tokens.append(Token(TT_DISJUNCTION, value='||'))
                     self.advance()
 
-            # Conjunction Operator
+                       # Conjunction Operator
             elif self.current_char == '/':
+                token_value = '/'
                 self.advance()
-                if self.current_char == '/':
-                    # Single-line comment, create a comment token
+                if self.current_char == '\\':
+                    token_value = token_value + '\\'
                     self.advance()
+                    if self.current_char == '\\':
+                        token_value = token_value + '\\'
+                        self.advance()
+                elif self.current_char == '=':
+                    token_value = token_value + '='
+                    self.advance()
+                elif self.current_char == '/':
+                    token_value = token_value + '/'
+                    self.advance
                     comment_text = self.advance_until('\n')
-                    tokens.append(Token(TT_SCOM, value=f'//{comment_text}'))
                 elif self.current_char == '~':
                     self.advance()
                     comment_text = self.advance_until('~')
@@ -230,16 +239,29 @@ class Lexer:
                             comment_text += self.advance_until('~')
                             self.advance()
                     self.advance()
-                        
-                elif self.current_char == '\\':
-                    tokens.append(Token(TT_CONJUNCTION, value='/\\'))
-                    self.advance()
-                elif self.current_char == '=':
-                     tokens.append(Token(TT_DIVISION_ASSIGNMENT, value='/='))
-                     self.advance()
+                if self.current_char is None or self.current_char.isspace() or self.current_char.isdigit() or self.current_char.isalpha() or self.current_char in {'(', ')'}:
+                    # If it's a valid character, tokenize accordingly
+                    if token_value == '/\\':
+                        tokens.append(Token(TT_CONJUNCTION, value=token_value))
+                    elif token_value == '/=':
+                        tokens.append(Token(TT_DIVISION_ASSIGNMENT, value=token_value))
+                    elif token_value == '//':
+                        tokens.append(Token(TT_SCOM, value=f'//{comment_text}'))
+                    elif token_value == '/~':
+                        tokens.append(Token(TT_MCOM, value=f'{comment_text}'))
+                    else:
+                        # If token_value is just '+', it's a plus token
+                        tokens.append(Token(TT_DIV, value=token_value))
                 else:
-                    # Division Operator
-                    tokens.append(Token(TT_DIV, value='/'))
+                    # If the next character is not valid, raise an error and exit
+                    invalid_chars = ''
+                    while self.current_char is not None and not self.current_char.isspace():
+                        invalid_chars = invalid_chars + self.current_char
+                        self.advance()
+
+                    # Tokenize the accumulated invalid characters
+                    tokens.append(Token(TT_INVALID, value= token_value + invalid_chars))
+                    self.advance()
 
             # Alternative Conjunction Operator
             elif self.current_char == '&':
