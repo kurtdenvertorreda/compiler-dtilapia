@@ -222,10 +222,11 @@ class Lexer:
                 elif self.current_char == '=':
                     token_value = token_value + '='
                     self.advance()
-                elif self.current_char == '/':
-                    token_value = token_value + '/'
-                    self.advance
+                if self.current_char == '/':
+                    # Single-line comment, create a comment token
+                    self.advance()
                     comment_text = self.advance_until('\n')
+                    tokens.append(Token(TT_SCOM, value=f'//{comment_text}'))
                 elif self.current_char == '~':
                     self.advance()
                     comment_text = self.advance_until('~')

@@ -190,3 +190,72 @@ function executeCode() {
         console.error('Error:', error);
     });
 }
+
+function generateFile() {
+    const codeEditor = document.getElementById('code-editor');
+    const codeContent = codeEditor.value;
+
+    if (codeContent.trim() !== '') {
+        // Prompt the user for a file name
+        const fileName = window.prompt('Enter file name (without extension):');
+        
+        if (fileName !== null) { // Check if the user provided a file name
+            // Add the ".dtil" extension to the provided file name
+            const fullFileName = fileName.trim() === '' ? 'generated_file.dtil' : `${fileName}.dtil`;
+
+            // Create a Blob containing the code content
+            const blob = new Blob([codeContent], { type: 'text/plain' });
+
+            // Create a download link with the specified file name
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = fullFileName;
+
+            // Append the link to the body
+            document.body.appendChild(link);
+
+            // Programmatically trigger the click event
+            link.click();
+
+            // Remove the link from the body
+            document.body.removeChild(link);
+        }
+    } else {
+        alert('Error: Cannot generate an empty file.');
+    }
+}
+
+function exportTableToFile() {
+    const table = document.querySelector('.styled-table');
+    const rows = table.querySelectorAll('tbody tr');
+    let tableText = '';
+
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        cells.forEach((cell, index) => {
+            tableText += cell.textContent;
+            if (index < cells.length - 1) {
+                tableText += '\t'; // Use tab as a delimiter
+            }
+        });
+
+        tableText += '\n';
+    });
+
+    // Create a Blob containing the table text
+    const blob = new Blob([tableText], { type: 'text/plain' });
+
+    // Create a download link
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = 'table_output.txt';
+
+    // Append the link to the body
+    document.body.appendChild(link);
+
+    // Programmatically trigger the click event
+    link.click();
+
+    // Remove the link from the body
+    document.body.removeChild(link);
+}
