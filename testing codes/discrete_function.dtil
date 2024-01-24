@@ -1,0 +1,34 @@
+// demo for discrete calls
+let choice be boolean = True
+let a, b, c, d be integer
+let _name be String
+let ch2 be char
+
+/~ do the following code where it will continue to do
+    the following statements, and will end if choice becomes False ~/
+while choice == True do:
+    print: "Enter your name: "
+    input: _name
+
+    print: "Enter the first number: "
+    input: a
+
+    print: "Enter the second number: "
+    input: b
+
+    print: "Enter the third number: "
+    input: c
+
+    print: "Enter the fourth number: "
+    input: d
+
+    find lcm given [a, b], [c, d]
+
+    print: "Do you want to continue?: (Y/N): "
+    input: ch2
+
+    when ch2 == 'N' || ch2 == 'N' do:
+        choice == False
+
+print: hence lcm
+        

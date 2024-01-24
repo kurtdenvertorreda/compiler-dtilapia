@@ -8,78 +8,78 @@ ALPHANUMERIC = ALPHABET + DIGITS
 # TOKENS
 #######################################
 
-# Data Types
+# LITERALS
 TT_INT		= 'Integer'
 TT_FLOAT    = 'Float'
 TT_STRING   = 'String'
 TT_CHAR     = 'Character'
 TT_COMPL    = 'Complex'
 TT_BOOL     = 'Boolean'
-TT_SET      = 'Set'
-TT_ARR      = 'Array'
-NUM_DT      = {TT_INT, TT_COMPL, TT_BOOL, TT_FLOAT}
 
 # Delimiters and Brackets
-TT_LPAREN   = 'Left Parenthesis'
-TT_RPAREN   = 'Right Parenthesis'
-TT_LCBRAC   = 'Left Curly Bracket'
-TT_RCBRAC   = 'Right Curly Bracket'
-TT_LSQBRAC  = 'Left Square Bracket'
-TT_RSQBRAC  = 'Right Curly Bracket'
-TT_COLON    = 'Colon'
-TT_COMMA    = 'Comma'
-TT_PERIOD   = 'Period'
-TT_SEMICOL  = 'Semi Colon'
-TT_UNSCO    = 'Underscore'
-TT_SNGQ     = 'Single Quotation Mark'
-TT_DBLQ     = 'Double Quotation Mark'
+TT_LPAREN   = 'DELIBRA_Left_Parenthesis'
+TT_RPAREN   = 'DELIBRA_Right_Parenthesis'
+TT_LCBRAC   = 'DELIBRA_Left_Curly_Bracket'
+TT_RCBRAC   = 'DELIBRA_Right_Curly_Bracket'
+TT_LSQBRAC  = 'DELIBRA_Left_Square_Bracket'
+TT_RSQBRAC  = 'DELIBRA_Right_Curly_Bracket'
+TT_COLON    = 'DELIBRA_Colon'
+TT_COMMA    = 'DELIBRA_Comma'
+TT_PERIOD   = 'DELIBRA_Period'
+TT_SEMICOL  = 'DELIBRA_Semi_Colon'
+TT_SNGQ     = 'DELIBRA_Single_Quotation_Mark'
+TT_DBLQ     = 'DELIBRA_Double_Quotation_Mark'
 
 # Arithmetic Operators
-TT_MODULO = 'Modulo Operator'
-TT_EXPONENT = 'Exponent Operator'
-TT_PLUS     = 'Addition Operator'
-TT_MINUS    = 'Subtraction Operator'
-TT_MUL      = 'Multiplication Operator'
-TT_DIV      = 'Division Operator'
+TT_MODULO   = 'ARIOP_Modulo_Operator'
+TT_EXPONENT = 'ARIOP_Exponent_Operator'
+TT_PLUS     = 'ARIOP_Addition_Operator'
+TT_MINUS    = 'ARIOP_Subtraction_Operator'
+TT_MUL      = 'ARIOP_Multiplication_Operator'
+TT_DIV      = 'ARIOP_Division_Operator'
 
 # Comparison Operators
-TT_GREATER_THAN = 'Greater Than Operator'
-TT_LESS_THAN = 'Less Than Operator'
-TT_GREATER_THAN_EQUAL = 'Greater Than or Equal To Operator'
-TT_LESS_THAN_EQUAL = 'Less Than or Equal To Operator'
-TT_EQUAL_TO = 'Equal To Operator'
-TT_NOT_EQUAL_TO = 'Not Equal To Operator'
+TT_GREATER_THAN = 'RELOP_Greater_Than_Operator'
+TT_LESS_THAN = 'RELOP_Less_Than_Operator'
+TT_GREATER_THAN_EQUAL = 'RELOP_Greater_Than_or_Equal_To_Operator'
+TT_LESS_THAN_EQUAL = 'RELOP_Less_Than_or_Equal_To_Operator'
+TT_EQUAL_TO = 'RELOP_Equal_To_Operator'
+TT_NOT_EQUAL_TO = 'RELOP_Not_Equal_To_Operator'
+TT_INVALID ='Invalid Token'
 
 # Logical Operators
-TT_NEGATION = 'Negation Operator'
-TT_DISJUNCTION = 'Disjunction Operator'  # For \/ or ||
-TT_CONJUNCTION = 'Conjunction Operator'  # For /\ or &&
-TT_CONDITIONAL = 'Conditional Operator'  # For ->
-TT_IMPLICATION = 'Implication Operator'  # For ==>
-TT_BICONDITIONAL = 'Bi-conditional Operator'  # For <->
+TT_NEGATION = 'LOGOP_Negation_Operator'
+TT_DISJUNCTION = 'LOGOP_Disjunction_Operator'  # For \/ or ||
+TT_CONJUNCTION = 'LOGOP_Conjunction_Operator'  # For /\ or &&
+TT_CONDITIONAL = 'LOGOP_Conditional_Operator'  # For ->
+TT_IMPLICATION = 'LOGOP_Implication_Operator'  # For ==>
+TT_BICONDITIONAL = 'LOGOP_Bi-conditional_Operator'  # For <->
 
 # Assignment Operators
-TT_ASSIGNMENT = 'Assignment Operator'  # For =
-TT_ADDITION_ASSIGNMENT = 'Addition Assignment Operator'  # For +=
-TT_SUBTRACTION_ASSIGNMENT = 'Subtraction Assignment Operator'  # For -=
-TT_MULTIPLICATION_ASSIGNMENT = 'Multiplication Assignment Operator'  # For *=
-TT_DIVISION_ASSIGNMENT = 'Division Assignment Operator'  # For /=
-TT_MODULUS_ASSIGNMENT = 'Modulus Assignment Operator'  # For %=
+TT_ASSIGNMENT = 'ASSOP_Assignment_Operator'  # For =
+TT_ADDITION_ASSIGNMENT = 'ASSOP_Addition_Assignment_Operator'  # For +=
+TT_SUBTRACTION_ASSIGNMENT = 'ASSOP_Subtraction_Assignment_Operator'  # For -=
+TT_MULTIPLICATION_ASSIGNMENT = 'ASSOP_Multiplication_Assignment_Operator'  # For *=
+TT_DIVISION_ASSIGNMENT = 'ASSOP_Division_Assignment_Operator'  # For /=
+TT_MODULUS_ASSIGNMENT = 'ASSOP_Modulus_Assignment_Operator'  # For %=
 
 # Unary Operators
-TT_UNARY_PLUS = 'Unary Plus Operator'  # For +
-TT_UNARY_MINUS = 'Unary Minus Operator'  # For -
-TT_INCREMENT = 'Increment Operator'  # For ++
-TT_DECREMENT = 'Decrement Operator'  # For --
-TT_FACTORIAL = 'Factorial Operator'  # For !
+TT_UNARY_PLUS = 'UNAOP_Unary_Plus_Operator'  # For +
+TT_UNARY_MINUS = 'UNAOP_Unary_Minus_Operator'  # For -
+TT_INCREMENT = 'UNAOP_Increment_Operator'  # For ++
+TT_DECREMENT = 'UNAOP_Decrement_Operator'  # For --
+TT_FACTORIAL = 'UNAOP_Factorial_Operator'  # For !
 
 # Others <3
 TT_IDENTIFIER = 'Identifier'
 TT_KEYWORD = 'Keyword'
-TT_RESERVE = 'Reserved Word'
-TT_NOISE   = 'Noise Word'
-TT_SCOM    = 'Single Line Comment'
-TT_MCOM    = 'Multiple Line Comment'
+TT_RESERVE = 'Reserved_Word'
+TT_NOISE   = 'Noise_Word'
+TT_INVALID = 'Invalid_Token'
+
+# Comments
+TT_SCOM    = 'COM_Single_Line_Comment'
+TT_MCOM    = 'COM_Multiple_Line_Comment'
 
 KEYWORDS = {'int', 'float', 'String', 'char', 'bool', 'set', 'array', 'complex', 'let', 'be',
             'for', 'from', 'to', 'in', 'by', 'do', 'when', 'otherwise', 'funct', 'while', 'given',
