@@ -122,7 +122,6 @@ function executeCode() {
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data);  // Log the received data
 
         const outputContainer = document.getElementById('output');
         const tableBody = document.querySelector('.styled-table tbody');
@@ -223,4 +222,53 @@ function generateFile() {
   } else {
       alert('Error: Cannot generate an empty file.');
   }
+}
+function exportTableToFile() {
+    const table = document.querySelector('.styled-table');
+    const rows = table.querySelectorAll('tbody tr');
+    let tableText = 'Tokens                                                  Lexemes\r\n';
+    tableText += '===============================================================================================\r\n';
+
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        cells.forEach((cell, index) => {
+            console.log(index + " " + cell + " " + cell.textContent);
+            tableText += cell.textContent;
+
+            // Calculate the padding based on the length of the content in the cell
+            const paddingCount = 50 - cell.textContent.length;
+            const padding = ' '.repeat(paddingCount);
+            tableText += padding;
+
+            if (index === 0) {
+                tableText += '\t'; // Use tab as a delimiter
+            }
+        });
+
+        tableText += '\r\n';
+    });
+
+    // Prompt the user for a file name
+    const fileName = window.prompt('Enter file name (without extension):');
+    if (fileName !== null) { // Check if the user provided a file name
+      // Add the ".dtil" extension to the provided file name
+      const fullFileName = fileName.trim() === '' ? 'table_text.txt' : `${fileName}.txt`;
+
+      // Create a Blob containing the table text
+      const blob = new Blob([tableText], { type: 'text/plain' });
+
+      // Create a download link
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = fullFileName;
+
+      // Append the link to the body
+      document.body.appendChild(link);
+
+      // Programmatically trigger the click event
+      link.click();
+
+      // Remove the link from the body
+      document.body.removeChild(link);
+    }
 }
