@@ -36,6 +36,21 @@
           </table>
       </div>
     </div>
+    <div class="last-container">
+      <div class="text">Syntax Analyzer</div>
+      <div class="syntax-analyzer">
+        <div class="syntax-container">
+          <p class="syntax-text">Leftmost Derivation</p>
+          <textarea class="code-editor lexical" id="leftmost-derivation" readonly></textarea>
+          <button class="generate_syntaxText run-code-btn">Save Copy</button>
+        </div>
+        <div class="syntax-container">
+          <p class="syntax-text">Rightmost Derivation</p>
+          <textarea class="code-editor lexical" id="rightmost-derivation" readonly></textarea>
+          <button class="generate_syntaxText run-code-btn">Save Copy</button>
+        </div>
+      </div>
+    </div>
   </div>
   <script src="{{ url_for('static', filename='script/script.js') }}"></script>
 </body>
