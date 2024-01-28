@@ -88,10 +88,11 @@ body {
 .styled-table {
   border-collapse: collapse;
   width: 100%;
-  margin: 5px auto;
+  margin: 0 auto;
   font-size: 0.9em;
   font-family: sans-serif;
   justify-content: center;
+  border-collapse: collapse;
   align-items: center;
   align-self: center;
   min-width: 400px;
@@ -106,7 +107,17 @@ body {
 
 .styled-table th,
 .styled-table td {
-    padding: 12px 15px;
+    width: 50%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+
+.styled-table thead {
+    position: sticky;
+    top: 0px; /* Adjust according to the height of your navbar */
+    background-color: #f2f2f2;
 }
 
 .styled-table tbody tr {
@@ -142,6 +153,7 @@ button:active {
   justify-content:space-around;
   align-content: center;
   flex-wrap: wrap;
+  gap: 1px;
   width: 100%;
   margin: 0;
   padding: 0;
@@ -149,6 +161,7 @@ button:active {
 
 .container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 50%;
@@ -160,20 +173,22 @@ button:active {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: flex;
   width: 40%;
   height: 100vh;
   margin: 0;
   /* Adjust as needed */
 }
 
+.output-container text{
+    margin: 0;
+}
 
 .code-editor {
   /* width: 1000px; */
   width: 100%;
   /* height: 450px; */
   height: auto; 
-  margin-top: 50px;
   border-radius:30px;
   border: 1px solid #1A4243;
   background: #FFF;
@@ -197,15 +212,16 @@ button:active {
   height: auto;
   margin-top: 0;
   /* border: 1px solid #1A4243; */
-  border-radius: 30px;
+  border-radius: 0 0 30px 30px;
   background: #FFF;
   box-shadow: 10px 10px 4px 0px #3A9A9D;
-  padding: 20px;
+  padding:  0 0;
   font-family: monospace;
+  position: relative;
   font-size: 14px;
-  overflow: auto;
-  max-height: 50vh;
-  min-height: 55vh;
+  overflow-x: auto;
+  max-height: 65vh;
+  min-height: 65vh;
   -webkit-scrollbar { display: none; }
 }
 
@@ -242,7 +258,8 @@ input {
 
 .lexical{
   width: 100%;
-  margin: 20px auto;
+  margin: 20px 0;
+  overflow: auto;
 }
 
 .last-container{
@@ -253,14 +270,14 @@ input {
   width: 100%;
   height: 100vh;
   margin: 0;
-  padding: 0;
 }
 
 .syntax-container{
-  width: 43%;
+  width: 42%;
   margin-top:20px;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .syntax-text {

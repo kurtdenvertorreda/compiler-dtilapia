@@ -272,3 +272,44 @@ function exportTableToFile() {
       document.body.removeChild(link);
     }
 }
+
+// Save copy of syntax output
+function saveCopy(textareaId, derivationType) {
+  // Get the content of the textarea
+  var content = document.getElementById(textareaId).value;
+
+  // Prompt user for a name input using window.prompt
+  var userName = window.prompt("Enter file name:");
+
+  if (userName !== null && userName.trim() !== "") {
+    // Create a Blob with the content
+    var blob = new Blob([content], { type: "text/plain" });
+
+    // Create a link element
+    var link = document.createElement("a");
+
+    // Set the download attribute and filename
+    link.download = userName + "_" + derivationType + "_derivation.txt";
+
+    // Create a URL for the Blob and set it as the link's href
+    link.href = window.URL.createObjectURL(blob);
+
+    // Append the link to the body
+    document.body.appendChild(link);
+
+    // Trigger a click on the link to start the download
+    link.click();
+
+    // Remove the link from the body
+    document.body.removeChild(link);
+  }
+}
+
+// Attach the click event to the "Save Copy" buttons
+document.querySelector("#leftmost-derivation-btn").addEventListener("click", function() {
+  saveCopy("leftmost-derivation", "leftmost");
+});
+
+document.querySelector("#rightmost-derivation-btn").addEventListener("click", function() {
+  saveCopy("rightmost-derivation", "rightmost");
+});

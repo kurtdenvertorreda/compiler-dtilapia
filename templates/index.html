@@ -21,6 +21,7 @@
   <div class="main">
     <div class="container">
       <!-- <span class="line-numbers"></span> -->
+      <div class="text">Code Editor</div>
       <textarea id="code-editor" class="code-editor" placeholder="Enter your code"></textarea>
     </div>
     <div class="output-container">
@@ -37,17 +38,18 @@
       </div>
     </div>
     <div class="last-container">
+      </hr>
       <div class="text">Syntax Analyzer</div>
       <div class="syntax-analyzer">
         <div class="syntax-container">
           <p class="syntax-text">Leftmost Derivation</p>
           <textarea class="code-editor lexical" id="leftmost-derivation" readonly></textarea>
-          <button class="generate_syntaxText run-code-btn">Save Copy</button>
+          <button class="generate_syntaxText run-code-btn" id="leftmost-derivation-btn">Save Copy</button>
         </div>
         <div class="syntax-container">
           <p class="syntax-text">Rightmost Derivation</p>
           <textarea class="code-editor lexical" id="rightmost-derivation" readonly></textarea>
-          <button class="generate_syntaxText run-code-btn">Save Copy</button>
+          <button class="generate_syntaxText run-code-btn" id="rightmost-derivation-btn">Save Copy</button>
         </div>
       </div>
     </div>
