@@ -81,11 +81,15 @@ TT_INVALID = 'Invalid_Token'
 TT_SCOM    = 'COM_Single_Line_Comment'
 TT_MCOM    = 'COM_Multiple_Line_Comment'
 
-# Newline and Tab
+# Grouped data types from keywords
+KEYWORDS_DATA_TYPE = {'int', 'float', 'String', 'char', 'bool', 'complex'} 
 
-KEYWORDS = {'int', 'float', 'String', 'char', 'bool', 'set', 'array', 'complex', 'let', 'be',
-            'for', 'from', 'to', 'in', 'by', 'do', 'when', 'otherwise', 'funct', 'while', 'given',
-            'output', 'print', 'show', 'input', 'find', 'hence'}
+KEYWORDS = KEYWORDS_DATA_TYPE.union({
+    'array', 'set', 'let', 'be',
+    'for', 'from', 'to', 'in', 'by', 'do', 'when', 'otherwise', 'funct', 'while', 'given',
+    'output', 'print', 'show', 'input', 'find', 'hence'
+})
+
 
 RESERVED_WORDS = {'True', 'False', 'permutation', 'combination', 'btree', 'preorder', 'inorder', 'postorder',
                  'null', 'search', 'add', 'remove', 'ugraph', 'dgraph', 'nodeAdd', 'removeEdge', 'UedgeAdd', 'DedgeAdd',
