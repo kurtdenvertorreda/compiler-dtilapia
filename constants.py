@@ -16,6 +16,8 @@ TT_CHAR     = 'Character'
 TT_COMPL    = 'Complex'
 TT_BOOL     = 'Boolean'
 
+TT_LITERALS = {TT_INT, TT_FLOAT, TT_STRING, TT_CHAR, TT_COMPL, TT_BOOL}
+
 # Delimiters and Brackets
 TT_LPAREN   = 'DELIBRA_Left_Parenthesis'
 TT_RPAREN   = 'DELIBRA_Right_Parenthesis'
@@ -37,6 +39,8 @@ TT_PLUS     = 'ARIOP_Addition_Operator'
 TT_MINUS    = 'ARIOP_Subtraction_Operator'
 TT_MUL      = 'ARIOP_Multiplication_Operator'
 TT_DIV      = 'ARIOP_Division_Operator'
+
+TT_ARIOP = {TT_MODULO, TT_EXPONENT, TT_PLUS, TT_MINUS, TT_MUL, TT_DIV}
 
 # Comparison/Conditional Operators
 TT_GREATER_THAN = 'RELOP_Greater_Than_Operator'
