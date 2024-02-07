@@ -40,7 +40,7 @@ class Parser:
                                     self.advance()
                                     if self.current_token.type == TT_LSQBRAC:
                                         self.advance()
-                                        if self.current_token.type == TT_INT or self.current_token.type == TT_IDENTIFIER:
+                                        if self.current_token.type == TT_INT:
                                             size = self.current_token.value
                                             self.advance()
                                             if self.current_token.type == TT_RSQBRAC:
@@ -57,14 +57,18 @@ class Parser:
                                                                 self.advance()
                                                                 return {'keyword: let ' 'identifier': identifier_token.value, 'keyword: be ' 'data_type': data_type, 'data_struct': 'array', 'size:': size, 'value': value}
                                                             elif self.current_token.type == TT_COMMA:
+                                                                size_allowed = size
                                                                 while self.current_token.type == TT_COMMA:
                                                                     self.advance()
                                                                     if self.current_token.type == data_type:
                                                                         value.append(self.current_token.value)
-                                                                        self.advance()                                                  
+                                                                        self.advance()                
+                                                                        size_allowed -= 1                                  
                                                                     else:
                                                                         raise Exception("Invalid token at line {}: Expected same data type value".format(self.current_token.line))
-                                                                if self.current_token.type == TT_RCBRAC:
+                                                                if size_allowed == 0:
+                                                                        raise Exception("Invalid token at line {}: Expected size".format(self.current_token.line))
+                                                                elif self.current_token.type == TT_RCBRAC:
                                                                     return {'keyword: let ' 'identifier': identifier_token.value, 'keyword: be ' 'data_type': data_type, 'data_struct': 'array', 'size:': size, 'value': value}
                                                                 else:
                                                                     raise Exception("Invalid token at line {}: Expected '}'".format(self.current_token.line))
