@@ -186,6 +186,7 @@ class Parser:
     def parse_output(self):
         self.advance()  # Move past 'OUTPUT' keyword
         store = "output" + " "
+        identifier_token = self.current_token
         # if self.current_token.type == TT_KEYWORD and self.current_token.value == "output":
         #     self.advance()  # Move past 'output' keyword
         if self.current_token.type == TT_COLON:
