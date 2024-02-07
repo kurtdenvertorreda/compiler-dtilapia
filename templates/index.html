@@ -28,7 +28,8 @@
       <div class="text">Lexemes</div>
       <div class="lexical-analyzer">
           <table class="styled-table"> 
-              <thead> 
+              <thead>
+                  <th>Line</th>
                   <th>Tokens</th>
                   <th>Lexemes</th>
               </thead>
@@ -40,18 +41,19 @@
     <div class="last-container">
       </hr>
       <div class="text">Syntax Analyzer</div>
-      <div class="syntax-analyzer">
-        <div class="syntax-container">
-          <p class="syntax-text">Leftmost Derivation</p>
-          <textarea class="code-editor lexical" id="leftmost-derivation" readonly></textarea>
-          <button class="generate_syntaxText run-code-btn" id="leftmost-derivation-btn">Save Copy</button>
-        </div>
-        <div class="syntax-container">
-          <p class="syntax-text">Rightmost Derivation</p>
-          <textarea class="code-editor lexical" id="rightmost-derivation" readonly></textarea>
-          <button class="generate_syntaxText run-code-btn" id="rightmost-derivation-btn">Save Copy</button>
-        </div>
+      <div class="syntax-container">
+        <table class="styled-table syntax-table"> 
+          <thead>
+              <th>Line</th>
+              <th>Code</th>
+              <th>Syntax Error</th>
+              <th>Description</th>
+          </thead>
+          <tbody> 
+          </tbody>
+        </table>
       </div>
+      <button class="generate_syntaxText run-code-btn" id="leftmost-derivation-btn">Save Copy</button>
     </div>
   </div>
   <script src="{{ url_for('static', filename='script/script.js') }}"></script>

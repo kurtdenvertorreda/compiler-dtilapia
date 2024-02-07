@@ -126,6 +126,7 @@ function executeCode() {
         const outputContainer = document.getElementById('output');
         const tableBody = document.querySelector('.styled-table tbody');
 
+
         if (data.error) {
             outputContainer.textContent = `Error: ${data.error}`;
         } else {
@@ -134,7 +135,6 @@ function executeCode() {
 
             // Clear existing rows in the table
             tableBody.innerHTML = '';
-
             // Log the tokens for debugging
             //console.log(data.tokens);
 
@@ -142,42 +142,52 @@ function executeCode() {
             data.tokens.forEach(token => {
                 if(token.startsWith('(') && token.endsWith(')')){
                     const row = document.createElement('tr');
+                    const lineCell = document.createElement('td');
                     const typeCell = document.createElement('td');
                     const valueCell = document.createElement('td');
                     const noise_row = document.createElement('tr');
+                    const noise_lineCell = document.createElement('td');
                     const noise_typeCell = document.createElement('td');
                     const noise_valueCell = document.createElement('td');
 
                     const [key, noise] = token.split(',').map(part => part.trim());
-                    var [tokenType, tokenValue] = key.split(': ').map(part => part.trim());
-                    var [noise_tokenType, noise_tokenValue] = noise.split(': ').map(part => part.trim());
-                    tokenType = tokenType.replace('(',"");
+                    var [tokenLine, tokenType, tokenValue] = key.split(':').map(part => part.trim());
+                    var [noise_tokenLine,noise_tokenType, noise_tokenValue] = noise.split(':').map(part => part.trim());
+                    tokenline = tokenType.replace('(',"");
                     noise_tokenValue = noise_tokenValue.slice(0, -1);
 
+                    lineCell.textContent = `${tokenLine}`;
                     typeCell.textContent = `${tokenType}`;
                     valueCell.textContent = `${tokenValue}`;
+                    noise_lineCell.textContent = `${noise_tokenLine}`;
                     noise_typeCell.textContent = `${noise_tokenType}`;
                     noise_valueCell.textContent = `${noise_tokenValue}`;
 
+                    row.appendChild(typeline);
                     row.appendChild(typeCell);
                     row.appendChild(valueCell);
                     tableBody.appendChild(row);
 
+                    noise_row.appendChild(noise_lineCell);
                     noise_row.appendChild(noise_typeCell);
                     noise_row.appendChild(noise_valueCell);
                     tableBody.appendChild(noise_row);
 
                 }else{
+                    console.log(token)
                     const row = document.createElement('tr');
+                    const lineCell = document.createElement('td');
                     const typeCell = document.createElement('td');
                     const valueCell = document.createElement('td');
 
                     // Split the token to extract type and value
-                    const [tokenType, tokenValue] = token.split(': ').map(part => part.trim());
+                    const [tokenLine, tokenType, tokenValue] = token.split(':').map(part => part.trim());
 
+                    lineCell.textContent = `${tokenLine}`;
                     typeCell.textContent = `${tokenType}`;
                     valueCell.textContent = `${tokenValue}`;
 
+                    row.appendChild(lineCell);
                     row.appendChild(typeCell);
                     row.appendChild(valueCell);
                     tableBody.appendChild(row);
