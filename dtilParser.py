@@ -97,7 +97,42 @@ class Parser:
                     elif self.current_token.value == 'set':
                         data_struct = self.current_token.value
                         self.advance()
-                        return {'keyword: let ' 'identifier': identifier_token.value, 'keyword: be ' 'data_type': data_struct}
+                        if self.current_token.type == TT_ASSIGNMENT:
+                            self.advance()
+                            if self.current_token.type == TT_LCBRAC:
+                                self.advance()
+                                if self.current_token.type == TT_INT or self.current_token.type == TT_IDENTIFIER or self.current_token.type == TT_FLOAT or self.current_token.type == TT_STRING or self.current_token.type == TT_CHAR or self.current_token.type == TT_COMPL:
+                                    value = [self.current_token.value]
+                                    data_type = [self.current_token.type]
+                                    self.advance()
+                                    if self.current_token.type == TT_RCBRAC:
+                                        self.advance()
+                                        return {'keyword: let ' 'identifier': identifier_token.value, 'keyword: be ' 'data_type': data_type, 'data_struct': 'set', 'value': value}
+                                    elif self.current_token.type == TT_COMMA:
+                                        while self.current_token.type == TT_COMMA:
+                                            self.advance()
+                                            if self.current_token.type == TT_INT or self.current_token.type == TT_IDENTIFIER or self.current_token.type == TT_FLOAT or self.current_token.type == TT_STRING or self.current_token.type == TT_CHAR or self.current_token.type == TT_COMPL:
+                                                value.append(self.current_token.value)
+                                                data_type.append(self.current_token.type)
+                                                self.advance()                                           
+                                            else:
+                                                raise Exception("Invalid token at line {}: Expected  data type value".format(self.current_token.line))
+                                        if self.current_token.type == TT_RCBRAC:
+                                            return {'keyword: let ' 'identifier': identifier_token.value, 'keyword: be ' 'data_type': data_type, 'data_struct': 'set', 'value': value}
+                                        else:
+                                            raise Exception("Invalid token at line {}: Expected '}'".format(self.current_token.line))
+                                    else:
+                                        raise Exception("Invalid token at line {}: Expected ',' or ']".format(self.current_token.line))
+                                else:
+                                    raise Exception("Invalid token at line {}: Expected data type value".format(self.current_token.line))
+                            else:
+                                raise Exception("Invalid token at line {}: Expected '{'".format(self.current_token.line))
+
+
+                        elif self.current_token.type == TT_IDENTIFIER:
+                            raise Exception("Invalid token at line {}: Expected assignment".format(self.current_token.line))
+                        else:
+                            return {'keyword: let ' 'identifier': identifier_token.value, 'keyword: be ' 'data_type': data_struct}
                     else:
                         raise Exception("Invalid token at line {}: Expected data type or structure".format(self.current_token.line))
                 else:
