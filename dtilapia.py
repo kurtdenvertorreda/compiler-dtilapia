@@ -89,6 +89,35 @@ class Lexer:
                 tokens.append(Token(TT_EXPONENT, value='^'))
                 self.advance()
 
+<<<<<<< HEAD
+=======
+            elif self.current_char == '>':
+                            token_value = '>'
+                            self.advance()
+                            if self.current_char == '=':
+                                token_value += '='
+                                self.advance()
+                            
+                            if self.current_char is not None and not self.current_char.isspace():
+                                if self.current_char.isalnum() or self.current_char in {'(', ')'}:  # Add other valid characters if needed
+                                    # The character is valid for starting a new token, so we tokenize the operator
+                                    tokens.append(Token(TT_GREATER_THAN_EQUAL if token_value == '>=' else TT_GREATER_THAN, value=token_value))
+                                else:
+                                    # Accumulate invalid characters until a space is encountered
+                                    invalid_chars = ''
+                                    while self.current_char is not None and not self.current_char.isspace():
+                                        invalid_chars = invalid_chars + self.current_char
+                                        self.advance()
+
+                                    # Tokenize the accumulated invalid characters
+                                    tokens.append(Token(TT_INVALID, value= token_value + invalid_chars))
+                                    self.advance()
+                            else:
+                                # The '>' operator is followed by a space or the end of input, so tokenize it
+                                tokens.append(Token(TT_GREATER_THAN_EQUAL if token_value == '>=' else TT_GREATER_THAN, value=token_value))
+
+            # Greater Than or Equal To Operator
+>>>>>>> origin/main
             elif self.current_char == '>':
                             token_value = '>'
                             self.advance()
@@ -146,7 +175,7 @@ class Lexer:
                                 tokens.append(Token(TT_INVALID, value= token_value + invalid_chars))
                                 self.advance()
 
-            # Conditional Operator
+           # Conditional Operator
             elif self.current_char == '=':
                             token_value = '='
                             self.advance()
@@ -174,6 +203,13 @@ class Lexer:
                                 while self.current_char is not None and not self.current_char.isspace():
                                     invalid_chars = invalid_chars + self.current_char
                                     self.advance()
+<<<<<<< HEAD
+=======
+
+                                # Tokenize the accumulated invalid characters
+                                tokens.append(Token(TT_INVALID, value= token_value + invalid_chars))
+                                self.advance()
+>>>>>>> origin/main
 
                                 # Tokenize the accumulated invalid characters
                                 tokens.append(Token(TT_INVALID, value= token_value + invalid_chars))
@@ -206,7 +242,7 @@ class Lexer:
                     tokens.append(Token(TT_DISJUNCTION, value='||'))
                     self.advance()
 
-            # Conjunction Operator
+                       # Conjunction Operator
             elif self.current_char == '/':
                 token_value = '/'
                 self.advance()
@@ -223,20 +259,44 @@ class Lexer:
                     token_value = token_value + '/'
                     self.advance
                     comment_text = self.advance_until('\n')
+<<<<<<< HEAD
                 elif self.current_char == '~':
                     token_value = token_value + '~'
                     self.advance
                     comment_text = self.advance_until('~/\n')
                 if self.current_char is None or self.current_char.isspace() or self.current_char.isdigit() or self.current_char.isalpha() or self.current_char in {'(', ')'}:
+=======
+                    tokens.append(Token(TT_SCOM, value=f'/{comment_text}'))
+                elif self.current_char == '~':
+                    self.advance()
+                    comment_text = self.advance_until('~')
+                    self.advance()  # Skip the '~'
+                    x = False
+                    while x == False:
+                        if self.current_char == '/':
+                            tokens.append(Token(TT_MCOM, value=f'/~{comment_text}~/'))
+                            x = True
+                        else:
+                            comment_text += self.advance_until('~')
+                            self.advance()
+                    self.advance()
+                elif self.current_char is None or self.current_char.isspace() or self.current_char.isdigit() or self.current_char.isalpha() or self.current_char in {'(', ')'}:
+>>>>>>> origin/main
                     # If it's a valid character, tokenize accordingly
                     if token_value == '/\\':
                         tokens.append(Token(TT_CONJUNCTION, value=token_value))
                     elif token_value == '/=':
                         tokens.append(Token(TT_DIVISION_ASSIGNMENT, value=token_value))
                     elif token_value == '//':
+<<<<<<< HEAD
                         tokens.append(Token(TT_SCOM, value=f'/{comment_text}'))
                     elif token_value == '/~':
                         tokens.append(Token(TT_MCOM, value=f'/~'))
+=======
+                        tokens.append(Token(TT_SCOM, value=f'//{comment_text}'))
+                    elif token_value == '/~':
+                        tokens.append(Token(TT_MCOM, value=f'{comment_text}'))
+>>>>>>> origin/main
                     else:
                         # If token_value is just '+', it's a plus token
                         tokens.append(Token(TT_DIV, value=token_value))
@@ -305,11 +365,19 @@ class Lexer:
 
                 if self.current_char == '=':
                     # If the next character is '=', it's an addition assignment
+<<<<<<< HEAD
                     token_value = token_value + '='
                     self.advance()  # Move past '='
                 elif self.current_char == '+':
                     # If the next character is another '+', it's an increment
                     token_value = token_value + '+'
+=======
+                    token_value += '='
+                    self.advance()  # Move past '='
+                elif self.current_char == '+':
+                    # If the next character is another '+', it's an increment
+                    token_value += '+'
+>>>>>>> origin/main
                     self.advance()  # Move past the second '+'
 
                 if self.current_char is None or self.current_char.isspace() or self.current_char.isdigit() or self.current_char.isalpha() or self.current_char in {'(', ')'}:
@@ -332,7 +400,7 @@ class Lexer:
                     tokens.append(Token(TT_INVALID, value= token_value + invalid_chars))
                     self.advance()
 
-            # Multiplication Assignment Operator
+             # Multiplication Assignment Operator
             elif self.current_char == '*':
                 token_value = '*'
                 self.advance()
@@ -366,12 +434,12 @@ class Lexer:
                 #if self.current_char == '=':
                   #  tokens.append(Token(TT_MULTIPLICATION_ASSIGNMENT, value='*='))
                #     self.advance()
-           #     elif self.current_char == '*' or '':
-             #       print("invalid")
-             #       self.advance()
-             #   else:
-             #       # Multiplication Operator
-             #       tokens.append(Token(TT_MUL, value='*'))
+             #   elif self.current_char == '*' or '':
+                #    print("invalid")
+               #     self.advance()
+               # else:
+                    # Multiplication Operator
+              #      tokens.append(Token(TT_MUL, value='*'))
 
             # Modulus Assignment Operator
             elif self.current_char == '%':
@@ -465,7 +533,10 @@ class Lexer:
                         invalid_chars = invalid_chars + self.current_char
                         self.advance()
                     return Token(TT_INVALID, value= num_str + invalid_chars)
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/main
             else:
                 num_str += self.current_char
             self.advance()

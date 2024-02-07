@@ -82,6 +82,7 @@ function redo() {
 function handleFile() {
   const fileInput = document.getElementById('inputfile');
   const codeEditor = document.getElementById('code-editor');
+  const tableBody = document.querySelector('.styled-table tbody');
 
   const file = fileInput.files[0];
 
@@ -100,6 +101,7 @@ function handleFile() {
       reader.readAsText(file, 'UTF-8');
     } else {
       codeEditor.value = "Error: Please select a valid .dtil file.";
+      tableBody.innerHTML = '';
       fileInput.value = ""; // Clear the file input
     }
   } else {
@@ -120,13 +122,12 @@ function executeCode() {
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data);  // Log the received data
 
         const outputContainer = document.getElementById('output');
         const tableBody = document.querySelector('.styled-table tbody');
 
         if (data.error) {
-            outputContainer.textContent = `Error`;
+            outputContainer.textContent = `Error: ${data.error}`;
         } else {
             // Assuming you have a 'tokens' property in the response
             //outputContainer.textContent = data.tokens.join('\n');
@@ -148,8 +149,8 @@ function executeCode() {
                     const noise_valueCell = document.createElement('td');
 
                     const [key, noise] = token.split(',').map(part => part.trim());
-                    var [tokenType, tokenValue] = key.split(':').map(part => part.trim());
-                    var [noise_tokenType, noise_tokenValue] = noise.split(':').map(part => part.trim());
+                    var [tokenType, tokenValue] = key.split(': ').map(part => part.trim());
+                    var [noise_tokenType, noise_tokenValue] = noise.split(': ').map(part => part.trim());
                     tokenType = tokenType.replace('(',"");
                     noise_tokenValue = noise_tokenValue.slice(0, -1);
 
@@ -188,3 +189,127 @@ function executeCode() {
         console.error('Error:', error);
     });
 }
+
+function generateFile() {
+  const codeEditor = document.getElementById('code-editor');
+  const codeContent = codeEditor.value;
+
+  if (codeContent.trim() !== '') {
+      // Prompt the user for a file name
+      const fileName = window.prompt('Enter file name (without extension):');
+      
+      if (fileName !== null) { // Check if the user provided a file name
+          // Add the ".dtil" extension to the provided file name
+          const fullFileName = fileName.trim() === '' ? 'generated_file.dtil' : `${fileName}.dtil`;
+
+          // Create a Blob containing the code content
+          const blob = new Blob([codeContent], { type: 'text/plain' });
+
+          // Create a download link with the specified file name
+          const link = document.createElement('a');
+          link.href = window.URL.createObjectURL(blob);
+          link.download = fullFileName;
+
+          // Append the link to the body
+          document.body.appendChild(link);
+
+          // Programmatically trigger the click event
+          link.click();
+
+          // Remove the link from the body
+          document.body.removeChild(link);
+      }
+  } else {
+      alert('Error: Cannot generate an empty file.');
+  }
+}
+function exportTableToFile() {
+    const table = document.querySelector('.styled-table');
+    const rows = table.querySelectorAll('tbody tr');
+    let tableText = 'Tokens                                                  Lexemes\r\n';
+    tableText += '===============================================================================================\r\n';
+
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        cells.forEach((cell, index) => {
+            console.log(index + " " + cell + " " + cell.textContent);
+            tableText += cell.textContent;
+
+            // Calculate the padding based on the length of the content in the cell
+            const paddingCount = 50 - cell.textContent.length;
+            const padding = ' '.repeat(paddingCount);
+            tableText += padding;
+
+            if (index === 0) {
+                tableText += '\t'; // Use tab as a delimiter
+            }
+        });
+
+        tableText += '\r\n';
+    });
+
+    // Prompt the user for a file name
+    const fileName = window.prompt('Enter file name (without extension):');
+    if (fileName !== null) { // Check if the user provided a file name
+      // Add the ".dtil" extension to the provided file name
+      const fullFileName = fileName.trim() === '' ? 'table_text.txt' : `${fileName}.txt`;
+
+      // Create a Blob containing the table text
+      const blob = new Blob([tableText], { type: 'text/plain' });
+
+      // Create a download link
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = fullFileName;
+
+      // Append the link to the body
+      document.body.appendChild(link);
+
+      // Programmatically trigger the click event
+      link.click();
+
+      // Remove the link from the body
+      document.body.removeChild(link);
+    }
+}
+
+// Save copy of syntax output
+function saveCopy(textareaId, derivationType) {
+  // Get the content of the textarea
+  var content = document.getElementById(textareaId).value;
+
+  // Prompt user for a name input using window.prompt
+  var userName = window.prompt("Enter file name:");
+
+  if (userName !== null && userName.trim() !== "") {
+    // Create a Blob with the content
+    var blob = new Blob([content], { type: "text/plain" });
+
+    // Create a link element
+    var link = document.createElement("a");
+
+    // Set the download attribute and filename
+    link.download = userName + "_" + derivationType + "_derivation.txt";
+
+    // Create a URL for the Blob and set it as the link's href
+    link.href = window.URL.createObjectURL(blob);
+
+    // Append the link to the body
+    document.body.appendChild(link);
+
+    // Trigger a click on the link to start the download
+    link.click();
+
+    // Remove the link from the body
+    document.body.removeChild(link);
+  }
+}
+
+// Attach the click event to the "Save Copy" buttons
+document.querySelector("#leftmost-derivation-btn").addEventListener("click", function() {
+  saveCopy("leftmost-derivation", "leftmost");
+});
+
+document.querySelector("#rightmost-derivation-btn").addEventListener("click", function() {
+  saveCopy("rightmost-derivation", "rightmost");
+});

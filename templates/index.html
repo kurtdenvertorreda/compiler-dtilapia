@@ -11,32 +11,49 @@
       <img src="{{ url_for('static', filename='css/logo.png') }}" alt="Logo" class="logo">
       <div class="button-container">
         <button class="run-code-btn" onclick=executeCode()>Run Code</button>
+        <button class="generate_text_file run-code-btn" onclick=generateFile()>Create File</button>
+        <button class="export-table-btn , run-code-btn" onclick="exportTableToFile()">Export Table </button>
         <input class="inputfile" name="file" type="file" id="inputfile" accept=".dtil" onchange="handleFile()">
         <label for="inputfile">Upload File</label>
       </div>
     </nav>
   </header>
-  <main class="main">
+  <div class="main">
     <div class="container">
       <!-- <span class="line-numbers"></span> -->
+      <div class="text">Code Editor</div>
       <textarea id="code-editor" class="code-editor" placeholder="Enter your code"></textarea>
     </div>
     <div class="output-container">
-      <div class="flex-box1">
-        <div class="text">Lexemes</div>
-        <div class="lexical-analyzer">
-            <table class="styled-table"> 
-                <thead> 
-                    <th>Tokens</th>
-                    <th>Lexemes</th>
-                </thead>
-                <tbody> 
-                </tbody>
-            </table>
+      <div class="text">Lexemes</div>
+      <div class="lexical-analyzer">
+          <table class="styled-table"> 
+              <thead> 
+                  <th>Tokens</th>
+                  <th>Lexemes</th>
+              </thead>
+              <tbody> 
+              </tbody>
+          </table>
+      </div>
+    </div>
+    <div class="last-container">
+      </hr>
+      <div class="text">Syntax Analyzer</div>
+      <div class="syntax-analyzer">
+        <div class="syntax-container">
+          <p class="syntax-text">Leftmost Derivation</p>
+          <textarea class="code-editor lexical" id="leftmost-derivation" readonly></textarea>
+          <button class="generate_syntaxText run-code-btn" id="leftmost-derivation-btn">Save Copy</button>
+        </div>
+        <div class="syntax-container">
+          <p class="syntax-text">Rightmost Derivation</p>
+          <textarea class="code-editor lexical" id="rightmost-derivation" readonly></textarea>
+          <button class="generate_syntaxText run-code-btn" id="rightmost-derivation-btn">Save Copy</button>
         </div>
       </div>
     </div>
-  </main>
+  </div>
   <script src="{{ url_for('static', filename='script/script.js') }}"></script>
 </body>
 </html>
