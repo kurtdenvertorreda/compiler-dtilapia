@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 import os
-import dtilapia
+import dtilapia, dtilParser
 
 app = Flask(__name__)
 
@@ -28,9 +28,10 @@ def execute_code():
 
         lexer = dtilapia.Lexer(file_path, file_content)
         tokens, error = lexer.make_tokens()
-
-        lefthand = "kaliwang parte"
-        righthand = "kanang parte"
+        
+        parser = dtilParser.Parser(tokens)
+        result = parser.parse()
+            
 
         # Remove the temporary file
         os.remove('temp_code.dtil')
@@ -39,7 +40,7 @@ def execute_code():
             return jsonify({'error': error.as_string()})
         else:
             # Return the tokens as JSON
-            return jsonify({'tokens': [str(token) for token in tokens], 'leftDerivation': lefthand, 'rightDerivation': righthand })
+            return jsonify({'tokens': [str(token) for token in tokens], 'parses': [str(results) for results in result] })
     except Exception as e:
         return jsonify({'error': str(e)})
 
