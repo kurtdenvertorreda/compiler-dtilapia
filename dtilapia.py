@@ -81,8 +81,8 @@ class Lexer:
         while self.current_char != None:
             if self.current_char in ' \t':
                 self.advance()
-            elif self.current_char == '\n':
-                tokens.append(Token(self.pos.ln, TT_NEWLINE, value='\n'))
+            if self.current_char in '\n':
+                tokens.append(Token(self.pos.ln,TT_NEWLINE,value="\n"))
                 self.advance()
             elif self.current_char in DIGITS:
                 tokens.append(self.make_number())
