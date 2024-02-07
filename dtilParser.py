@@ -30,12 +30,44 @@ class Parser:
             if self.current_token.type == TT_KEYWORD and self.current_token.value == "be":
                 self.advance()  # Move past 'be' keyword
                 if self.current_token.type == TT_KEYWORD:
-                    if self.current_token.type == TT_KEYWORD and self.current_token.value in ("int", "float", "String", "char", "bool"):  # Check if the token type is one of the data types
+                    if self.current_token.value in KEYWORDS_DATA_TYPE:  # Check if the token type is one of the data types
                         data_type = self.current_token.value  # Get the value of the data type token
-                        self.advance()  # Move past the data type token
-                        return {'keyword: let ' 'identifier': identifier_token.value, 'keyword: be ' 'data_type': data_type}  # Return identifier and data type
+                        self.advance()
+                        if self.current_token.type == TT_PERIOD:
+                            self.advance()
+                            if self.current_token.type == TT_KEYWORD:
+                                if self.current_token.value == 'array':
+                                    self.advance()
+                                    if self.current_token.type == TT_LSQBRAC:
+                                        self.advance()
+                                        if self.current_token.type == TT_INT or self.current_token.type == TT_IDENTIFIER:
+                                            size = self.current_token.value
+                                            self.advance()
+                                            if self.current_token.type == TT_RSQBRAC:
+                                                self.advance()
+                                                return {'keyword: let ' 'identifier': identifier_token.value, 'keyword: be ' 'data_type': data_type, 'data_struct': 'array', 'size:': size}
+                                            else:
+                                                raise Exception("Invalid token at line {}: Expected ']'.".format(self.current_token.line))
+                                        else:
+                                            raise Exception("Invalid token at line {}: Expected Expected Integer value".format(self.current_token.line))
+                                    else:
+                                        raise Exception("Invalid token at line {}: Expected '['".format(self.current_token.line))
+                                else:
+                                    raise Exception("Invalid token at line {}: Expected array".format(self.current_token.line))
+                            else:
+                                raise Exception("Invalid token at line {}: Expected keyword (array)".format(self.current_token.line))
+                        elif self.current_token.value not in KEYWORDS_DATA_TYPE:
+                            raise Exception("Invalid token at line {}: Expected data type or structure".format(self.current_token.line))
+                        else:
+                            return {'keyword: let ' 'identifier': identifier_token.value, 'keyword: be ' 'data_type': data_type}  # Return identifier and data type
+                    elif self.current_token.value == 'set':
+                        data_struct = self.current_token.value
+                        self.advance()
+                        return {'keyword: let ' 'identifier': identifier_token.value, 'keyword: be ' 'data_type': data_struct}
+                    else:
+                        raise Exception("Invalid token at line {}: Expected data type or structure".format(self.current_token.line))
                 else:
-                    raise Exception("Invalid token at line {}: Expected data type".format(self.current_token.line))
+                    raise Exception("Invalid token at line {}: Expected data type or structure".format(self.current_token.line))
             else:
                 raise Exception("Invalid token at line {}: Expected 'be' keyword".format(self.current_token.line))
         else:
