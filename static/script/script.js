@@ -154,18 +154,16 @@ function executeCode() {
                     const [key, noise] = token.split(',').map(part => part.trim());
                     var [tokenLine, tokenType, tokenValue] = key.split(':').map(part => part.trim());
                     var [noise_tokenLine,noise_tokenType, noise_tokenValue] = noise.split(':').map(part => part.trim());
-                    tokenLine = tokenType.replace('(',"");
+                    tokenLine = tokenLine.replace('(',"");
                     noise_tokenValue = noise_tokenValue.slice(0, -1);
 
-                    lineCell.textContent = `${tokenLine}`;
+                    lineCell.textContent = `${parseInt(tokenLine) + 1}`;
                     typeCell.textContent = `${tokenType}`;
                     valueCell.textContent = `${tokenValue}`;
                     noise_lineCell.textContent = `${noise_tokenLine}`;
                     noise_typeCell.textContent = `${noise_tokenType}`;
                     noise_valueCell.textContent = `${noise_tokenValue}`;
 
-                    console.log(tokenLine)
-                    console.log(noise_tokenLine)
 
                     row.appendChild(lineCell);
                     row.appendChild(typeCell);
@@ -187,7 +185,7 @@ function executeCode() {
                     // Split the token to extract type and value
                     const [tokenLine, tokenType, tokenValue] = token.split(':').map(part => part.trim());
 
-                    lineCell.textContent = `${tokenLine}`;
+                    lineCell.textContent = `${parseInt(tokenLine) + 1}`;
                     typeCell.textContent = `${tokenType}`;
                     valueCell.textContent = `${tokenValue}`;
 
