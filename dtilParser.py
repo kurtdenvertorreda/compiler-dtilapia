@@ -1,6 +1,17 @@
 from constants import *
 from dtilapia import Lexer
 
+class ResParse:
+    def __init__(self, line, code, errorName, errorDesc):
+        self.line = line
+        self.code = code
+        self.errorName = errorName
+        self.errorDesc = errorDesc
+    
+    def __repr__(self):
+        if self.errorName: return f'{self.line}:{self.code}:{self.errorName}: {self.errorDesc}'
+        return f'{self.line}:{self.code}:No Error:No Error'
+
 class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
@@ -21,57 +32,72 @@ class Parser:
         else:
             raise Exception("Invalid token at line {}: Expected 'let' keyword".format(self.current_token.line))
         return declarations
-
+    
     def parse_declaration(self):
+        store = ""
         self.advance()  # Move past 'let' keyword
+        store = "let" + " "
         identifier_token = self.current_token
         if identifier_token.type == TT_IDENTIFIER:
-            self.advance()  # Move past identifier
+              # Move past identifier
+            store += self.current_token.value + " "
+            self.advance()
             if self.current_token.type == TT_KEYWORD and self.current_token.value == "be":
-                self.advance()  # Move past 'be' keyword
+                 # Move past 'be' keyword
+                store += self.current_token.value + " "
+                self.advance() 
                 if self.current_token.type == TT_KEYWORD:
                     if self.current_token.value in KEYWORDS_DATA_TYPE:  # Check if the token type is one of the data types
                         data_type = self.current_token.value  # Get the value of the data type token
+                        store += self.current_token.value + " "
                         self.advance()
                         if self.current_token.type == TT_PERIOD:
+                            store += self.current_token.value + " "
                             self.advance()
                             if self.current_token.type == TT_KEYWORD:
+                                store += self.current_token.value + " "
                                 if self.current_token.value == 'array':
+                                    store += self.current_token.value + " "
                                     self.advance()
                                     if self.current_token.type == TT_LSQBRAC:
+                                        store += self.current_token.value + " "
                                         self.advance()
                                         if self.current_token.type == TT_INT or self.current_token.type == TT_IDENTIFIER:
                                             size = self.current_token.value
+                                            store += identifier_token.value + " "
                                             self.advance()
                                             if self.current_token.type == TT_RSQBRAC:
+                                                store += identifier_token.value + " "
                                                 self.advance()
-                                                return {'keyword: let ' 'identifier': identifier_token.value, 'keyword: be ' 'data_type': data_type, 'data_struct': 'array', 'size:': size}
+                                                return ResParse(self.current_token.line, store, "No Error", "No Error")
+                                                #return {'keyword: let ' 'identifier': identifier_token.value, 'keyword: be ' 'data_type': data_type, 'data_struct': 'array', 'size:': size}
                                             else:
-                                                raise Exception("Invalid token at line {}: Expected ']'.".format(self.current_token.line))
+                                                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected ']'.")
                                         else:
-                                            raise Exception("Invalid token at line {}: Expected Expected Integer value".format(self.current_token.line))
+                                            return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected Expected Integer value")
                                     else:
-                                        raise Exception("Invalid token at line {}: Expected '['".format(self.current_token.line))
+                                        return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected '['")
                                 else:
-                                    raise Exception("Invalid token at line {}: Expected array".format(self.current_token.line))
+                                    return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected array")
                             else:
-                                raise Exception("Invalid token at line {}: Expected keyword (array)".format(self.current_token.line))
+                                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected keyword (array)")
                         elif self.current_token.value not in KEYWORDS_DATA_TYPE:
-                            raise Exception("Invalid token at line {}: Expected data type or structure".format(self.current_token.line))
+                            return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected data type or structure")
                         else:
-                            return {'keyword: let ' 'identifier': identifier_token.value, 'keyword: be ' 'data_type': data_type}  # Return identifier and data type
+                            return ResParse(self.current_token.line, store, "No Error", "No Error")
                     elif self.current_token.value == 'set':
                         data_struct = self.current_token.value
+                        store += self.current_token.value + " "
                         self.advance()
-                        return {'keyword: let ' 'identifier': identifier_token.value, 'keyword: be ' 'data_type': data_struct}
+                        return ResParse(self.current_token.line, store, "No Error", "No Error")
                     else:
-                        raise Exception("Invalid token at line {}: Expected data type or structure".format(self.current_token.line))
+                        return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected data type or structure")
                 else:
-                    raise Exception("Invalid token at line {}: Expected data type or structure".format(self.current_token.line))
+                    return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected data type or structure")
             else:
-                raise Exception("Invalid token at line {}: Expected 'be' keyword".format(self.current_token.line))
+                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected 'be' keyword")
         else:
-            raise Exception("Invalid token at line {}: Expected an identifier".format(identifier_token.line))
+            return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected an identifier")
 
 
     def parse_data_type(self):

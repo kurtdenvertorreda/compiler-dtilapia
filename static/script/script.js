@@ -3,6 +3,8 @@ const codeEditor = document.getElementById("code-editor"); // Access the textare
 let isTabIndented = false; // Flag to detect if the last action was a tab indentation
 let codeHistory = [codeEditor.value]; // Initialize history with the current value of the editor
 let historyIndex = 0; // Index to track the current position in history
+// Initial update
+
 
 // Event listener for handling tab keydown events in the code editor
 codeEditor.addEventListener("keydown", function (event) {
@@ -123,18 +125,18 @@ function executeCode() {
     .then(response => response.json())
     .then(data => {
 
-        const outputContainer = document.getElementById('output');
         const tableBody = document.querySelector('.styled-table tbody');
-
+        const syntaxBody = document.querySelector('.syntax-table tbody');
 
         if (data.error) {
-            outputContainer.textContent = `Error: ${data.error}`;
+            console.log(`Error: ${data.error}`);
         } else {
             // Assuming you have a 'tokens' property in the response
             //outputContainer.textContent = data.tokens.join('\n');
 
             // Clear existing rows in the table
             tableBody.innerHTML = '';
+            syntaxBody.innerHTML = '';
             // Log the tokens for debugging
             //console.log(data.tokens);
 
@@ -193,7 +195,28 @@ function executeCode() {
                     row.appendChild(typeCell);
                     row.appendChild(valueCell);
                     tableBody.appendChild(row);
-                }
+                }  
+            });
+            
+            data.parses.forEach(results => {
+                const row = document.createElement('tr');
+                const lineCellP = document.createElement('td');
+                const codeCellP = document.createElement('td');
+                const errorNameCellP = document.createElement('td');
+                const errorDescCellP = document.createElement('td');
+
+                const [lineP, codeP, errorNP, errorDP] = results.split(':').map(part => part.trim());
+
+                lineCellP.textContent = `${parseInt(lineP) + 1}`;
+                codeCellP.textContent = `${codeP}`;
+                errorNameCellP.textContent = `${errorNP}`;
+                errorDescCellP.textContent = `${errorDP}`;
+
+                row.appendChild(lineCellP)
+                row.appendChild(codeCellP)
+                row.appendChild(errorNameCellP)
+                row.appendChild(errorDescCellP)
+                syntaxBody.appendChild(row);
             });
         }
     })
@@ -316,12 +339,3 @@ function saveCopy(textareaId, derivationType) {
     document.body.removeChild(link);
   }
 }
-
-// Attach the click event to the "Save Copy" buttons
-document.querySelector("#leftmost-derivation-btn").addEventListener("click", function() {
-  saveCopy("leftmost-derivation", "leftmost");
-});
-
-document.querySelector("#rightmost-derivation-btn").addEventListener("click", function() {
-  saveCopy("rightmost-derivation", "rightmost");
-});

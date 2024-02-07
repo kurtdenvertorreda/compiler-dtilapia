@@ -59,7 +59,6 @@ class Token:
     def __repr__(self):
         if self.value: return f'{self.line}:{self.type}:{self.value}'
         return f'{self.type}'
-
 #######################################
 # LEXER
 #######################################
@@ -81,6 +80,9 @@ class Lexer:
 
         while self.current_char != None:
             if self.current_char in ' \t':
+                self.advance()
+            elif self.current_char == '\n':
+                tokens.append(Token(self.pos.ln, TT_NEWLINE, value='\n'))
                 self.advance()
             elif self.current_char in DIGITS:
                 tokens.append(self.make_number())
