@@ -81,6 +81,8 @@ TT_INVALID = 'Invalid_Token'
 TT_SCOM    = 'COM_Single_Line_Comment'
 TT_MCOM    = 'COM_Multiple_Line_Comment'
 
+# Newline and Tab
+
 KEYWORDS = {'int', 'float', 'String', 'char', 'bool', 'set', 'array', 'complex', 'let', 'be',
             'for', 'from', 'to', 'in', 'by', 'do', 'when', 'otherwise', 'funct', 'while', 'given',
             'output', 'print', 'show', 'input', 'find', 'hence'}
