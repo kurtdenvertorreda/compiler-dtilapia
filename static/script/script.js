@@ -141,6 +141,7 @@ function executeCode() {
             // Populate the table with token information
             data.tokens.forEach(token => {
                 if(token.startsWith('(') && token.endsWith(')')){
+
                     const row = document.createElement('tr');
                     const lineCell = document.createElement('td');
                     const typeCell = document.createElement('td');
@@ -153,7 +154,7 @@ function executeCode() {
                     const [key, noise] = token.split(',').map(part => part.trim());
                     var [tokenLine, tokenType, tokenValue] = key.split(':').map(part => part.trim());
                     var [noise_tokenLine,noise_tokenType, noise_tokenValue] = noise.split(':').map(part => part.trim());
-                    tokenline = tokenType.replace('(',"");
+                    tokenLine = tokenType.replace('(',"");
                     noise_tokenValue = noise_tokenValue.slice(0, -1);
 
                     lineCell.textContent = `${tokenLine}`;
@@ -163,7 +164,10 @@ function executeCode() {
                     noise_typeCell.textContent = `${noise_tokenType}`;
                     noise_valueCell.textContent = `${noise_tokenValue}`;
 
-                    row.appendChild(typeline);
+                    console.log(tokenLine)
+                    console.log(noise_tokenLine)
+
+                    row.appendChild(lineCell);
                     row.appendChild(typeCell);
                     row.appendChild(valueCell);
                     tableBody.appendChild(row);
