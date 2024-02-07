@@ -18,6 +18,9 @@ class Parser:
         if self.current_token.type == TT_KEYWORD and self.current_token.value == "let":
             declaration = self.parse_declaration()
             declarations.append(declaration)
+        elif self.current_token.type == TT_KEYWORD and self.current_token.value == "when":
+            declaration = self.parse_conditional()
+            declarations.append(declaration)
         else:
             raise Exception("Invalid token at line {}: Expected 'let' keyword".format(self.current_token.line))
         return declarations
@@ -41,7 +44,32 @@ class Parser:
         else:
             raise Exception("Invalid token at line {}: Expected an identifier".format(identifier_token.line))
 
+    def parse_conditional(self):
+        if self.current_token.type == TT_KEYWORD and self.current_token.value == "when":
+            self.advance()  # Move past 'when' keyword
+            condition = self.parse_condition()
+            if self.current_token.type == TT_KEYWORD and self.current_token.value == "do":
+                self.advance()  # Move past 'do' keyword
+                self.eat(TT_COLON)  # Consume ':'
+                body = self.parse_body()
+                return {'type': 'when-do', 'condition': condition, 'body': body}
+            else:
+                raise Exception("Invalid token at line {}: Expected 'do' keyword".format(self.current_token.line))
+        elif self.current_token.type == TT_KEYWORD and self.current_token.value == "when_other":
+            return self.parse_when_other_statement()
+        elif self.current_token.type == TT_KEYWORD and self.current_token.value == "when_multi_other":
+            return self.parse_when_multi_other_statement()
+        else:
+            raise Exception("Invalid token at line {}: Expected 'when', 'when_other', or 'when_multi_other' keyword".format(self.current_token.line))
 
+    # def parse_condition(self):
+    #     # handling <identifier> <rel_op> <bool_val>
+    #     identifier_token = self.current_token
+    #     if identifier_token.type == TT_IDENTIFIER:
+    #         self.advance()
+    #         if self.current_token.type 
+####################################################
+#
     def parse_data_type(self):
         data_type = ''
         while self.current_token.type in (TT_IDENTIFIER, TT_PERIOD):
