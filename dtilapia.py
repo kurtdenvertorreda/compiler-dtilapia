@@ -113,7 +113,7 @@ class Lexer:
                                     self.advance()
                             else:
                                 # The '>' operator is followed by a space or the end of input, so tokenize it
-                                tokens.append(Token(self.pos.ln,TT_GREATER_THAN_EQUAL if token_value == '>=' else self.pos.ln,TT_GREATER_THAN, value=token_value))
+                                tokens.append(Token(self.pos.ln,TT_GREATER_THAN_EQUAL if token_value == '>=' else TT_GREATER_THAN, value=token_value))
 
             # Greater Than or Equal To Operator
             elif self.current_char == '>':
