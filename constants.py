@@ -38,7 +38,7 @@ TT_MINUS    = 'ARIOP_Subtraction_Operator'
 TT_MUL      = 'ARIOP_Multiplication_Operator'
 TT_DIV      = 'ARIOP_Division_Operator'
 
-# Comparison Operators
+# Comparison/Conditional Operators
 TT_GREATER_THAN = 'RELOP_Greater_Than_Operator'
 TT_LESS_THAN = 'RELOP_Less_Than_Operator'
 TT_GREATER_THAN_EQUAL = 'RELOP_Greater_Than_or_Equal_To_Operator'
@@ -46,6 +46,8 @@ TT_LESS_THAN_EQUAL = 'RELOP_Less_Than_or_Equal_To_Operator'
 TT_EQUAL_TO = 'RELOP_Equal_To_Operator'
 TT_NOT_EQUAL_TO = 'RELOP_Not_Equal_To_Operator'
 TT_INVALID ='Invalid Token'
+
+TT_REL_OP = {TT_GREATER_THAN, TT_LESS_THAN, TT_GREATER_THAN_EQUAL, TT_LESS_THAN_EQUAL, TT_EQUAL_TO, TT_NOT_EQUAL_TO}
 
 # Logical Operators
 TT_NEGATION = 'LOGOP_Negation_Operator'

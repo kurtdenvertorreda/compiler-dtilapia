@@ -21,6 +21,9 @@ class Parser:
         elif self.current_token.type == TT_KEYWORD and self.current_token.value == "when":
             declaration = self.parse_conditional()
             declarations.append(declaration)
+        elif self.current_token.type == TT_KEYWORD and self.current_token.value == "output":
+            declaration = self.parse_output()
+            declarations.append(declaration)
         else:
             raise Exception("Invalid token at line {}: Expected 'let' keyword".format(self.current_token.line))
         return declarations
@@ -76,6 +79,20 @@ class Parser:
         else:
             raise Exception("Invalid token at line {}: Expected an identifier".format(identifier_token.line))
 
+## OUTPUT ##
+    def parse_output(self):
+        if self.current_token.type == TT_KEYWORD and self.current_token.value == "output":
+            self.advance()  # Move past 'output' keyword
+            if self.current_token.type == TT_COLON:
+                self.advance()  # Move past ':'
+                identifier_token = self.current_token
+                if identifier_token.type == TT_IDENTIFIER:
+                    self.advance()
+                    return {'type': 'output', 'identifier': identifier_token.value}
+                elif self.current_token.type == TT_INT:
+                    value = self.current_token.value
+                    self.advance()
+## CONDITIONAL STATEMENTS ##
     def parse_conditional(self):
         if self.current_token.type == TT_KEYWORD and self.current_token.value == "when":
             self.advance()  # Move past 'when' keyword
@@ -94,13 +111,31 @@ class Parser:
         else:
             raise Exception("Invalid token at line {}: Expected 'when', 'when_other', or 'when_multi_other' keyword".format(self.current_token.line))
 
-    # def parse_condition(self):
-    #     # handling <identifier> <rel_op> <bool_val>
-    #     identifier_token = self.current_token
-    #     if identifier_token.type == TT_IDENTIFIER:
-    #         self.advance()
-    #         if self.current_token.type 
-####################################################
+    def parse_condition(self):
+        # handling <identifier> <rel_op> <bool_val>
+        identifier_token = self.current_token
+        if identifier_token.type == TT_IDENTIFIER:
+            self.advance()
+            if self.current_token.type == TT_REL_OP: #checks if current char is a rel_op
+                self.advance()
+                if self.current_token.type == TT_BOOL:
+                    self.advance()
+                else:
+                    raise Exception("Invalid token at line {}: Expected boolean value".format(self.current_token.line))
+                if self.current_token.type == DIGITS:
+                    self.advance()
+                else:
+                    raise Exception("Invalid token at line {}: Expected integer value".format(self.current_token.line))
+                if self.current_token.type == TT_IDENTIFIER:
+                    self.advance()
+                else:
+                    raise Exception("Invalid token at line {}: Expected identifier".format(self.current_token.line))
+            return {'identifier': identifier_token.value, 'rel_op': self.current_token.value, 'bool_val': self.current_token.value}
+
+
+
+
+################################
 #
     def parse_data_type(self):
         data_type = ''
