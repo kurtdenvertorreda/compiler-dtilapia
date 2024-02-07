@@ -134,7 +134,6 @@ function executeCode() {
 
             // Clear existing rows in the table
             tableBody.innerHTML = '';
-
             // Log the tokens for debugging
             //console.log(data.tokens);
 

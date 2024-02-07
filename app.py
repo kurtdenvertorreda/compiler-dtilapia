@@ -29,14 +29,8 @@ def execute_code():
         lexer = dtilapia.Lexer(file_path, file_content)
         tokens, error = lexer.make_tokens()
 
-        #test checkpoint
-        #print(file_content)
-        #if error:
-        #    print(error.as_string())
-        #    return jsonify({'error': error.as_string()})
-        #else:
-        #    for token in tokens:
-        #        print(token)
+        lefthand = "kaliwang parte"
+        righthand = "kanang parte"
 
         # Remove the temporary file
         os.remove('temp_code.dtil')
@@ -45,7 +39,7 @@ def execute_code():
             return jsonify({'error': error.as_string()})
         else:
             # Return the tokens as JSON
-            return jsonify({'tokens': [str(token) for token in tokens]})
+            return jsonify({'tokens': [str(token) for token in tokens], 'leftDerivation': lefthand, 'rightDerivation': righthand })
     except Exception as e:
         return jsonify({'error': str(e)})
 
