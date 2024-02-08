@@ -31,6 +31,7 @@ def execute_code():
         
         parser = dtilParser.Parser(tokens)
         result = parser.parse()
+        print(result)
             
 
         # Remove the temporary file

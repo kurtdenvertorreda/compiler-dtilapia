@@ -86,7 +86,8 @@ TT_INVALID = 'Invalid_Token'
 # Comments
 TT_SCOM    = 'COM_Single_Line_Comment'
 TT_MCOM    = 'COM_Multiple_Line_Comment'
-TT_NEWLINE = '\n'
+TT_NEWLINE = 'NEW_LINE'
+TT_TAB = '    ' or '\t'
 
 # Grouped data types from keywords
 KEYWORDS_DATA_TYPE = {'int', 'float', 'String', 'char', 'bool', 'complex'} 
