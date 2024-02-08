@@ -291,7 +291,7 @@ class Parser:
                                                                     else:
                                                                         return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected same data type.")
                                                                     if size_allowed <= 0:
-                                                                        return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected ']'.")
+                                                                        return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected exact size.")
                                                                 if self.current_token.type == TT_RCBRAC:
                                                                     return ResParse(self.current_token.line, store, "No Error", "No Error")
                                                                 else:
