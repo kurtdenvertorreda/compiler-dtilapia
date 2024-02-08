@@ -3,6 +3,8 @@ const codeEditor = document.getElementById("code-editor"); // Access the textare
 let isTabIndented = false; // Flag to detect if the last action was a tab indentation
 let codeHistory = [codeEditor.value]; // Initialize history with the current value of the editor
 let historyIndex = 0; // Index to track the current position in history
+// Initial update
+
 
 // Event listener for handling tab keydown events in the code editor
 codeEditor.addEventListener("keydown", function (event) {
@@ -123,18 +125,18 @@ function executeCode() {
     .then(response => response.json())
     .then(data => {
 
-        const outputContainer = document.getElementById('output');
         const tableBody = document.querySelector('.styled-table tbody');
-
+        const syntaxBody = document.querySelector('.syntax-table tbody');
 
         if (data.error) {
-            outputContainer.textContent = `Error: ${data.error}`;
+            console.log(`Error: ${data.error}`);
         } else {
             // Assuming you have a 'tokens' property in the response
             //outputContainer.textContent = data.tokens.join('\n');
 
             // Clear existing rows in the table
             tableBody.innerHTML = '';
+            syntaxBody.innerHTML = '';
             // Log the tokens for debugging
             //console.log(data.tokens);
 
@@ -154,18 +156,16 @@ function executeCode() {
                     const [key, noise] = token.split(',').map(part => part.trim());
                     var [tokenLine, tokenType, tokenValue] = key.split(':').map(part => part.trim());
                     var [noise_tokenLine,noise_tokenType, noise_tokenValue] = noise.split(':').map(part => part.trim());
-                    tokenLine = tokenType.replace('(',"");
+                    tokenLine = tokenLine.replace('(',"");
                     noise_tokenValue = noise_tokenValue.slice(0, -1);
 
-                    lineCell.textContent = `${tokenLine}`;
+                    lineCell.textContent = `${parseInt(tokenLine) + 1}`;
                     typeCell.textContent = `${tokenType}`;
                     valueCell.textContent = `${tokenValue}`;
                     noise_lineCell.textContent = `${noise_tokenLine}`;
                     noise_typeCell.textContent = `${noise_tokenType}`;
                     noise_valueCell.textContent = `${noise_tokenValue}`;
 
-                    console.log(tokenLine)
-                    console.log(noise_tokenLine)
 
                     row.appendChild(lineCell);
                     row.appendChild(typeCell);
@@ -187,7 +187,7 @@ function executeCode() {
                     // Split the token to extract type and value
                     const [tokenLine, tokenType, tokenValue] = token.split(':').map(part => part.trim());
 
-                    lineCell.textContent = `${tokenLine}`;
+                    lineCell.textContent = `${parseInt(tokenLine) + 1}`;
                     typeCell.textContent = `${tokenType}`;
                     valueCell.textContent = `${tokenValue}`;
 
@@ -195,7 +195,28 @@ function executeCode() {
                     row.appendChild(typeCell);
                     row.appendChild(valueCell);
                     tableBody.appendChild(row);
-                }
+                }  
+            });
+            
+            data.parses.forEach(results => {
+                const row = document.createElement('tr');
+                const lineCellP = document.createElement('td');
+                const codeCellP = document.createElement('td');
+                const errorNameCellP = document.createElement('td');
+                const errorDescCellP = document.createElement('td');
+
+                const [lineP, codeP, errorNP, errorDP] = results.split(':').map(part => part.trim());
+
+                lineCellP.textContent = `${parseInt(lineP) + 1}`;
+                codeCellP.textContent = `${codeP}`;
+                errorNameCellP.textContent = `${errorNP}`;
+                errorDescCellP.textContent = `${errorDP}`;
+
+                row.appendChild(lineCellP)
+                row.appendChild(codeCellP)
+                row.appendChild(errorNameCellP)
+                row.appendChild(errorDescCellP)
+                syntaxBody.appendChild(row);
             });
         }
     })
@@ -237,55 +258,107 @@ function generateFile() {
       alert('Error: Cannot generate an empty file.');
   }
 }
+
 function exportTableToFile() {
-    const table = document.querySelector('.styled-table');
-    const rows = table.querySelectorAll('tbody tr');
-    let tableText = 'Tokens                                                  Lexemes\r\n';
-    tableText += '===============================================================================================\r\n';
+  const table = document.querySelector('.syntax-table');
+  const rows = table.querySelectorAll('tbody tr');
+  let tableText = 'Line Number                                Tokens                                  Lexemes                         Description\r\n';
+  tableText += '==================================================================================================================================\r\n';
 
-    rows.forEach(row => {
-        const cells = row.querySelectorAll('td');
-        cells.forEach((cell, index) => {
-            console.log(index + " " + cell + " " + cell.textContent);
-            tableText += cell.textContent;
+  rows.forEach(row => {
+      const cells = row.querySelectorAll('td');
+      cells.forEach((cell, index) => {
+          console.log(index + " " + cell + " " + cell.textContent);
+          tableText += cell.textContent;
 
-            // Calculate the padding based on the length of the content in the cell
-            const paddingCount = 50 - cell.textContent.length;
-            const padding = ' '.repeat(paddingCount);
-            tableText += padding;
+          // Calculate the padding based on the length of the content in the cell
+          const paddingCount = 34 - cell.textContent.length;
+          const padding = ' '.repeat(paddingCount);
+          tableText += padding;
 
-            if (index === 0) {
-                tableText += '\t'; // Use tab as a delimiter
-            }
-        });
+          if (index === 0) {
+              tableText += '\t'; // Use tab as a delimiter
+          }
+      });
 
-        tableText += '\r\n';
-    });
+      tableText += '\r\n';
+  });
 
-    // Prompt the user for a file name
-    const fileName = window.prompt('Enter file name (without extension):');
-    if (fileName !== null) { // Check if the user provided a file name
-      // Add the ".dtil" extension to the provided file name
-      const fullFileName = fileName.trim() === '' ? 'table_text.txt' : `${fileName}.txt`;
+  // Prompt the user for a file name
+  const fileName = window.prompt('Enter file name (without extension):');
+  if (fileName !== null) { // Check if the user provided a file name
+    // Add the ".dtil" extension to the provided file name
+    const fullFileName = fileName.trim() === '' ? 'table_text.txt' : `${fileName}.txt`;
 
-      // Create a Blob containing the table text
-      const blob = new Blob([tableText], { type: 'text/plain' });
+    // Create a Blob containing the table text
+    const blob = new Blob([tableText], { type: 'text/plain' });
 
-      // Create a download link
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = fullFileName;
+    // Create a download link
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = fullFileName;
 
-      // Append the link to the body
-      document.body.appendChild(link);
+    // Append the link to the body
+    document.body.appendChild(link);
 
-      // Programmatically trigger the click event
-      link.click();
+    // Programmatically trigger the click event
+    link.click();
 
-      // Remove the link from the body
-      document.body.removeChild(link);
-    }
+    // Remove the link from the body
+    document.body.removeChild(link);
+  }
 }
+
+function exportsyntaxTableToFile() {
+  const table = document.querySelector('.syntax-table');
+  const rows = table.querySelectorAll('tbody tr');
+  let tableText = 'Line Number                                Code                                     Error                         Description\r\n';
+  tableText += '==================================================================================================================================\r\n';
+
+  rows.forEach(row => {
+      const cells = row.querySelectorAll('td');
+      cells.forEach((cell, index) => {
+          console.log(index + " " + cell + " " + cell.textContent);
+          tableText += cell.textContent;
+
+          // Calculate the padding based on the length of the content in the cell
+          const paddingCount = 34 - cell.textContent.length;
+          const padding = ' '.repeat(paddingCount);
+          tableText += padding;
+
+          if (index === 0) {
+              tableText += '\t'; // Use tab as a delimiter
+          }
+      });
+
+      tableText += '\r\n';
+  });
+
+  // Prompt the user for a file name
+  const fileName = window.prompt('Enter file name (without extension):');
+  if (fileName !== null) { // Check if the user provided a file name
+    // Add the ".dtil" extension to the provided file name
+    const fullFileName = fileName.trim() === '' ? 'table_text.txt' : `${fileName}.txt`;
+
+    // Create a Blob containing the table text
+    const blob = new Blob([tableText], { type: 'text/plain' });
+
+    // Create a download link
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = fullFileName;
+
+    // Append the link to the body
+    document.body.appendChild(link);
+
+    // Programmatically trigger the click event
+    link.click();
+
+    // Remove the link from the body
+    document.body.removeChild(link);
+  }
+}
+
 
 // Save copy of syntax output
 function saveCopy(textareaId, derivationType) {
@@ -318,12 +391,3 @@ function saveCopy(textareaId, derivationType) {
     document.body.removeChild(link);
   }
 }
-
-// Attach the click event to the "Save Copy" buttons
-document.querySelector("#leftmost-derivation-btn").addEventListener("click", function() {
-  saveCopy("leftmost-derivation", "leftmost");
-});
-
-document.querySelector("#rightmost-derivation-btn").addEventListener("click", function() {
-  saveCopy("rightmost-derivation", "rightmost");
-});
