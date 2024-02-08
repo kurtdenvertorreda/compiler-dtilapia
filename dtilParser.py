@@ -285,6 +285,8 @@ class Parser:
                                                                         store += str(self.current_token.value) + " "
                                                                         self.advance()                
                                                                         if self.current_token.type == TT_RCBRAC:
+                                                                            store += str(self.current_token.value) + " "
+                                                                            self.advance()
                                                                             return ResParse(self.current_token.line, store, "No Error", "No Error")                                  
                                                                     else:
                                                                         return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected same data type.")
