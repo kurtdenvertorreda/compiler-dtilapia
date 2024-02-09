@@ -48,11 +48,17 @@ class Parser:
             elif self.current_token.type == TT_KEYWORD and str(self.current_token.value) == "when":
                 when_do = self.parse_conditional()
                 declarations.append(when_do)
+            elif self.current_token.type == TT_INVALID:
+                invalid = self.parse_invalid()
+                declarations.append(invalid)
 
             self.advance()  # Move to the next token
 
         return declarations  # Move the return statement outside the loop
-    
+    def parse_invalid(self):
+        store = str(self.current_token.value) + " "
+        return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}', "Expected valid symbols")
+        
     def parse_discrete(self):
         self.advance()
         store = "find" + " "
