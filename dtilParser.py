@@ -197,6 +197,8 @@ class Parser:
             elif self.current_token.value == "input":
                 input = self.parse_input()
                 body.append(input)
+            elif self.current_token.type == TT_INVALID:
+                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected array.")
             else:
                 raise Exception(f"Invalid token at line {self.current_token.line}: Unexpected token {self.current_token.value}")
 
