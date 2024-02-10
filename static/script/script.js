@@ -154,8 +154,8 @@ function executeCode() {
                     const noise_valueCell = document.createElement('td');
 
                     const [key, noise] = token.split(',').map(part => part.trim());
-                    var [tokenLine, tokenType, tokenValue] = key.split(':').map(part => part.trim());
-                    var [noise_tokenLine,noise_tokenType, noise_tokenValue] = noise.split(':').map(part => part.trim());
+                    var [tokenLine, tokenType, tokenValue] = key.split('~').map(part => part.trim());
+                    var [noise_tokenLine,noise_tokenType, noise_tokenValue] = noise.split('~').map(part => part.trim());
                     tokenLine = tokenLine.replace('(',"");
                     noise_tokenValue = noise_tokenValue.slice(0, -1);
 
@@ -178,7 +178,7 @@ function executeCode() {
                     tableBody.appendChild(noise_row);
 
                 }else{
-                    if(token.split(':').map(part => part.trim())[1] == "NEW_LINE" || token.split(':').map(part => part.trim())[1] == "TAB"){
+                    if(token.split('~').map(part => part.trim())[1] == "NEW_LINE" || token.split('~').map(part => part.trim())[1] == "TAB"){
                     }else{
                         const row = document.createElement('tr');
                         const lineCell = document.createElement('td');
@@ -186,7 +186,7 @@ function executeCode() {
                         const valueCell = document.createElement('td');
 
                         // Split the token to extract type and value
-                        const [tokenLine, tokenType, tokenValue] = token.split(':').map(part => part.trim());
+                        const [tokenLine, tokenType, tokenValue] = token.split('~').map(part => part.trim());
 
                         lineCell.textContent = `${parseInt(tokenLine) + 1}`;
                         typeCell.textContent = `${tokenType}`;
