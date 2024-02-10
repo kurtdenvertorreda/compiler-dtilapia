@@ -1,6 +1,7 @@
 import constants
 import dtilParser
 
+# INPUT
 def parse_input(self):
     self.advance()
     store = "input" + " "
@@ -14,12 +15,13 @@ def parse_input(self):
             store += str(self.current_token.value) + " "
             self.advance()
         else:
-            return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line+1)}')
-        return dtilParser.dtilParser.ResParse(self.current_token.line, store, "No Error")
+            return dtilParser.ResParse(str(self.current_token.line), store, f'Expected an identifier after ":" at line {str(self.current_token.line+1)}')
+        return dtilParser.ResParse(self.current_token.line, store, " ")
     else:
-        return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line+1)}')
+        return dtilParser.ResParse(str(self.current_token.line), store, f'Expected a ":" after "input" keyword at line {str(self.current_token.line+1)}')
     
 
+# OUTPUT
 def parse_output(self):
     self.advance()  # Move past 'OUTPUT' keyword
     store = "output" + " "
@@ -71,6 +73,14 @@ def parse_output(self):
                 if self.current_token.value == "\"":
                     store += str(self.current_token.value) + " "
                     self.advance()
+                    if self.current_token.value == "+":
+                        store += str(self.current_token.value) + " "
+                        self.advance()
+                        if self.current_token.type == constants.TT_IDENTIFIER:
+                            store += str(self.current_token.value) + " "
+                            self.advance()
+                        else:
+                            return dtilParser.ResParse(str(self.current_token.line), store, f'Expected an identifier after "+" at line {str(self.current_token.line+1)}')
             return dtilParser.ResParse(str(self.current_token.line), store, " ")
         elif self.current_token.type == constants.TT_COMPL:
             store += str(self.current_token.value) + " "
@@ -85,4 +95,4 @@ def parse_output(self):
         else:
             return dtilParser.ResParse(str(self.current_token.line), store, f'Expected an expression, or variable after ":" at line {str(self.current_token.line+1)}')
     else:
-        return dtilParser.ResParse(str(self.current_token.line), store, f'Expected a ":" after the keyword "output" at line {str(self.current_token.line+1)}')
+        return dtilParser.ResParse(str(self.current_token.line), store, f'Expected a ":" after "output" keyword at line {str(self.current_token.line+1)}')
