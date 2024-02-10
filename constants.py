@@ -108,6 +108,8 @@ RESERVED_WORDS = {'True', 'False', 'permutation', 'combination', 'btree', 'preor
 
 NOISE_WORDS = {'eger', 'ing', 'acter', 'ion', 'ean', 'itive', 'actorization', 'uence'}
 
+
+
 KEYWORD_NOISE_WORDS = {
     'integer': ('int', 'eger'),
     'character': ('char', 'acter'),
