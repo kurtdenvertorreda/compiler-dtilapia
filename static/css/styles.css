@@ -320,9 +320,19 @@ input {
   width: 6%; /* Adjust the width of the "Line" column as needed */
 }
 
+.syntax-table th:nth-child(1),
+.syntax-table td:nth-child(1) {
+  width: 10%; /* Adjust the width of the "Line" column as needed */
+}
+
 .syntax-table th:nth-child(2),
 .syntax-table td:nth-child(2) {
-  width: 20%; /* Adjust the width of the "Line" column as needed */
+  width: 50%; /* Adjust the width of the "Line" column as needed */
+}
+
+.syntax-table th:nth-child(3),
+.syntax-table td:nth-child(3) {
+  width: 40%; /* Adjust the width of the "Line" column as needed */
 }
 
 
