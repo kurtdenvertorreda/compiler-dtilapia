@@ -9,7 +9,8 @@ class ResParse:
         self.errorDesc = errorDesc
     
     def __repr__(self):
-        if self.errorName: return f'{self.line}~{self.code}~{self.errorName}~{self.errorDesc}'
+        if self.errorName: 
+            return f'{self.line}~{self.code}~{self.errorName}~{self.errorDesc}'
         return f'{self.line}~{self.code}~No Error~No Error'
 
 class Parser:

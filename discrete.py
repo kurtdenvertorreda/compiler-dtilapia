@@ -14,7 +14,8 @@ def parse_hence(self):
         store += str(self.current_token.value) + " "
         return dtilParser.ResParse(self.current_token.line, store, f'Line {str(self.current_token.line + 1)} executed successfuly')
     else:
-        return dtilParser.ResParse(self.current_token.line, store, "Syntax Error: Expected discrete reserve word")
+        self.idx = len(self.tokens)
+        return dtilParser.ResParse(self.current_token.line, store, f'Syntax Error: Expected discrete reserve word at line {str(self.current_token.line + 1)}')
 
 
 def parse_discrete(self):
@@ -38,13 +39,16 @@ def parse_discrete(self):
                             store += str(self.current_token.value)
                             return dtilParser.ResParse(self.current_token.line, store,f'Line {str(self.current_token.line + 1)} executed successfuly')
                         else:
-                            return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}')
+                            self.idx = len(self.tokens)
+                            return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected "Integer" or "Identifier" at line {str(self.current_token.line + 1)}')
                     else:
                         return dtilParser.ResParse(self.current_token.line, store,f'Line {str(self.current_token.line + 1)} executed successfuly')
                 else:
-                    return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}')
+                    self.idx = len(self.tokens)
+                    return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected "Integer" or "Identifier" at line {str(self.current_token.line + 1)}')
             else:
-                return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}')
+                self.idx = len(self.tokens)
+                return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected "given" keyword at line {str(self.current_token.line + 1)}')
         elif self.current_token.value in ["inorder", "preorder","postorder"]:
             if self.current_token.value == "given":
                 store += str(self.current_token.value) + " "
@@ -53,8 +57,10 @@ def parse_discrete(self):
                     store += str(self.current_token.value)
                     return dtilParser.ResParse(self.current_token.line, store,f'Line {str(self.current_token.line + 1)} executed successfuly')
                 else:
+                    self.idx = len(self.tokens)
                     return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}')
             else:
+                self.idx = len(self.tokens)
                 return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}')
         elif self.current_token.value in ["isPrime", "isOdd", "isEven"]:
             store += str(self.current_token.value) + " "
@@ -67,8 +73,10 @@ def parse_discrete(self):
                     self.advance()
                     return dtilParser.ResParse(self.current_token.line, store,f'Line {str(self.current_token.line + 1)} executed successfuly')
                 else:
+                    self.idx = len(self.tokens)
                     return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}')
             else:
+                self.idx = len(self.tokens)
                 return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}')
         elif self.current_token.value in ["ariseq", "geomseq","fiboseq"]:
             store += str(self.current_token.value) + " "
@@ -92,18 +100,56 @@ def parse_discrete(self):
                                     store += str(self.current_token.value)
                                     return dtilParser.ResParse(self.current_token.line, store,f'Line {str(self.current_token.line + 1)} executed successfuly')
                                 else:
+                                    self.idx = len(self.tokens)
                                     return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}')
                             else:
                                 return dtilParser.ResParse(self.current_token.line, store,f'Line {str(self.current_token.line + 1)} executed successfuly')
                         else:
+                            self.idx = len(self.tokens)
                             return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}')
                     else:
+                        self.idx = len(self.tokens)
                         return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}')
                 else:
+                    self.idx = len(self.tokens)
                     return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}')
             else:
+                self.idx = len(self.tokens)
                 return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}')
+        elif self.current_token.type == constants.TT_IDENTIFIER:
+            if self.current_token.type == constants.TT_PERIOD:
+                store += str(self.current_token.value)
+                self.advance()
+                if self.current_token.value in ["add","remove","search","nodeAdd","removeNode","removeEdge","UedgeAdd","DedgeAdd"]:
+                    store += str(self.current_token.value)
+                    self.advance()
+                    if self.current_token.value in ["add","remove","search","nodeAdd","removeNode","removeEdge","UedgeAdd","DedgeAdd"]:
+                        store += str(self.current_token.value)
+                        self.advance()
+                        if self.current_token.value == "given":
+                            store += str(self.current_token.value)
+                            self.advance()
+                            if self.current_token.type in [constants.TT_IDENTIFIER, constants.TT_INT]:
+                                store += str(self.current_token.value)
+                                self.advance()
+                            else:
+                                self.idx = len(self.tokens)
+                                return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected "Integer Value" or "Identifier" at line {str(self.current_token.line + 1)}')
+                        else:
+                            self.idx = len(self.tokens)
+                            return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected "given" keyword at line {str(self.current_token.line + 1)}')
+                    else:
+                        self.idx = len(self.tokens)
+                        return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected operation at line {str(self.current_token.line + 1)}')
+                else:
+                    self.idx = len(self.tokens)
+                    return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected operation at line {str(self.current_token.line + 1)}')
+            else:
+                self.idx = len(self.tokens)
+                return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected period operation at line {str(self.current_token.line + 1)}')
         else:
-            return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}')
+            self.idx = len(self.tokens)
+            return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected discrete operation at line {str(self.current_token.line + 1)}')
     else:
-        return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}')
+        self.idx = len(self.tokens)
+        return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected discrete operation at line {str(self.current_token.line + 1)}')

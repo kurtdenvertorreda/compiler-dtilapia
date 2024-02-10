@@ -25,20 +25,28 @@ def parse_for(self):
                                 store += "\n"
                                 self.advance()
                                 if self.current_token.type == constants.TT_TAB:
-                                    return dtilParser.ResParse(str(self.current_token.line - 1), store, f'____')
+                                    return dtilParser.ResParse(self.current_token.line, store,f'Line {str(self.current_token.line + 1)} executed successfuly')
                                 else:
+                                    self.idx = len(self.tokens)
                                     return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
                             else:
+                                self.idx = len(self.tokens)
                                 return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
                         else:
+                            self.idx = len(self.tokens)
                             return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
                     else:
+                        self.idx = len(self.tokens)
                         return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
                 else:
+                    self.idx = len(self.tokens)
                     return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
             else:
+                self.idx = len(self.tokens)
                 return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
         else:
-             return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
-    else: 
+            self.idx = len(self.tokens)
+            return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
+    else:
+        self.idx = len(self.tokens)
         return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
