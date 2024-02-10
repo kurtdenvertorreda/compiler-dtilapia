@@ -25,31 +25,31 @@ def parse_for(self):
                                 store += "\n"
                                 self.advance()
                                 if self.current_token.type == constants.TT_TAB:
-                                    return dtilParser.ResParse(str(self.current_token.line - 1), store, f'____')
+                                    return dtilParser.ResParse(self.current_token.line - 1, store," ")
                                 else:
                                     self.idx = len(self.tokens)
-                                    return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
+                                    return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected an indented block after "for" loop declaration at line {str(self.current_token.line)}')
                             else:
                                 self.idx = len(self.tokens)
-                                return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
+                                return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Invalid syntax after "for" loop declaration at line {str(self.current_token.line)}')
                         else:
                             self.idx = len(self.tokens)
-                            return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
+                            return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a colon (":") after "for" loop increment statement at line {str(self.current_token.line)}')
                     else:
                         self.idx = len(self.tokens)
-                        return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
+                        return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected an integer value after "by" keyword at line {str(self.current_token.line)}')
                 else:
                     self.idx = len(self.tokens)
-                    return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
+                    return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected "by" keyword after loop variable declaration at line {str(self.current_token.line)}')
             else:
                 self.idx = len(self.tokens)
-                return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
+                return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Invalid loop variable declaration at line {str(self.current_token.line)}')
         else:
             self.idx = len(self.tokens)
-            return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
+            return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected "in" keyword after loop variable at line {str(self.current_token.line)}')
     else: 
         self.idx = len(self.tokens)
-        return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
+        return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Invalid loop variable name at line {str(self.current_token.line)}')
 
     
 
@@ -75,28 +75,28 @@ def parse_while(self):
                             store += "\n"
                             self.advance()
                             if self.current_token.type == constants.TT_TAB:
-                                return dtilParser.ResParse(str(self.current_token.line - 1), store, f'____')
+                                return dtilParser.ResParse(self.current_token.line - 1, store," ")
                             else:
                                 self.idx = len(self.tokens)
-                                return dtilParser.ResParse(str(self.current_token.line), store, f'Expected an indented block after "while" statement at line {str(self.current_token.line + 1)}')
+                                return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected an indented block after "while" statement at line {str(self.current_token.line + 1)}')
                         else:
                             self.idx = len(self.tokens)
-                            return dtilParser.ResParse(str(self.current_token.line), store, f'Expected a newline after ":" at line {str(self.current_token.line + 1)}')
+                            return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a newline after ":" at line {str(self.current_token.line + 1)}')
                     else:
                         self.idx = len(self.tokens)
-                        return dtilParser.ResParse(str(self.current_token.line), store, f'Expected ":" after "do" keyword at line {str(self.current_token.line + 1)}')
+                        return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected ":" after "do" keyword at line {str(self.current_token.line + 1)}')
                 else:
                     self.idx = len(self.tokens)
-                    return dtilParser.ResParse(str(self.current_token.line), store, f'Expected "do" after condition at line {str(self.current_token.line + 1)}')
+                    return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected "do" after condition at line {str(self.current_token.line + 1)}')
             else:
                 self.idx = len(self.tokens)
-                return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax for condition at line {str(self.current_token.line + 1)}')
+                return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Invalid syntax for condition at line {str(self.current_token.line + 1)}')
         else:
             self.idx = len(self.tokens)
-            return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid operator used for condition at line {str(self.current_token.line + 1)}')
+            return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Invalid operator used for condition at line {str(self.current_token.line + 1)}')
     else: 
         self.idx = len(self.tokens)
-        return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax for condition at line {str(self.current_token.line + 1)}')
+        return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Invalid syntax for condition at line {str(self.current_token.line + 1)}')
 
 
 def parse_when(self):
@@ -121,28 +121,28 @@ def parse_when(self):
                             store += "\n"
                             self.advance()
                             if self.current_token.type == constants.TT_TAB:
-                                return dtilParser.ResParse(str(self.current_token.line - 1), store, f'____')
+                                return dtilParser.ResParse(self.current_token.line - 1, store, " ")
                             else:
                                 self.idx = len(self.tokens)
-                                return dtilParser.ResParse(str(self.current_token.line), store, f'Expected an indented block after "when" statement at line {str(self.current_token.line + 1)}')
+                                return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected an indented block after "when" statement at line {str(self.current_token.line + 1)}')
                         else:
                             self.idx = len(self.tokens)
-                            return dtilParser.ResParse(str(self.current_token.line), store, f'Expected a newline after ":" at line {str(self.current_token.line + 1)}')
+                            return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a newline after ":" at line {str(self.current_token.line + 1)}')
                     else:
                         self.idx = len(self.tokens)
-                        return dtilParser.ResParse(str(self.current_token.line), store, f'Expected ":" after "do" keyword at line {str(self.current_token.line + 1)}')
+                        return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected ":" after "do" keyword at line {str(self.current_token.line + 1)}')
                 else:
                     self.idx = len(self.tokens)
-                    return dtilParser.ResParse(str(self.current_token.line), store, f'Expected "do" after condition at line {str(self.current_token.line + 1)}')
+                    return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected "do" after condition at line {str(self.current_token.line + 1)}')
             else:
                 self.idx = len(self.tokens)
-                return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax for condition at line {str(self.current_token.line + 1)}')
+                return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Invalid syntax for condition at line {str(self.current_token.line + 1)}')
         else:
             self.idx = len(self.tokens)
-            return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid operator used for condition at line {str(self.current_token.line + 1)}')
+            return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Invalid operator used for condition at line {str(self.current_token.line + 1)}')
     else: 
         self.idx = len(self.tokens)
-        return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax for condition at line {str(self.current_token.line + 1)}')
+        return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Invalid syntax for condition at line {str(self.current_token.line + 1)}')
 
 
 def parse_otherwise(self):
@@ -158,16 +158,16 @@ def parse_otherwise(self):
                 store += "\n"
                 self.advance()
                 if self.current_token.type == constants.TT_TAB:
-                    return dtilParser.ResParse(str(self.current_token.line - 1), store, f'____')
+                    return dtilParser.ResParse(self.current_token.line - 1, store," ")
                 else:
                     self.idx = len(self.tokens)
-                    return dtilParser.ResParse(str(self.current_token.line), store, f'Expected an indented block after "otherwise" statement at line {str(self.current_token.line + 1)}')
+                    return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected an indented block after "otherwise" statement at line {str(self.current_token.line + 1)}')
             else:
                 self.idx = len(self.tokens)
-                return dtilParser.ResParse(str(self.current_token.line), store, f'Expected a newline after ":" at line {str(self.current_token.line + 1)}')
+                return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a newline after ":" at line {str(self.current_token.line + 1)}')
         else:
             self.idx = len(self.tokens)
-            return dtilParser.ResParse(str(self.current_token.line), store, f'Expected ":" after "do" keyword at line {str(self.current_token.line + 1)}')
+            return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected ":" after "do" keyword at line {str(self.current_token.line + 1)}')
     elif self.current_token.value == "when":
         store += str(self.current_token.value) + " "
         self.advance()
@@ -193,26 +193,26 @@ def parse_otherwise(self):
                                     return dtilParser.ResParse(str(self.current_token.line - 1), store, f'____')
                                 else:
                                     self.idx = len(self.tokens)
-                                    return dtilParser.ResParse(str(self.current_token.line), store, f'Expected an indented block after "otherwise when" statement at line {str(self.current_token.line + 1)}')
+                                    return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected an indented block after "otherwise when" statement at line {str(self.current_token.line + 1)}')
                             else:
                                 self.idx = len(self.tokens)
-                                return dtilParser.ResParse(str(self.current_token.line), store, f'Expected a newline after ":" at line {str(self.current_token.line + 1)}')
+                                return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a newline after ":" at line {str(self.current_token.line + 1)}')
                         else:
                             self.idx = len(self.tokens)
-                            return dtilParser.ResParse(str(self.current_token.line), store, f'Expected ":" after "do" keyword at line {str(self.current_token.line + 1)}')
+                            return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected ":" after "do" keyword at line {str(self.current_token.line + 1)}')
                     else:
                         self.idx = len(self.tokens)
-                        return dtilParser.ResParse(str(self.current_token.line), store, f'Expected "do" after condition at line {str(self.current_token.line + 1)}')
+                        return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected "do" after condition at line {str(self.current_token.line + 1)}')
                 else:
                     self.idx = len(self.tokens)
-                    return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax for condition at line {str(self.current_token.line + 1)}')
+                    return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Invalid syntax for condition at line {str(self.current_token.line + 1)}')
             else:
                 self.idx = len(self.tokens)
-                return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid operator used for condition at line {str(self.current_token.line + 1)}')
+                return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Invalid operator used for condition at line {str(self.current_token.line + 1)}')
         else: 
             self.idx = len(self.tokens)
-            return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax for condition at line {str(self.current_token.line + 1)}')
+            return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Invalid syntax for condition at line {str(self.current_token.line + 1)}')
     else:
         self.idx = len(self.tokens)
-        return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
+        return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Invalid syntax at line {str(self.current_token.line + 1)}')
 
