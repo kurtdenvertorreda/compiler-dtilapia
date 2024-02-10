@@ -327,16 +327,12 @@ input {
 
 .syntax-table th:nth-child(2),
 .syntax-table td:nth-child(2) {
-  width: 30%; /* Adjust the width of the "Line" column as needed */
-}
-.syntax-table th:nth-child(3),
-.syntax-table td:nth-child(3) {
-  width: 30%; /* Adjust the width of the "Line" column as needed */
+  width: 50%; /* Adjust the width of the "Line" column as needed */
 }
 
-.syntax-table th:nth-child(4),
-.syntax-table td:nth-child(4) {
-  width: 30%; /* Adjust the width of the "Line" column as needed */
+.syntax-table th:nth-child(3),
+.syntax-table td:nth-child(3) {
+  width: 40%; /* Adjust the width of the "Line" column as needed */
 }
 
 

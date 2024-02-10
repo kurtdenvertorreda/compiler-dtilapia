@@ -25,20 +25,20 @@ def parse_for(self):
                                 store += "\n"
                                 self.advance()
                                 if self.current_token.type == constants.TT_TAB:
-                                    return dtilParser.ResParse(str(self.current_token.line - 1), store, f'____', "____'.")
+                                    return dtilParser.ResParse(str(self.current_token.line - 1), store, f'____')
                                 else:
-                                    return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}', "Expected 'Loop Body'.")
+                                    return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
                             else:
-                                return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}', "Expected 'Loop Body'.")
+                                return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
                         else:
-                            return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}', "Expected 'Colon'.")
+                            return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
                     else:
-                        return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}', "Expected 'looping value'.")
+                        return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
                 else:
-                    return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}', "Expected 'by'.")
+                    return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
             else:
-                return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}', "Expected 'Iteratives'.")
+                return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
         else:
-             return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}', "Expected 'in'.")
+             return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
     else: 
-        return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}', "Expected 'Identifier'.")
+        return dtilParser.ResParse(str(self.current_token.line), store, f'Invalid syntax at line {str(self.current_token.line + 1)}')
