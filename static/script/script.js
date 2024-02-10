@@ -205,19 +205,16 @@ function executeCode() {
                 const lineCellP = document.createElement('td');
                 const codeCellP = document.createElement('td');
                 const errorNameCellP = document.createElement('td');
-                const errorDescCellP = document.createElement('td');
 
-                const [lineP, codeP, errorNP, errorDP] = results.split('~').map(part => part.trim());
+                const [lineP, codeP, errorNP] = results.split('~').map(part => part.trim());
 
                 lineCellP.textContent = `${parseInt(lineP) + 1}`;
                 codeCellP.textContent = `${codeP}`;
                 errorNameCellP.textContent = `${errorNP}`;
-                errorDescCellP.textContent = `${errorDP}`;
 
                 row.appendChild(lineCellP)
                 row.appendChild(codeCellP)
                 row.appendChild(errorNameCellP)
-                row.appendChild(errorDescCellP)
                 syntaxBody.appendChild(row);
             });
         }
