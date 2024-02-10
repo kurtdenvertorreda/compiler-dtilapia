@@ -1,5 +1,6 @@
 from constants import *
 from dtilapia import Lexer
+import iteratives
 
 class ResParse:
     def __init__(self, line, code, errorName, errorDesc):
@@ -9,7 +10,7 @@ class ResParse:
         self.errorDesc = errorDesc
     
     def __repr__(self):
-        if self.errorName: return f'{self.line}:{self.code}:{self.errorName}: {self.errorDesc}'
+        if self.errorName: return f'{self.line}~{self.code}~{self.errorName}~{self.errorDesc}'
         return f'{self.line}:{self.code}:No Error:No Error'
 
 class Parser:
@@ -48,6 +49,9 @@ class Parser:
             elif self.current_token.type == TT_KEYWORD and str(self.current_token.value) == "when":
                 when_do = self.parse_conditional()
                 declarations.append(when_do)
+            elif self.current_token.value == "for":
+                for_loop = iteratives.parse_for(self)
+                declarations.append(for_loop)
             elif self.current_token.type == TT_INVALID:
                 invalid = self.parse_invalid()
                 declarations.append(invalid)
