@@ -45,15 +45,24 @@ class Parser:
             elif self.current_token.value == "input":
                 input = self.parse_input()
                 declarations.append(input)
-            elif self.current_token.type == TT_KEYWORD and str(self.current_token.value) == "when":
-                when_do = self.parse_conditional()
-                declarations.append(when_do)
+            # elif self.current_token.type == TT_KEYWORD and str(self.current_token.value) == "when":
+            #     when_do = self.parse_conditional()
+            #     declarations.append(when_do)
             elif self.current_token.value == "for":
                 for_loop = iteratives.parse_for(self)
                 declarations.append(for_loop)
             elif self.current_token.value == "hence":
                 hence_des = discrete.parse_hence(self)
                 declarations.append(hence_des)
+            elif self.current_token.value == "while":
+                while_loop = iteratives.parse_while(self)
+                declarations.append(while_loop)
+            elif self.current_token.value == "when":
+                when_statement = iteratives.parse_when(self)
+                declarations.append(when_statement)
+            elif self.current_token.value == "otherwise":
+                otherwise_statement = iteratives.parse_otherwise(self)
+                declarations.append(otherwise_statement)
             elif self.current_token.type == TT_INVALID:
                 invalid = self.parse_invalid()
                 declarations.append(invalid)
