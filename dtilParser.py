@@ -51,6 +51,9 @@ class Parser:
             elif self.current_token.value == "for":
                 for_loop = iteratives.parse_for(self)
                 declarations.append(for_loop)
+            elif self.current_token.value == "hence":
+                hence_des = discrete.parse_hence(self)
+                declarations.append(hence_des)
             elif self.current_token.type == TT_INVALID:
                 invalid = self.parse_invalid()
                 declarations.append(invalid)
