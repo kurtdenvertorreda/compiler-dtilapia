@@ -90,12 +90,12 @@ TT_NEWLINE = 'NEW_LINE'
 TT_TAB = "TAB"
 
 # Grouped data types from keywords
-KEYWORDS_DATA_TYPE = {'int', 'float', 'String', 'char', 'bool', 'complex'} 
+KEYWORDS_DATA_TYPE = {'int', 'float', 'String', 'char', 'bool', 'complex', 'void'} 
 
 KEYWORDS = KEYWORDS_DATA_TYPE.union({
     'array', 'set', 'let', 'be',
     'for', 'from', 'to', 'in', 'by', 'do', 'when', 'otherwise', 'funct', 'while', 'given',
-    'output', 'print', 'show', 'input', 'find', 'hence'
+    'output', 'print', 'show', 'input', 'find', 'hence', 'is'
 })
 
 

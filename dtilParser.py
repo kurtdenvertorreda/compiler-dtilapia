@@ -1,6 +1,6 @@
 from constants import *
 from dtilapia import Lexer
-import iteratives, discrete, input_output
+import iteratives, discrete, input_output, function
 
 class ResParse:
     def __init__(self, line, code, errorName):
@@ -63,6 +63,9 @@ class Parser:
             elif self.current_token.type == TT_INVALID:
                 invalid = self.parse_invalid()
                 declarations.append(invalid)
+            elif self.current_token.value == "funct":
+                funct = function.parse_funct(self)
+                declarations.append(funct)
 
             self.advance()  # Move to the next token
 
