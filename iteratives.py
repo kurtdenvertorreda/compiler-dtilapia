@@ -215,4 +215,3 @@ def parse_otherwise(self):
     else:
         self.idx = len(self.tokens)
         return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Invalid syntax at line {str(self.current_token.line + 1)}')
-

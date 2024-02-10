@@ -259,10 +259,10 @@ function generateFile() {
 }
 
 function exportTableToFile() {
-  const table = document.querySelector('.syntax-table');
+  const table = document.querySelector('.styled-table');
   const rows = table.querySelectorAll('tbody tr');
-  let tableText = 'Line Number                                Tokens                                  Lexemes                         Description\r\n';
-  tableText += '==================================================================================================================================\r\n';
+  let tableText = 'Line Number                                Tokens                              Lexemes                     \r\n';
+  tableText += '==================================================================================================================\r\n';
 
   rows.forEach(row => {
       const cells = row.querySelectorAll('td');
@@ -311,8 +311,8 @@ function exportTableToFile() {
 function exportsyntaxTableToFile() {
   const table = document.querySelector('.syntax-table');
   const rows = table.querySelectorAll('tbody tr');
-  let tableText = 'Line Number                                Code                                     Error                         Description\r\n';
-  tableText += '==================================================================================================================================\r\n';
+  let tableText = 'Line Number                                Code                                     Status                         \r\n';
+  tableText += '=====================================================================================================================\r\n';
 
   rows.forEach(row => {
       const cells = row.querySelectorAll('td');
