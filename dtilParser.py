@@ -1,6 +1,6 @@
 from constants import *
 from dtilapia import Lexer
-import iteratives, discrete
+import iteratives, discrete, input_output
 
 class ResParse:
     def __init__(self, line, code, errorName):
@@ -40,10 +40,10 @@ class Parser:
                 discrete_f = discrete.parse_discrete(self)
                 declarations.append(discrete_f)
             elif self.current_token.value == "output":
-                output = self.parse_output()
+                output = input_output.parse_output(self)
                 declarations.append(output)
             elif self.current_token.value == "input":
-                input = self.parse_input()
+                input = input_output.parse_input(self)
                 declarations.append(input)
             # elif self.current_token.type == TT_KEYWORD and str(self.current_token.value) == "when":
             #     when_do = self.parse_conditional()

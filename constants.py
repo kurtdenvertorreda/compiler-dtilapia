@@ -40,7 +40,7 @@ TT_MINUS    = 'ARIOP_Subtraction_Operator'
 TT_MUL      = 'ARIOP_Multiplication_Operator'
 TT_DIV      = 'ARIOP_Division_Operator'
 
-TT_ARIOP = {TT_MODULO, TT_EXPONENT, TT_PLUS, TT_MINUS, TT_MUL, TT_DIV}
+TT_ARIOP = [TT_MODULO, TT_EXPONENT, TT_PLUS, TT_MINUS, TT_MUL, TT_DIV]
 
 # Comparison/Conditional Operators
 TT_GREATER_THAN = 'RELOP_Greater_Than_Operator'
