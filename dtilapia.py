@@ -79,11 +79,18 @@ class Lexer:
         tokens = []
 
         while self.current_char != None:
-            if self.current_char in ' \t':
-                self.advance()
             if self.current_char in '\n':
-                tokens.append(Token(self.pos.ln,TT_NEWLINE,value="\n"))
+                tokens.append(Token(self.pos.ln,TT_NEWLINE,value="newline"))
                 self.advance()
+            elif self.current_char == '\t' or self.current_char == " ":
+                self.advance()
+                if self.current_char == '\t' or self.current_char == " ":
+                    self.advance()
+                    if self.current_char == '\t' or self.current_char == " ":
+                        self.advance()
+                        if self.current_char == '\t' or self.current_char == " ":
+                            tokens.append(Token(self.pos.ln,TT_TAB,value="tab"))
+                            self.advance()
             elif self.current_char in DIGITS:
                 tokens.append(self.make_number())
 
