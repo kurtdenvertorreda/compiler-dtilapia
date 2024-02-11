@@ -410,7 +410,7 @@ class Lexer:
             elif self.current_char == '"':
                 tokens.append(Token(self.pos.ln,TT_DBLQ, value='"'))
                 self.advance()
-                if self.current_char != '"':
+                if self.current_char is not None and self.current_char != '"':
                     string = ''
                     while self.current_char is not None and self.current_char != '"':
                         string += self.current_char
@@ -419,13 +419,16 @@ class Lexer:
                     if self.current_char == '"':
                         tokens.append(Token(self.pos.ln,TT_DBLQ, value='"'))
                         self.advance()
-                else:
+                elif self.current_char == '"':
+                    self.advance()
                     tokens.append(Token(self.pos.ln,TT_DBLQ, value='"'))
+
+                    
 
             elif self.current_char == '\'':
                 tokens.append(Token(self.pos.ln,TT_SNGQ, value='\''))
                 self.advance()
-                if self.current_char != "\'":
+                if self.current_char is not None and self.current_char != "\'":
                     char = ''
                     char = self.current_char
                     self.advance()
@@ -433,7 +436,8 @@ class Lexer:
                     if self.current_char == "\'":
                         tokens.append(Token(self.pos.ln,TT_SNGQ, value='\''))
                         self.advance()
-                else:
+                elif self.current_char == "\'":
+                    self.advance()
                     tokens.append(Token(self.pos.ln,TT_SNGQ, value='\''))
 
             elif self.current_char in ALPHABET:
