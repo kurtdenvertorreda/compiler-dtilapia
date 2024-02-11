@@ -15,9 +15,11 @@ def parse_input(self):
             store += str(self.current_token.value) + " "
             self.advance()
         else:
+            self.idx = len(self.tokens)
             return dtilParser.ResParse(str(self.current_token.line), store, f'Expected an identifier after ":" at line {str(self.current_token.line+1)}')
         return dtilParser.ResParse(self.current_token.line, store, " ")
     else:
+        self.idx = len(self.tokens)
         return dtilParser.ResParse(str(self.current_token.line), store, f'Expected a ":" after "input" keyword at line {str(self.current_token.line+1)}')
     
 
@@ -80,6 +82,7 @@ def parse_output(self):
                             store += str(self.current_token.value) + " "
                             self.advance()
                         else:
+                            self.idx = len(self.tokens)
                             return dtilParser.ResParse(str(self.current_token.line), store, f'Expected an identifier after "+" at line {str(self.current_token.line+1)}')
             return dtilParser.ResParse(str(self.current_token.line), store, " ")
         elif self.current_token.type == constants.TT_COMPL:
@@ -93,6 +96,8 @@ def parse_output(self):
             self.advance()
             return dtilParser.ResParse(str(self.current_token.line), store, " ")
         else:
+            self.idx = len(self.tokens)
             return dtilParser.ResParse(str(self.current_token.line), store, f'Expected an expression, or variable after ":" at line {str(self.current_token.line+1)}')
     else:
+        self.idx = len(self.tokens)
         return dtilParser.ResParse(str(self.current_token.line), store, f'Expected a ":" after "output" keyword at line {str(self.current_token.line+1)}')
