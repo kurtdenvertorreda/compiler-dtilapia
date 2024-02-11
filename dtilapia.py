@@ -406,16 +406,36 @@ class Lexer:
                     # Modulus Operator
                     tokens.append(Token(self.pos.ln,TT_MODULO, value='%'))
                     self.advance()
+
             elif self.current_char == '"':
                 tokens.append(Token(self.pos.ln,TT_DBLQ, value='"'))
-                tokens.append(self.make_string())
                 self.advance()
-                tokens.append(Token(self.pos.ln,TT_DBLQ, value='"'))
+                if self.current_char != '"':
+                    string = ''
+                    while self.current_char is not None and self.current_char != '"':
+                        string += self.current_char
+                        self.advance()
+                    tokens.append(Token(self.pos.ln,TT_STRING, value=string))
+                    if self.current_char == '"':
+                        tokens.append(Token(self.pos.ln,TT_DBLQ, value='"'))
+                        self.advance()
+                else:
+                    tokens.append(Token(self.pos.ln,TT_DBLQ, value='"'))
+
             elif self.current_char == '\'':
                 tokens.append(Token(self.pos.ln,TT_SNGQ, value='\''))
-                tokens.append(self.make_character())
                 self.advance()
-                tokens.append(Token(self.pos.ln,TT_SNGQ, value='\''))
+                if self.current_char != "\'":
+                    char = ''
+                    char = self.current_char
+                    self.advance()
+                    tokens.append(Token(self.pos.ln,TT_CHAR, value=char))
+                    if self.current_char == "\'":
+                        tokens.append(Token(self.pos.ln,TT_SNGQ, value='\''))
+                        self.advance()
+                else:
+                    tokens.append(Token(self.pos.ln,TT_SNGQ, value='\''))
+
             elif self.current_char in ALPHABET:
                 tokens.append(self.make_identifier_or_keyword())
             elif self.current_char == '(':
@@ -499,29 +519,7 @@ class Lexer:
         else:
             return Token(self.pos.ln,TT_FLOAT, float(num_str))
         
-    def make_string(self):
-        string = ''
-        self.advance() 
-        while self.current_char is not None and self.current_char != '"':
-            string += self.current_char
-            self.advance()
-        self.advance() 
-        return Token(self.pos.ln,TT_STRING, string)
-   
-    def make_character(self):
-        if self.current_char == '\'':
-            self.advance()  # Skip the opening single quote
-            char = self.current_char
 
-            if char.isalnum():  # Check if the character is alphanumeric
-                self.advance()  # Move to the next character
-
-                if self.current_char == '\'':
-                    self.advance()  # Skip the closing single quote
-                    return Token(self.pos.ln,TT_CHAR, char)
-                else:
-                    raise Exception("Invalid character format: Missing closing single quote")
-    
     def make_identifier_or_keyword(self):
         identifier = ''
         while self.current_char is not None and (self.current_char in ALPHANUMERIC + '_'):
