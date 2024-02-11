@@ -103,7 +103,7 @@ RESERVED_WORDS = {'True', 'False', 'permutation', 'combination', 'btree', 'preor
                  'null', 'search', 'add', 'remove', 'ugraph', 'dgraph', 'nodeAdd', 'removeEdge', 'UedgeAdd', 'DedgeAdd',
                  'bfs', 'dfs', 'dijkstra', 'kruskal', 'inverse', 'converse', 'contrapos', 'probability', 'cProbability',
                  'isPrime', 'isOdd', 'isEven', 'gcd', 'lcm', 'lcd', 'isDivisible', 'isPrimeF', 'ariseq', 'geomseq', 'fiboseq',
-                 'series', 'union', 'intersection', 'difference', 'countSet', 'isSubset', 'isEqual', 'isSuperset', 'isDisjoint',
+                 'series', 'union', 'intersection', 'difference','symmetric', 'countSet', 'isSubset', 'isEqual', 'isSuperset', 'isDisjoint',
                  'isEmpty', 'R_notation', 'S_notation'}
 
 NOISE_WORDS = {'eger', 'ing', 'acter', 'ion', 'ean', 'itive', 'actorization', 'uence'}
