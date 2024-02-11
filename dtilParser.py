@@ -74,6 +74,7 @@ class Parser:
     # INVALID TOKENS
     def parse_invalid(self):
         store = str(self.current_token.value) + " "
+        self.idx = len(self.tokens)
         return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}')
         
     # BODY OF FUNCTIONS/STATEMENTS
@@ -108,7 +109,8 @@ class Parser:
                 input = self.parse_input()
                 body.append(input)
             elif self.current_token.type == TT_INVALID:
-                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected array.")
+                self.idx = len(self.tokens)
+                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
             else:
                 raise Exception(f"Invalid token at line {self.current_token.line}: Unexpected token {self.current_token.value}")
 
