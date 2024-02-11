@@ -108,7 +108,7 @@ def parse_discrete(self):
             else:
                 self.idx = len(self.tokens)
                 return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a "given" keyword at line {str(self.current_token.line + 1)}')
-        elif self.current_token.value in ["ugraph", "dgraph","union","intersection","symmetric","difference","isSubset","isSuperset","isDisjoint"]:
+        elif self.current_token.value in ["ugraph", "dgraph","union","intersection","symmetric","difference","isEqual","isSubset","isSuperset","isDisjoint"]:
             store += str(self.current_token.value) + " "
             self.advance()
             if self.current_token.value == "given":
