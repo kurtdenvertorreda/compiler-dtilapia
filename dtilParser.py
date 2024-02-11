@@ -349,45 +349,45 @@ class Parser:
         return data_type
     
     # ASSIGNMENT
-def parse_assignment(self):
-    # Move past the first identifier
-    store = self.current_token.value + " "
-    self.advance()
-    if self.current_token.type == TT_ASSIGNMENT:
-        store += str(self.current_token.value) + " "
-        self.advance()  # Move past the assignment operator
-        
-        # Check for identifier or literal types
-        if self.current_token.type in [TT_IDENTIFIER, TT_INT, TT_FLOAT, TT_STRING, TT_CHAR, TT_COMPL, TT_BOOL]:
+    def parse_assignment(self):
+        # Move past the first identifier
+        store = self.current_token.value + " "
+        self.advance()
+        if self.current_token.type == TT_ASSIGNMENT:
             store += str(self.current_token.value) + " "
-            return ResParse(self.current_token.line, store, "")
-        else:
-            return ResParse(self.current_token.line, store, f'Syntax Error: Expecting an identifier or literal at line {self.current_token.line}')
-    elif self.current_token.type == TT_ADDITION_ASSIGNMENT:
-        store += str(self.current_token.value) + " "
-        self.advance()  # Move past the addition assignment operator
-        
-        # Check for identifier or literal types
-        if self.current_token.type in [TT_INT, TT_FLOAT]:
+            self.advance()  # Move past the assignment operator
+            
+            # Check for identifier or literal types
+            if self.current_token.type in [TT_IDENTIFIER, TT_INT, TT_FLOAT, TT_STRING, TT_CHAR, TT_COMPL, TT_BOOL]:
+                store += str(self.current_token.value) + " "
+                return ResParse(self.current_token.line, store, " ")
+            else:
+                return ResParse(self.current_token.line, store, f'Syntax Error: Expecting an identifier or literal at line {self.current_token.line}')
+        elif self.current_token.type == TT_ADDITION_ASSIGNMENT:
             store += str(self.current_token.value) + " "
-            return ResParse(self.current_token.line, store, "")
-        else:
-            return ResParse(self.current_token.line, store, f'Syntax Error: Expecting an integer or float at line {self.current_token.line}')
-    elif self.current_token.type == TT_SUBTRACTION_ASSIGNMENT:
-        store += str(self.current_token.value) + " "
-        self.advance()  # Move past the subtraction assignment operator
-        
-        # Check for identifier or literal types
-        if self.current_token.type in [TT_INT, TT_FLOAT]:
+            self.advance()  # Move past the addition assignment operator
+            
+            # Check for identifier or literal types
+            if self.current_token.type in [TT_INT, TT_FLOAT]:
+                store += str(self.current_token.value) + " "
+                return ResParse(self.current_token.line, store, " ")
+            else:
+                return ResParse(self.current_token.line, store, f'Syntax Error: Expecting an integer or float at line {self.current_token.line}')
+        elif self.current_token.type == TT_SUBTRACTION_ASSIGNMENT:
             store += str(self.current_token.value) + " "
-            return ResParse(self.current_token.line, store, "")
+            self.advance()  # Move past the subtraction assignment operator
+            
+            # Check for identifier or literal types
+            if self.current_token.type in [TT_INT, TT_FLOAT]:
+                store += str(self.current_token.value) + " "
+                return ResParse(self.current_token.line, store, " ")
+            else:
+                return ResParse(self.current_token.line, store, f'Syntax Error: Expecting an integer or float at line {self.current_token.line}')
+        elif self.current_token.type == TT_MULTIPLICATION_ASSIGNMENT:
+            store += str(self.current_token.value) + " "
+            self.advance()  # Move past the multiplication assignment operator
         else:
-            return ResParse(self.current_token.line, store, f'Syntax Error: Expecting an integer or float at line {self.current_token.line}')
-    elif self.current_token.type == TT_MULTIPLICATION_ASSIGNMENT:
-        store += str(self.current_token.value) + " "
-        self.advance()  # Move past the multiplication assignment operator
-    else:
-        return ResParse(self.current_token.line, store, f'Syntax Error: Invalid operator at line {self.current_token.line}')
+            return ResParse(self.current_token.line, store, f'Syntax Error: Invalid operator at line {self.current_token.line}')
             
 
 # MAIN
