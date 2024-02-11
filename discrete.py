@@ -62,6 +62,36 @@ def parse_discrete(self):
             else:
                 self.idx = len(self.tokens)
                 return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a "given" keyword at line {str(self.current_token.line + 1)}')
+        elif self.current_token.value == "R_notation":
+            store += str(self.current_token.value) + " "
+            self.advance()
+            if self.current_token.value == "given":
+                store += str(self.current_token.value) + " "
+                self.advance()
+                if self.current_token.type == constants.TT_DBLQ:
+                    store += '\"'
+                    self.advance()
+                    if self.current_token.type == constants.TT_STRING:
+                        store += str(self.current_token.value)
+                        self.advance()
+                        if self.current_token.type == constants.TT_DBLQ:
+                            store += '\"'
+                            return dtilParser.ResParse(str(self.current_token.line), store," ")
+                        else:
+                            self.idx = len(self.tokens)
+                            return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a \" {str(self.current_token.line + 1)}')
+                    else:
+                        self.idx = len(self.tokens)
+                        return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a string value at line {str(self.current_token.line + 1)}')
+                elif self.current_token.type == constants.TT_IDENTIFIER:
+                    store += str(self.current_token.value)
+                    return dtilParser.ResParse(str(self.current_token.line)," ")
+                else:
+                    self.idx = len(self.tokens)
+                    return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a \" {str(self.current_token.line + 1)}')
+            else:
+                self.idx = len(self.tokens)
+                return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a "given" keyword at line {str(self.current_token.line + 1)}')
         elif self.current_token.value in ["isPrime", "isOdd", "isEven","isPrimeF"]:
             store += str(self.current_token.value) + " "
             self.advance()
@@ -78,6 +108,145 @@ def parse_discrete(self):
             else:
                 self.idx = len(self.tokens)
                 return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a "given" keyword at line {str(self.current_token.line + 1)}')
+        elif self.current_token.value in ["ugraph", "dgraph","union","intersection","symmetric","difference","isSubset","isSuperset","isDisjoint"]:
+            store += str(self.current_token.value) + " "
+            self.advance()
+            if self.current_token.value == "given":
+                store += str(self.current_token.value) + " "
+                self.advance()
+                if self.current_token.value == "{":
+                    store += str(self.current_token.value)
+                    self.advance()
+                    while(True):
+                        if self.current_token.type == constants.TT_INT or self.current_token.type == constants.TT_IDENTIFIER:
+                            store += str(self.current_token.value)
+                            self.advance()
+                            if self.current_token.type == constants.TT_COMMA:
+                                store += str(self.current_token.value)
+                                self.advance()
+                            elif self.current_token.value == "}":
+                                store += str(self.current_token.value)
+                                self.advance()
+                                if self.current_token.type == constants.TT_COMMA:
+                                    store += str(self.current_token.value)
+                                    self.advance()
+                                    if self.current_token.value == "{":
+                                        store += str(self.current_token.value)
+                                        self.advance()
+                                        while(True):
+                                            if self.current_token.type == constants.TT_INT or self.current_token.type == constants.TT_IDENTIFIER:
+                                                store += str(self.current_token.value)
+                                                self.advance()
+                                                if self.current_token.type == constants.TT_COMMA:
+                                                    store += str(self.current_token.value)
+                                                    self.advance()
+                                                elif self.current_token.value == "}":
+                                                    store += str(self.current_token.value)
+                                                    self.advance()
+                                                    return dtilParser.ResParse(self.current_token.line, store," ")
+                                                else:
+                                                    self.idx = len(self.tokens)
+                                                    return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a "," or an "End Curly Brace" keyword at line {str(self.current_token.line + 1)}')
+                                            elif self.current_token.value == "}":
+                                                store += str(self.current_token.value)
+                                                self.advance()
+                                                return dtilParser.ResParse(self.current_token.line, store," ")
+                                            else:
+                                                self.idx = len(self.tokens)
+                                                return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected set of values or "End Curly Brace" keyword at line {str(self.current_token.line + 1)}')
+                                    elif self.current_token.type == constants.TT_IDENTIFIER:
+                                        store += str(self.current_token.value)
+                                        self.advance()
+                                        return dtilParser.ResParse(self.current_token.line, store," ")
+                                else:
+                                    self.idx = len(self.tokens)
+                                    return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a comma  at line {str(self.current_token.line + 1)}')
+                            else:
+                                self.idx = len(self.tokens)
+                                return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a "," or an "End Curly Brace" keyword at line {str(self.current_token.line + 1)}')
+                        elif self.current_token.value == "}":
+                            store += str(self.current_token.value)
+                            self.advance()
+                            if self.current_token.type == constants.TT_COMMA:
+                                store += str(self.current_token.value)
+                                self.advance()
+                                if self.current_token.value == "{":
+                                    store += str(self.current_token.value)
+                                    self.advance()
+                                    while(True):
+                                        if self.current_token.type == constants.TT_INT or self.current_token.type == constants.TT_IDENTIFIER:
+                                            store += str(self.current_token.value)
+                                            self.advance()
+                                            if self.current_token.type == constants.TT_COMMA:
+                                                store += str(self.current_token.value)
+                                                self.advance()
+                                            elif self.current_token.value == "}":
+                                                store += str(self.current_token.value)
+                                                self.advance()
+                                                return dtilParser.ResParse(self.current_token.line, store," ")
+                                            else:
+                                                self.idx = len(self.tokens)
+                                                return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a "," or an "End Curly Brace" keyword at line {str(self.current_token.line + 1)}')
+                                        elif self.current_token.value == "}":
+                                            store += str(self.current_token.value)
+                                            self.advance()
+                                            return dtilParser.ResParse(self.current_token.line, store," ")
+                                        else:
+                                            self.idx = len(self.tokens)
+                                            return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected set of values or "End Curly Brace" keyword at line {str(self.current_token.line + 1)}')
+                                elif self.current_token.type == constants.TT_IDENTIFIER:
+                                    store += str(self.current_token.value)
+                                    self.advance()
+                                    return dtilParser.ResParse(self.current_token.line, store," ")
+                            else:
+                                self.idx = len(self.tokens)
+                                return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a comma  at line {str(self.current_token.line + 1)}')
+                        else:
+                            self.idx = len(self.tokens)
+                            return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected set of values or "End Curly Brace" keyword at line {str(self.current_token.line + 1)}')
+                elif self.current_token.type == constants.TT_IDENTIFIER:
+                    store += str(self.current_token.value)
+                    self.advance()
+                    if self.current_token.type == constants.TT_COMMA:
+                        store += str(self.current_token.value)
+                        self.advance()
+                        if self.current_token.value == "{":
+                            store += str(self.current_token.value)
+                            self.advance()
+                            while(True):
+                                if self.current_token.type == constants.TT_INT or self.current_token.type == constants.TT_IDENTIFIER:
+                                    store += str(self.current_token.value)
+                                    self.advance()
+                                    if self.current_token.type == constants.TT_COMMA:
+                                        store += str(self.current_token.value)
+                                        self.advance()
+                                    elif self.current_token.value == "}":
+                                        store += str(self.current_token.value)
+                                        self.advance()
+                                        return dtilParser.ResParse(self.current_token.line, store," ")
+                                    else:
+                                        self.idx = len(self.tokens)
+                                        return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a "," or an "End Curly Brace" keyword at line {str(self.current_token.line + 1)}')
+                                elif self.current_token.value == "}":
+                                    store += str(self.current_token.value)
+                                    self.advance()
+                                    return dtilParser.ResParse(self.current_token.line, store," ")
+                                else:
+                                    self.idx = len(self.tokens)
+                                    return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected set of values or "End Curly Brace" keyword at line {str(self.current_token.line + 1)}')
+                        elif self.current_token.type == constants.TT_IDENTIFIER:
+                            store += str(self.current_token.value)
+                            self.advance()
+                            return dtilParser.ResParse(self.current_token.line, store," ")
+                    else:
+                        self.idx = len(self.tokens)
+                        return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a comma  at line {str(self.current_token.line + 1)}')
+                else:
+                    self.idx = len(self.tokens)
+                    return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a Set values  at line {str(self.current_token.line + 1)}')
+            else:
+                self.idx = len(self.tokens)
+                return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected "given" keyword at line {str(self.current_token.line + 1)}')
         elif self.current_token.value in ["ariseq", "geomseq","fiboseq"]:
             store += str(self.current_token.value) + " "
             self.advance()
@@ -150,6 +319,46 @@ def parse_discrete(self):
                 else:
                     self.idx = len(self.tokens)
                     return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected an "Identifier" at line {str(self.current_token.line + 1)}')
+            else:
+                self.idx = len(self.tokens)
+                return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected "given" keyword at line {str(self.current_token.line + 1)}')
+        elif self.current_token.value in ["isEmpty","btree","series","countSet","S_notation"]:
+            store += str(self.current_token.value) + " "
+            self.advance()
+            if self.current_token.value == "given":
+                store += str(self.current_token.value) + " "
+                self.advance()
+                if self.current_token.value == "{":
+                    store += str(self.current_token.value)
+                    self.advance()
+                    while(True):
+                        if self.current_token.type == constants.TT_INT or self.current_token.type == constants.TT_IDENTIFIER:
+                            store += str(self.current_token.value)
+                            self.advance()
+                            if self.current_token.type == constants.TT_COMMA:
+                                store += str(self.current_token.value)
+                                self.advance()
+                            elif self.current_token.value == "}":
+                                store += str(self.current_token.value)
+                                self.advance()
+                                return dtilParser.ResParse(self.current_token.line, store," ")
+                            else:
+                                self.idx = len(self.tokens)
+                                return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a "," or an "End Curly Brace" keyword at line {str(self.current_token.line + 1)}')
+                        elif self.current_token.value == "}":
+                            store += str(self.current_token.value)
+                            self.advance()
+                            return dtilParser.ResParse(self.current_token.line, store," ")
+                        else:
+                            self.idx = len(self.tokens)
+                            return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected set of values or "End Curly Brace" keyword at line {str(self.current_token.line + 1)}')
+                elif self.current_token.type == constants.TT_IDENTIFIER:
+                    store += str(self.current_token.value)
+                    self.advance()
+                    return dtilParser.ResParse(self.current_token.line, store," ")
+                else:
+                    self.idx = len(self.tokens)
+                    return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a Set values  at line {str(self.current_token.line + 1)}')
             else:
                 self.idx = len(self.tokens)
                 return dtilParser.ResParse(str(self.current_token.line), store, f'Syntax Error: Expected "given" keyword at line {str(self.current_token.line + 1)}')
