@@ -39,19 +39,27 @@ def parse_funct(self):
                                     #         # Call parse_body function
                                     #         return dtilParser.parse_body(self)
                                 else:
+                                    self.idx = len(self.tokens)
                                     return dtilParser.ResParse(str(self.current_token.line), store, f'Expected a ":" after "do" keyword at line {str(self.current_token.line+1)}')
                             else:
+                                self.idx = len(self.tokens)
                                 return dtilParser.ResParse(str(self.current_token.line), store, f'Expected a "do" keyword after data type at line {str(self.current_token.line+1)}')
                         else:
+                            self.idx = len(self.tokens)
                             return dtilParser.ResParse(str(self.current_token.line), store, f'Expected a data type after "is" keyword at line {str(self.current_token.line+1)}')
                     else:
+                        self.idx = len(self.tokens)
                         return dtilParser.ResParse(str(self.current_token.line), store, f'Expected "is" keyword after parameters at line {str(self.current_token.line+1)}')
                 else:
+                    self.idx = len(self.tokens)
                     return dtilParser.ResParse(str(self.current_token.line), store, f'Expected parameters after "given" keyword at line {str(self.current_token.line+1)}')
             else:
+                self.idx = len(self.tokens)
                 return dtilParser.ResParse(str(self.current_token.line), store, f'Expected "given" keyword after identifier at line {str(self.current_token.line+1)}')
         else:
+            self.idx = len(self.tokens)
             return dtilParser.ResParse(str(self.current_token.line), store, f'Expected an identifier after return type at line {str(self.current_token.line+1)}')
     else:
+        self.idx = len(self.tokens)
         return dtilParser.ResParse(str(self.current_token.line), store, f'Expected a return type after "funct" keyword at line {str(self.current_token.line+1)}')
     return dtilParser.ResParse(self.current_token.line, store, " ")
