@@ -154,8 +154,8 @@ function executeCode() {
                     const noise_valueCell = document.createElement('td');
 
                     const [key, noise] = token.split(',').map(part => part.trim());
-                    var [tokenLine, tokenType, tokenValue] = key.split(':').map(part => part.trim());
-                    var [noise_tokenLine,noise_tokenType, noise_tokenValue] = noise.split(':').map(part => part.trim());
+                    var [tokenLine, tokenType, tokenValue] = key.split('~').map(part => part.trim());
+                    var [noise_tokenLine,noise_tokenType, noise_tokenValue] = noise.split('~').map(part => part.trim());
                     tokenLine = tokenLine.replace('(',"");
                     noise_tokenValue = noise_tokenValue.slice(0, -1);
 
@@ -178,23 +178,25 @@ function executeCode() {
                     tableBody.appendChild(noise_row);
 
                 }else{
-                    console.log(token)
-                    const row = document.createElement('tr');
-                    const lineCell = document.createElement('td');
-                    const typeCell = document.createElement('td');
-                    const valueCell = document.createElement('td');
+                    if(token.split('~').map(part => part.trim())[1] == "NEW_LINE" || token.split('~').map(part => part.trim())[1] == "TAB"){
+                    }else{
+                        const row = document.createElement('tr');
+                        const lineCell = document.createElement('td');
+                        const typeCell = document.createElement('td');
+                        const valueCell = document.createElement('td');
 
-                    // Split the token to extract type and value
-                    const [tokenLine, tokenType, tokenValue] = token.split(':').map(part => part.trim());
+                        // Split the token to extract type and value
+                        const [tokenLine, tokenType, tokenValue] = token.split('~').map(part => part.trim());
 
-                    lineCell.textContent = `${parseInt(tokenLine) + 1}`;
-                    typeCell.textContent = `${tokenType}`;
-                    valueCell.textContent = `${tokenValue}`;
+                        lineCell.textContent = `${parseInt(tokenLine) + 1}`;
+                        typeCell.textContent = `${tokenType}`;
+                        valueCell.textContent = `${tokenValue}`;
 
-                    row.appendChild(lineCell);
-                    row.appendChild(typeCell);
-                    row.appendChild(valueCell);
-                    tableBody.appendChild(row);
+                        row.appendChild(lineCell);
+                        row.appendChild(typeCell);
+                        row.appendChild(valueCell);
+                        tableBody.appendChild(row);
+                    }
                 }  
             });
             
@@ -203,19 +205,16 @@ function executeCode() {
                 const lineCellP = document.createElement('td');
                 const codeCellP = document.createElement('td');
                 const errorNameCellP = document.createElement('td');
-                const errorDescCellP = document.createElement('td');
 
-                const [lineP, codeP, errorNP, errorDP] = results.split(':').map(part => part.trim());
+                const [lineP, codeP, errorNP] = results.split('~').map(part => part.trim());
 
                 lineCellP.textContent = `${parseInt(lineP) + 1}`;
                 codeCellP.textContent = `${codeP}`;
                 errorNameCellP.textContent = `${errorNP}`;
-                errorDescCellP.textContent = `${errorDP}`;
 
                 row.appendChild(lineCellP)
                 row.appendChild(codeCellP)
                 row.appendChild(errorNameCellP)
-                row.appendChild(errorDescCellP)
                 syntaxBody.appendChild(row);
             });
         }
@@ -260,10 +259,10 @@ function generateFile() {
 }
 
 function exportTableToFile() {
-  const table = document.querySelector('.syntax-table');
+  const table = document.querySelector('.styled-table');
   const rows = table.querySelectorAll('tbody tr');
-  let tableText = 'Line Number                                Tokens                                  Lexemes                         Description\r\n';
-  tableText += '==================================================================================================================================\r\n';
+  let tableText = 'Line Number                                Tokens                              Lexemes                     \r\n';
+  tableText += '==================================================================================================================\r\n';
 
   rows.forEach(row => {
       const cells = row.querySelectorAll('td');
@@ -312,8 +311,8 @@ function exportTableToFile() {
 function exportsyntaxTableToFile() {
   const table = document.querySelector('.syntax-table');
   const rows = table.querySelectorAll('tbody tr');
-  let tableText = 'Line Number                                Code                                     Error                         Description\r\n';
-  tableText += '==================================================================================================================================\r\n';
+  let tableText = 'Line Number                                Code                                     Status                         \r\n';
+  tableText += '=====================================================================================================================\r\n';
 
   rows.forEach(row => {
       const cells = row.querySelectorAll('td');

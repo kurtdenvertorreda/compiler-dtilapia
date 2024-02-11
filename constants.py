@@ -16,6 +16,8 @@ TT_CHAR     = 'Character'
 TT_COMPL    = 'Complex'
 TT_BOOL     = 'Boolean'
 
+TT_LITERALS = {TT_INT, TT_FLOAT, TT_STRING, TT_CHAR, TT_COMPL, TT_BOOL}
+
 # Delimiters and Brackets
 TT_LPAREN   = 'DELIBRA_Left_Parenthesis'
 TT_RPAREN   = 'DELIBRA_Right_Parenthesis'
@@ -38,7 +40,9 @@ TT_MINUS    = 'ARIOP_Subtraction_Operator'
 TT_MUL      = 'ARIOP_Multiplication_Operator'
 TT_DIV      = 'ARIOP_Division_Operator'
 
-# Comparison Operators
+TT_ARIOP = [TT_MODULO, TT_EXPONENT, TT_PLUS, TT_MINUS, TT_MUL, TT_DIV]
+
+# Comparison/Conditional Operators
 TT_GREATER_THAN = 'RELOP_Greater_Than_Operator'
 TT_LESS_THAN = 'RELOP_Less_Than_Operator'
 TT_GREATER_THAN_EQUAL = 'RELOP_Greater_Than_or_Equal_To_Operator'
@@ -46,6 +50,8 @@ TT_LESS_THAN_EQUAL = 'RELOP_Less_Than_or_Equal_To_Operator'
 TT_EQUAL_TO = 'RELOP_Equal_To_Operator'
 TT_NOT_EQUAL_TO = 'RELOP_Not_Equal_To_Operator'
 TT_INVALID ='Invalid Token'
+
+TT_REL_OP = {TT_GREATER_THAN, TT_LESS_THAN, TT_GREATER_THAN_EQUAL, TT_LESS_THAN_EQUAL, TT_EQUAL_TO, TT_NOT_EQUAL_TO}
 
 # Logical Operators
 TT_NEGATION = 'LOGOP_Negation_Operator'
@@ -81,15 +87,15 @@ TT_INVALID = 'Invalid_Token'
 TT_SCOM    = 'COM_Single_Line_Comment'
 TT_MCOM    = 'COM_Multiple_Line_Comment'
 TT_NEWLINE = 'NEW_LINE'
-TT_TAB = '    ' or '\t'
+TT_TAB = "TAB"
 
 # Grouped data types from keywords
-KEYWORDS_DATA_TYPE = {'int', 'float', 'String', 'char', 'bool', 'complex'} 
+KEYWORDS_DATA_TYPE = {'int', 'float', 'String', 'char', 'bool', 'complex', 'void'} 
 
 KEYWORDS = KEYWORDS_DATA_TYPE.union({
     'array', 'set', 'let', 'be',
     'for', 'from', 'to', 'in', 'by', 'do', 'when', 'otherwise', 'funct', 'while', 'given',
-    'output', 'print', 'show', 'input', 'find', 'hence'
+    'output', 'print', 'show', 'input', 'find', 'hence', 'is'
 })
 
 
@@ -101,6 +107,8 @@ RESERVED_WORDS = {'True', 'False', 'permutation', 'combination', 'btree', 'preor
                  'isEmpty', 'R_notation', 'S_notation'}
 
 NOISE_WORDS = {'eger', 'ing', 'acter', 'ion', 'ean', 'itive', 'actorization', 'uence'}
+
+
 
 KEYWORD_NOISE_WORDS = {
     'integer': ('int', 'eger'),

@@ -1,16 +1,16 @@
 from constants import *
 from dtilapia import Lexer
+import iteratives, discrete, input_output, function
 
 class ResParse:
-    def __init__(self, line, code, errorName, errorDesc):
+    def __init__(self, line, code, errorName):
         self.line = line
         self.code = code
         self.errorName = errorName
-        self.errorDesc = errorDesc
     
     def __repr__(self):
-        if self.errorName: return f'{self.line}:{self.code}:{self.errorName}: {self.errorDesc}'
-        return f'{self.line}:{self.code}:No Error:No Error'
+        if self.errorName: return f'{self.line}~{self.code}~{self.errorName}'
+        return f'{self.line}:{self.code}:No Error'
 
 class Parser:
     def __init__(self, tokens):
@@ -37,142 +37,46 @@ class Parser:
                 assignment = self.parse_assignment()
                 declarations.append(assignment)
             elif self.current_token.type == TT_KEYWORD and str(self.current_token.value) == "find":
-                discrete = self.parse_discrete()
-                declarations.append(discrete)
+                discrete_f = discrete.parse_discrete(self)
+                declarations.append(discrete_f)
             elif self.current_token.value == "output":
-                output = self.parse_output()
+                output = input_output.parse_output(self)
                 declarations.append(output)
             elif self.current_token.value == "input":
-                input = self.parse_input()
+                input = input_output.parse_input(self)
                 declarations.append(input)
-            elif self.current_token.type == TT_KEYWORD and str(self.current_token.value) == "when":
-                when_do = self.parse_conditional()
-                declarations.append(when_do)
+            elif self.current_token.value == "for":
+                for_loop = iteratives.parse_for(self)
+                declarations.append(for_loop)
+            elif self.current_token.value == "hence":
+                hence_des = discrete.parse_hence(self)
+                declarations.append(hence_des)
+            elif self.current_token.value == "while":
+                while_loop = iteratives.parse_while(self)
+                declarations.append(while_loop)
+            elif self.current_token.value == "when":
+                when_statement = iteratives.parse_when(self)
+                declarations.append(when_statement)
+            elif self.current_token.value == "otherwise":
+                otherwise_statement = iteratives.parse_otherwise(self)
+                declarations.append(otherwise_statement)
             elif self.current_token.type == TT_INVALID:
                 invalid = self.parse_invalid()
                 declarations.append(invalid)
+            elif self.current_token.value == "funct":
+                funct = function.parse_funct(self)
+                declarations.append(funct)
 
             self.advance()  # Move to the next token
 
         return declarations  # Move the return statement outside the loop
+    
+    # INVALID TOKENS
     def parse_invalid(self):
         store = str(self.current_token.value) + " "
-        return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}', "Expected valid symbols")
+        return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}')
         
-    def parse_discrete(self):
-        self.advance()
-        store = "find" + " "
-        identifier_token = self.current_token
-        if identifier_token.type in TT_RESERVE:
-            if self.current_token.value in ["permutation", "combination","gcd","lcm","lcd","isDivisible"]:
-                store += str(self.current_token.value) + " "
-                self.advance()
-                if self.current_token.value == "given":
-                    store += str(self.current_token.value) + " "
-                    self.advance()
-                    if self.current_token.type in [TT_INT, TT_IDENTIFIER]:
-                        store += str(self.current_token.value)
-                        self.advance()
-                        if self.current_token.value == ",":
-                            store += str(self.current_token.value)
-                            self.advance()
-                            if self.current_token.type in [TT_INT, TT_IDENTIFIER]:
-                                store += str(self.current_token.value)
-                                return ResParse(self.current_token.line, store, "No Error", "No Error")
-                            else:
-                                return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}', "Expected 'Identifier' or 'Integer'.")
-                        else:
-                            return ResParse(self.current_token.line, store, "No Error", "No Error")
-                    else:
-                        return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}', "Expected 'Identifier' or 'Integer'.")
-                else:
-                    return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}', "Expected 'Keyword'.")
-            elif self.current_token.value in ["inorder", "preorder","postorder"]:
-                if self.current_token.value == "given":
-                    store += str(self.current_token.value) + " "
-                    self.advance()
-                    if self.current_token.type == TT_IDENTIFIER:
-                        store += str(self.current_token.value)
-                        return ResParse(self.current_token.line, store, "No Error", "No Error")
-                    else:
-                        return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}', "Expected 'Identifier'.")
-                else:
-                    return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}', "Expected 'given'.")
-            elif self.current_token.value in ["isPrime", "isOdd", "isEven"]:
-                store += str(self.current_token.value) + " "
-                self.advance()
-                if self.current_token.value == "given":
-                    store += str(self.current_token.value) + " "
-                    self.advance()
-                    if self.current_token.type in [TT_INT, TT_IDENTIFIER]:
-                        store += str(self.current_token.value)
-                        self.advance()
-                        return ResParse(self.current_token.line, store, "No Error", "No Error")
-                    else:
-                        return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}', "Expected 'Identifier'.")
-                else:
-                    return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}', "Expected 'given'.")
-            elif self.current_token.value in ["permutation", "combination","gcd","lcm","lcd","isDivisible"]:
-                store += str(self.current_token.value) + " "
-                self.advance()
-                if self.current_token.value == "given":
-                    store += str(self.current_token.value) + " "
-                    self.advance()
-                    if self.current_token.type in [TT_INT, TT_IDENTIFIER]:
-                        store += str(self.current_token.value)
-                        self.advance()
-                        if self.current_token.value == ",":
-                            store += str(self.current_token.value)
-                            self.advance()
-                            if self.current_token.type in [TT_INT, TT_IDENTIFIER]:
-                                store += str(self.current_token.value)
-                                return ResParse(self.current_token.line, store, "No Error", "No Error")
-                            else:
-                                return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}', "Expected 'Identifier' or 'Integer'.")
-                        else:
-                            return ResParse(self.current_token.line, store, "No Error", "No Error")
-                    else:
-                        return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}', "Expected 'Identifier' or 'Integer'.")
-                else:
-                    return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}', "Expected 'Keyword'.")
-            elif self.current_token.value in ["ariseq", "geomseq","fiboseq"]:
-                store += str(self.current_token.value) + " "
-                self.advance()
-                if self.current_token.value == "given":
-                    store += str(self.current_token.value) + " "
-                    self.advance()
-                    if self.current_token.type in [TT_INT, TT_IDENTIFIER]:
-                        store += str(self.current_token.value)
-                        self.advance()
-                        if self.current_token.value == ",":
-                            store += str(self.current_token.value)
-                            self.advance()
-                            if self.current_token.type in [TT_INT, TT_IDENTIFIER]:
-                                store += str(self.current_token.value)
-                                self.advance()
-                                if self.current_token.value == ",":
-                                    store += str(self.current_token.value)
-                                    self.advance()
-                                    if self.current_token.type in [TT_INT, TT_IDENTIFIER]:
-                                        store += str(self.current_token.value)
-                                        return ResParse(self.current_token.line, store, "No Error", "No Error")
-                                    else:
-                                        return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}', "Expected 'Identifier' or 'Integer'.")
-                                else:
-                                    return ResParse(self.current_token.line, store, "No Error", "No Error")
-                            else:
-                                return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}', "Expected 'Identifier' or 'Integer'.")
-                        else:
-                            return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}', "Expected ','.")
-                    else:
-                        return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}', "Expected 'Identifier' or 'Integer'.")
-                else:
-                    return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}', "Expected 'Keyword'.")
-            else:
-                return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}', "Expected 'Reserve Word'.")
-        else:
-            return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line + 1)}', "Expected 'Reserve Word'.")
-    
+    # BODY OF FUNCTIONS/STATEMENTS
     def parse_body(self):
         body = []
         if self.current_token.value != "{":
@@ -211,38 +115,8 @@ class Parser:
         # Consume '}'
         self.advance()
         return body
-    
-    def parse_conditional(self):
-        self.advance()  # Move past 'OUTPUT' keyword
-        store = "when" + " "
-        identifier_token = self.current_token
-        if identifier_token.type == TT_IDENTIFIER:
-            store += str(self.current_token.value) + " "
-            self.advance()
-            if self.current_token.type in [TT_GREATER_THAN, TT_LESS_THAN, TT_GREATER_THAN_EQUAL, TT_LESS_THAN_EQUAL, TT_EQUAL_TO, TT_NOT_EQUAL_TO]:
-                store += str(self.current_token.value) + " "
-                self.advance()
-                if self.current_token.type in [TT_BOOL, TT_INT, TT_IDENTIFIER]:
-                    store += str(self.current_token.value) + " "
-                    self.advance()
-                    if self.current_token.type == TT_KEYWORD and str(self.current_token.value) == "do":
-                        store += str(self.current_token.value) + " "
-                        self.advance()
-                        if self.current_token.value == ';':
-                            store += str(self.current_token.value) + " "
-                            self.advance()
-                        else:
-                            return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected ';'.")
-                    else:
-                        return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected 'do'.")
-                else:
-                    return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected a boolean, integer, or identifier value.")
-            else:
-                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected relational operator.")
-            return ResParse(self.current_token.line, store, "No Error", "No Error")
-        else:
-            return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected an identifier.")
-        
+
+    # DECLARATION STATEMENTS    
     def parse_declaration(self):
         self.advance()  # Move past 'let' keyword
         store = "let" + " "
@@ -290,7 +164,7 @@ class Parser:
                                                             if self.current_token.type == TT_RCBRAC:
                                                                 store += str(self.current_token.value) + " "
                                                                 self.advance()
-                                                                return ResParse(self.current_token.line, store, "No Error", "No Error")
+                                                                return ResParse(self.current_token.line, store, "No Error")
                                                             elif self.current_token.type == TT_COMMA:
                                                                 size_allowed = size - 1 
                                                                 while self.current_token.type == TT_COMMA:
@@ -304,33 +178,33 @@ class Parser:
                                                                         if self.current_token.type == TT_RCBRAC:
                                                                             store += str(self.current_token.value) + " "
                                                                             self.advance()
-                                                                            return ResParse(self.current_token.line, store, "No Error", "No Error")                                  
+                                                                            return ResParse(self.current_token.line, store, "No Error")                                  
                                                                     else:
-                                                                        return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected same data type.")
+                                                                        return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                                                                     if size_allowed <= 0:
-                                                                        return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected exact size.")
+                                                                        return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                                                                 if self.current_token.type == TT_RCBRAC:
-                                                                    return ResParse(self.current_token.line, store, "No Error", "No Error")
+                                                                    return ResParse(self.current_token.line, store, "No Error")
                                                                 else:
-                                                                    return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected ']'.")
+                                                                    return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                                                             else:
-                                                                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected ','.")
+                                                                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                                                         else:
-                                                            return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected data type value.")
+                                                            return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                                                     else:
-                                                        return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected '{'.")
+                                                        return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                                                 else:
-                                                    return ResParse(self.current_token.line, store, "No Error", "No Error")
+                                                    return ResParse(self.current_token.line, store, "No Error")
                                             else:
-                                                return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line+1)}', "Expected ']'.")
+                                                return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line+1)}')
                                         else:
-                                            return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected integer.")
+                                            return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                                     else:
-                                        return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected '[]'.")
+                                        return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                                 else:
-                                    return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected array.")
+                                    return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                             else:
-                                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected array.")
+                                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                         elif self.current_token.type == TT_ASSIGNMENT:
                             store += str(self.current_token.value) + " "
                             self.advance()
@@ -346,10 +220,10 @@ class Parser:
                                             store += str(self.current_token.value) + " "
                                             self.advance()
                                         else:
-                                            return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected same data type value.")
-                                    return ResParse(self.current_token.line, store, "No Error", "No Error")
+                                            return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
+                                    return ResParse(self.current_token.line, store, "No Error")
                                 else:
-                                    return ResParse(self.current_token.line, store, "No Error", "No Error")
+                                    return ResParse(self.current_token.line, store, "No Error")
                             elif self.current_token.type == TT_SNGQ:
                                 store += str(self.current_token.value) + " "
                                 self.advance()
@@ -359,11 +233,11 @@ class Parser:
                                     if self.current_token.type == TT_SNGQ:
                                         store += str(self.current_token.value) + " "
                                         self.advance()
-                                        return ResParse(self.current_token.line, store, "No Error", "No Error")
+                                        return ResParse(self.current_token.line, store, "No Error")
                                     else:
-                                        return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected '}'.")
+                                        return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                                 else:
-                                    return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected character.")
+                                    return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                             elif self.current_token.type == TT_DBLQ:
                                 store += str(self.current_token.value) + " "
                                 self.advance()
@@ -373,17 +247,17 @@ class Parser:
                                     if self.current_token.type == TT_DBLQ:
                                         store += str(self.current_token.value) + " "
                                         self.advance()
-                                        return ResParse(self.current_token.line, store, "No Error", "No Error")
+                                        return ResParse(self.current_token.line, store, "No Error")
                                     else:
-                                        return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected '}'.")
+                                        return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                                 else:
-                                    return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected string.")
+                                    return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                             else:
-                                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected data type value.")
+                                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                         elif self.current_token.value not in KEYWORDS_DATA_TYPE:
-                            return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected data type or period or assignment")
+                            return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                         else:
-                            return ResParse(self.current_token.line, store, "No Error", "No Error")
+                            return ResParse(self.current_token.line, store, "No Error")
                     elif self.current_token.value == 'set':
                         store += str(self.current_token.value) + " "
                         self.advance()
@@ -401,7 +275,7 @@ class Parser:
                                     if self.current_token.type == TT_RCBRAC:
                                         store += str(self.current_token.value) + " "
                                         self.advance()
-                                        return ResParse(self.current_token.line, store, "No Error", "No Error")
+                                        return ResParse(self.current_token.line, store, "No Error")
                                     elif self.current_token.type == TT_COMMA:
                                         while self.current_token.type == TT_COMMA:
                                             store += str(self.current_token.value) + " "
@@ -412,66 +286,29 @@ class Parser:
                                                 store += str(self.current_token.value) + " "
                                                 self.advance()                                           
                                             else:
-                                                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected data type value.")
+                                                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                                         if self.current_token.type == TT_RCBRAC:
-                                            return ResParse(self.current_token.line, store, "No Error", "No Error")
+                                            return ResParse(self.current_token.line, store, "No Error")
                                         else:
-                                            return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected '}'.")
+                                            return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                                     else:
-                                        return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected comma.")
+                                        return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                                 else:
-                                    return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected data type value.")
+                                    return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                             else:
-                                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected '{'.")
+                                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                         elif self.current_token.type == TT_IDENTIFIER:
-                            return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected assignment.")
+                            return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
                         else:
-                           return ResParse(self.current_token.line, store, "No Error", "No Error")
+                           return ResParse(self.current_token.line, store, "No Error")
                 else:
-                    return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected data type or structure.")
+                    return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
             else:
-                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected 'be'.")
+                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
         else:
-            return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected identifier.")
-
-
+            return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
     
-    def parse_condition(self):
-        # handling <identifier> <rel_op> <bool_val>
-        identifier_token = self.current_token
-        if identifier_token.type == TT_IDENTIFIER:
-            self.advance()
-            if self.current_token.type in {TT_GREATER_THAN, TT_LESS_THAN, TT_GREATER_THAN_EQUAL, TT_LESS_THAN_EQUAL, TT_EQUAL_TO, TT_NOT_EQUAL_TO}:
-                rel_op_token = self.current_token
-                self.advance()
-                if self.current_token.type == TT_BOOL:
-                    val_token = self.current_token
-                    value_type = 'bool_val'
-                    self.advance()
-                elif self.current_token.type == TT_INT:
-                    val_token = int(self.current_token.value)
-                    value_type = 'integer'
-                    self.advance()
-                elif self.current_token.type == TT_IDENTIFIER:
-                    val_token = self.current_token.value
-                    value_type = 'identifier'
-                    self.advance()
-                else:
-                    raise Exception("Invalid token at line {}: Expected boolean, digit, or identifier value".format(self.current_token.line))
-                
-                # Check for logical operator
-                if self.current_token.type in {TT_NEGATION, TT_DISJUNCTION, TT_CONJUNCTION, TT_CONDITIONAL, TT_IMPLICATION, TT_BICONDITIONAL}:
-                    logical_op_token = self.current_token
-                    self.advance()
-                else:
-                    logical_op_token = None
-            else:
-                raise Exception("Invalid token at line {}: Expected relational operator".format(self.current_token.line))
-        else:
-            raise Exception("Invalid token at line {}: Expected identifier".format(self.current_token.line))
-        return {'identifier': identifier_token.value, 'rel_op': rel_op_token.value, 'value_type': value_type, 'value': val_token, 'logical_op': logical_op_token.value if logical_op_token else None}    
-    
-    
+    # DATA TYPE
     def parse_data_type(self):
         data_type = ''
         while self.current_token.type in (TT_IDENTIFIER, TT_PERIOD):
@@ -479,77 +316,7 @@ class Parser:
             self.advance()
         return data_type
     
-    def parse_input(self):
-        self.advance()
-        store = "input" + " "
-        if self.current_token.value == "':'":
-            store += str(self.current_token.value) + " "
-            self.advance()  # Move past ':'
-            identifier_token = self.current_token
-            if identifier_token.type == TT_IDENTIFIER:
-                store += str(self.current_token.value) + " "
-                self.advance()
-                return ResParse(self.current_token.line, store, "No Error", "No Error")
-            else:
-                return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line+1)}', "Expected ':.")
-        else:
-            return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line+1)}', "Expected ':.")
-        
-    
-    def parse_output(self):
-        self.advance()  # Move past 'OUTPUT' keyword
-        store = "output" + " "
-
-        if self.current_token.type == TT_COLON:
-            store += str(self.current_token.value) + " "
-            self.advance()  # Move past ':'
-            identifier_token = self.current_token
-
-            if identifier_token.type == TT_IDENTIFIER:
-                store += str(self.current_token.value) + " "
-                self.advance()
-                return ResParse(self.current_token.line, store, "No Error", "No Error")
-            elif self.current_token.type == TT_INT:
-                store += str(self.current_token.value) + " "
-                int_token = self.current_token
-                self.advance()
-                return ResParse(str(self.current_token.line), store, "No Error", "No Error")
-            elif self.current_token.type == TT_FLOAT:
-                store += str(self.current_token.value) + " "
-                float_token = self.current_token
-                self.advance()
-                return ResParse(str(self.current_token.line), store, "No Error", "No Error")
-            elif self.current_token.value == "'":
-                store += str(self.current_token.value) + " "
-                self.advance()
-                if self.current_token.type == TT_CHAR:
-                    store += str(self.current_token.value) + " "
-                    self.advance()
-                    if self.current_token.value == "'":
-                        store += str(self.current_token.value) + " "
-                        self.advance()
-                return ResParse(str(self.current_token.line), store, "No Error", "No Error")
-            elif self.current_token.type == TT_CHAR:
-                store += str(self.current_token.value) + " "
-                char_token = self.current_token
-                self.advance()
-                return ResParse(str(self.current_token.line), store, "No Error", "No Error")
-            elif self.current_token.type == TT_COMPL:
-                store += str(self.current_token.value) + " "
-                complex_token = self.current_token
-                self.advance()
-                return ResParse(str(self.current_token.line), store, "No Error", "No Error")
-            elif self.current_token.type == TT_BOOL:
-                store += str(self.current_token.value) + " "
-                bool_token = self.current_token
-                self.advance()
-                return ResParse(str(self.current_token.line), store, "No Error", "No Error")
-            else:
-                return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line+1)}', "Expected 'identifier/expression'.")
-        else:
-            return ResParse(str(self.current_token.line), store, f'Invalid token at line {str(self.current_token.line+1)}', "Expected ':.")
-    
-    
+    # ASSIGNMENT
     def parse_assignment(self):
         # Move past the first identifier
         store = self.current_token.value + " "
@@ -561,9 +328,9 @@ class Parser:
             # Check for identifier or literal types
             if self.current_token.type in [TT_IDENTIFIER, TT_INT, TT_FLOAT, TT_STRING, TT_CHAR, TT_COMPL, TT_BOOL]:
                 store += str(self.current_token.value) + " "
-                return ResParse(self.current_token.line, store, "No Error", "No Error")
+                return ResParse(self.current_token.line, store, "No Error")
             else:
-                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected identifier or literal after '=' operator.")
+                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
         elif self.current_token.type == TT_ADDITION_ASSIGNMENT:
             store += str(self.current_token.value) + " "
             self.advance()  # Move past the addition assignment operator
@@ -571,9 +338,9 @@ class Parser:
             # Check for identifier or literal types
             if self.current_token.type in [TT_INT, TT_FLOAT]:
                 store += str(self.current_token.value) + " "
-                return ResParse(self.current_token.line, store, "No Error", "No Error")
+                return ResParse(self.current_token.line, store, "No Error")
             else:
-                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected numeric literal after '+=' operator.")
+                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
         elif self.current_token.type == TT_SUBTRACTION_ASSIGNMENT:
             store += str(self.current_token.value) + " "
             self.advance()  # Move past the subtraction assignment operator
@@ -581,14 +348,15 @@ class Parser:
             # Check for identifier or literal types
             if self.current_token.type in [TT_INT, TT_FLOAT]:
                 store += str(self.current_token.value) + " "
-                return ResParse(self.current_token.line, store, "No Error", "No Error")
+                return ResParse(self.current_token.line, store, "No Error")
             else:
-                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}', "Expected numeric literal after '-=' operator.")
+                return ResParse(self.current_token.line, store, f'Invalid token at line {self.current_token.line}')
         elif self.current_token.type == TT_MULTIPLICATION_ASSIGNMENT:
             store += str(self.current_token.value) + " "
             self.advance()  # Move past the multiplication assignment operator
             
 
+# MAIN
 def main():
     while True:
         # Take input from the user
@@ -618,7 +386,6 @@ def main():
                     print(declaration)
             except Exception as e:
                 print("Parser error:", str(e))
-
 
 if __name__ == "__main__":
     main()

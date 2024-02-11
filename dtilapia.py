@@ -57,7 +57,7 @@ class Token:
         self.value = value
     
     def __repr__(self):
-        if self.value: return f'{self.line}:{self.type}:{self.value}'
+        if self.value: return f'{self.line}~{self.type}~{self.value}'
         return f'{self.type}'
 #######################################
 # LEXER
@@ -79,11 +79,18 @@ class Lexer:
         tokens = []
 
         while self.current_char != None:
-            if self.current_char in ' \t':
-                self.advance()
             if self.current_char in '\n':
-                tokens.append(Token(self.pos.ln,TT_NEWLINE,value="\n"))
+                tokens.append(Token(self.pos.ln,TT_NEWLINE,value="newline"))
                 self.advance()
+            elif self.current_char == '\t' or self.current_char == " ":
+                self.advance()
+                if self.current_char == '\t' or self.current_char == " ":
+                    self.advance()
+                    if self.current_char == '\t' or self.current_char == " ":
+                        self.advance()
+                        if self.current_char == '\t' or self.current_char == " ":
+                            tokens.append(Token(self.pos.ln,TT_TAB,value="tab"))
+                            self.advance()
             elif self.current_char in DIGITS:
                 tokens.append(self.make_number())
 
@@ -402,10 +409,12 @@ class Lexer:
             elif self.current_char == '"':
                 tokens.append(Token(self.pos.ln,TT_DBLQ, value='"'))
                 tokens.append(self.make_string())
+                self.advance()
                 tokens.append(Token(self.pos.ln,TT_DBLQ, value='"'))
             elif self.current_char == '\'':
                 tokens.append(Token(self.pos.ln,TT_SNGQ, value='\''))
                 tokens.append(self.make_character())
+                self.advance()
                 tokens.append(Token(self.pos.ln,TT_SNGQ, value='\''))
             elif self.current_char in ALPHABET:
                 tokens.append(self.make_identifier_or_keyword())
