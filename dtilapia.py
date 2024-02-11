@@ -409,10 +409,12 @@ class Lexer:
             elif self.current_char == '"':
                 tokens.append(Token(self.pos.ln,TT_DBLQ, value='"'))
                 tokens.append(self.make_string())
+                self.advance()
                 tokens.append(Token(self.pos.ln,TT_DBLQ, value='"'))
             elif self.current_char == '\'':
                 tokens.append(Token(self.pos.ln,TT_SNGQ, value='\''))
                 tokens.append(self.make_character())
+                self.advance()
                 tokens.append(Token(self.pos.ln,TT_SNGQ, value='\''))
             elif self.current_char in ALPHABET:
                 tokens.append(self.make_identifier_or_keyword())
