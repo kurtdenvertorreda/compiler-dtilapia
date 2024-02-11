@@ -349,11 +349,16 @@ class Parser:
         return data_type
     
     # ASSIGNMENT
-    def parse_assignment(self):
-        # Move past the first identifier
-        store = self.current_token.value + " "
-        self.advance()
-        if self.current_token.type == TT_ASSIGNMENT:
+def parse_assignment(self):
+    # Move past the first identifier
+    store = self.current_token.value + " "
+    self.advance()
+    if self.current_token.type == TT_ASSIGNMENT:
+        store += str(self.current_token.value) + " "
+        self.advance()  # Move past the assignment operator
+        
+        # Check for identifier or literal types
+        if self.current_token.type in [TT_IDENTIFIER, TT_INT, TT_FLOAT, TT_STRING, TT_CHAR, TT_COMPL, TT_BOOL]:
             store += str(self.current_token.value) + " "
             self.advance()  # Move past the assignment operator
             

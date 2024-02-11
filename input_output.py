@@ -66,13 +66,13 @@ def parse_output(self):
                     store += str(self.current_token.value) + " "
                     self.advance()
             return dtilParser.ResParse(str(self.current_token.line), store, " ")
-        elif self.current_token.value == "\"":
+        elif self.current_token.type == constants.TT_DBLQ:
             store += str(self.current_token.value) + " "
             self.advance()
             if self.current_token.type == constants.TT_STRING:
                 store += str(self.current_token.value) + " "
                 self.advance()
-                if self.current_token.value == "\"":
+                if self.current_token.type == constants.TT_DBLQ:
                     store += str(self.current_token.value) + " "
                     self.advance()
                     if self.current_token.value == "+":
@@ -84,6 +84,12 @@ def parse_output(self):
                         else:
                             self.idx = len(self.tokens)
                             return dtilParser.ResParse(str(self.current_token.line), store, f'Expected an identifier after "+" at line {str(self.current_token.line+1)}')
+                else:
+                    self.idx = len(self.tokens)
+                    return dtilParser.ResParse(str(self.current_token.line), store, f'Expected a closing double quotation mark after String value at line {str(self.current_token.line+1)}')
+            else:
+                self.idx = len(self.tokens)
+                return dtilParser.ResParse(str(self.current_token.line), store, f'Expected a String value after opening double quotation mark at line {str(self.current_token.line+1)}')
             return dtilParser.ResParse(str(self.current_token.line), store, " ")
         elif self.current_token.type == constants.TT_COMPL:
             store += str(self.current_token.value) + " "
