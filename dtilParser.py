@@ -166,7 +166,7 @@ class Parser:
                                                             if self.current_token.type == TT_RCBRAC:
                                                                 store += str(self.current_token.value) + " "
                                                                 self.advance()
-                                                                return ResParse(self.current_token.line, store, f'Line{str(self.current_token.line+1)} executed successfuly')
+                                                                return ResParse(self.current_token.line, store, " ")
                                                             elif self.current_token.type == TT_COMMA:
                                                                 size_allowed = size - 1 
                                                                 while self.current_token.type == TT_COMMA:
@@ -180,7 +180,7 @@ class Parser:
                                                                         if self.current_token.type == TT_RCBRAC:
                                                                             store += str(self.current_token.value) + " "
                                                                             self.advance()
-                                                                            return ResParse(self.current_token.line, store, f'Line{str(self.current_token.line+1)} executed successfuly')                  
+                                                                            return ResParse(self.current_token.line, store, " ")                  
                                                                     else:
                                                                         self.idx = len(self.tokens)
                                                                         return ResParse(str(self.current_token.line), store, f'Syntax Error: Expected all values in array to be similar at line {str(self.current_token.line + 1)}')
@@ -188,7 +188,7 @@ class Parser:
                                                                         self.idx = len(self.tokens)
                                                                         return ResParse(str(self.current_token.line), store, f'Syntax Error: Expected correct size of array at line {str(self.current_token.line + 1)}')
                                                                 if self.current_token.type == TT_RCBRAC:
-                                                                    return ResParse(self.current_token.line, store, f'Line{str(self.current_token.line+1)} executed successfuly')
+                                                                    return ResParse(self.current_token.line, store, " ")
                                                                 else:
                                                                     self.idx = len(self.tokens)
                                                                     return ResParse(str(self.current_token.line), store, f'Syntax Error: Expected comma at line {str(self.current_token.line + 1)}')
@@ -202,7 +202,7 @@ class Parser:
                                                         self.idx = len(self.tokens)
                                                         return ResParse(str(self.current_token.line), store, f'Syntax Error: Expected {{ at line {str(self.current_token.line + 1)}')
                                                 else:
-                                                    return ResParse(self.current_token.line, store, f'Line{str(self.current_token.line+1)} executed successfuly')
+                                                    return ResParse(self.current_token.line, store, " ")
                                             else:
                                                 self.idx = len(self.tokens)
                                                 return ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a "]" for closing the size specification of the array at line {str(self.current_token.line + 1)}')
@@ -235,9 +235,9 @@ class Parser:
                                         else:
                                             self.idx = len(self.tokens)
                                             return ResParse(str(self.current_token.line), store, f'Syntax Error: Expected all values in array to be similar at line {str(self.current_token.line + 1)}')
-                                    return ResParse(self.current_token.line, store, f'Line{str(self.current_token.line+1)} executed successfuly')
+                                    return ResParse(self.current_token.line, store, " ")
                                 else:
-                                    return ResParse(self.current_token.line, store, f'Line{str(self.current_token.line+1)} executed successfuly')
+                                    return ResParse(self.current_token.line, store, " ")
                             elif self.current_token.type == TT_SNGQ:
                                 store += str(self.current_token.value) + " "
                                 self.advance()
@@ -247,7 +247,7 @@ class Parser:
                                     if self.current_token.type == TT_SNGQ:
                                         store += str(self.current_token.value) + " "
                                         self.advance()
-                                        return ResParse(self.current_token.line, store, f'Line{str(self.current_token.line+1)} executed successfuly')
+                                        return ResParse(self.current_token.line, store, " ")
                                     else:
                                         self.idx = len(self.tokens)
                                         return ResParse(str(self.current_token.line), store, f'Syntax Error: Expected " \' " at line {str(self.current_token.line + 1)}')
@@ -262,7 +262,7 @@ class Parser:
                                     if self.current_token.type == TT_DBLQ:
                                         store += str(self.current_token.value) + " "
                                         self.advance()
-                                        return ResParse(self.current_token.line, store, f'Line{str(self.current_token.line+1)} executed successfuly')
+                                        return ResParse(self.current_token.line, store, " ")
                                     else:
                                         self.idx = len(self.tokens)
                                         return ResParse(str(self.current_token.line), store, f'Syntax Error: Expected " " " at line {str(self.current_token.line + 1)}')
@@ -273,7 +273,7 @@ class Parser:
                                 self.idx = len(self.tokens)
                                 return ResParse(str(self.current_token.line), store, f'Syntax Error: Expected a valid data value at line {str(self.current_token.line + 1)}')
                         else:
-                            return ResParse(self.current_token.line, store, f'Line{str(self.current_token.line+1)} executed successfuly')
+                            return ResParse(self.current_token.line, store, " ")
                     elif self.current_token.value == 'set':
                         store += str(self.current_token.value) + " "
                         self.advance()
@@ -291,7 +291,7 @@ class Parser:
                                     if self.current_token.type == TT_RCBRAC:
                                         store += str(self.current_token.value) + " "
                                         self.advance()
-                                        return ResParse(self.current_token.line, store, f'Line{str(self.current_token.line+1)} executed successfuly')
+                                        return ResParse(self.current_token.line, store, " ")
                                     elif self.current_token.type == TT_COMMA:
                                         while self.current_token.type == TT_COMMA:
                                             store += str(self.current_token.value) + " "
@@ -304,14 +304,14 @@ class Parser:
                                                 if self.current_token.type == TT_RCBRAC:
                                                     store += str(self.current_token.value) + " "
                                                     self.advance()
-                                                    return ResParse(self.current_token.line, store, f'Line{str(self.current_token.line+1)} executed successfuly')
+                                                    return ResParse(self.current_token.line, store, " ")
                                             else:
                                                 self.idx = len(self.tokens)
                                                 return ResParse(str(self.current_token.line), store, f'Syntax Error: Expected valid data type value at line {str(self.current_token.line + 1)}')
                                         if self.current_token.type == TT_RCBRAC:
                                             store += str(self.current_token.value) + " "
                                             self.advance()
-                                            return ResParse(self.current_token.line, store, f'Line{str(self.current_token.line+1)} executed successfuly')
+                                            return ResParse(self.current_token.line, store, " ")
                                         else:
                                             self.idx = len(self.tokens)
                                             return ResParse(str(self.current_token.line), store, f'Syntax Error: Expected "}}" at line {str(self.current_token.line + 1)}')
